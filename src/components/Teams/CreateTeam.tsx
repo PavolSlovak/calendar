@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import Modal, { ModalHandle } from "../UI/Modal";
-import Button from "../UI/Button";
 import InvitationTable from "./InvitationTable";
 import RadioButtons from "../UI/RadioButtons";
 import ErrorBlock from "../UI/ErrorBlock";
@@ -20,7 +19,10 @@ type CreateTeamProps = {
 function CreateTeam({ onDone }: CreateTeamProps) {
   const modal = useRef<ModalHandle>(null);
   const [currentSlide, setCurrentSlide] = useState<number>(1);
-
+  useEffect(() => {
+    console.log("Is submitting", isSubmitting);
+    console.log("Current slide", currentSlide);
+  });
   const dispatch = useDispatch();
   const { currentUser } = useAuth();
 
@@ -49,13 +51,11 @@ function CreateTeam({ onDone }: CreateTeamProps) {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
+    setError,
   } = useForm<CreateTeamS1 | CreateTeamS2 | CreateTeamS3>({
     resolver: zodResolver(currentSlide === 1 ? createTeamS1 : createTeamS2),
   });
 
-  const [error, setError] = useState<{ info: { message: string } } | null>(
-    null
-  );
   const teams = useSelector((state: ReduxRootState) => state.teams.teams);
   useEffect(() => {
     if (modal.current) {
@@ -63,15 +63,20 @@ function CreateTeam({ onDone }: CreateTeamProps) {
     }
   }, []);
 
-  function onSubmit(data: CreateTeamS1 | CreateTeamS2 | CreateTeamS3) {
-    setError(null);
+  async function onSubmit(data: CreateTeamS1 | CreateTeamS2 | CreateTeamS3) {
     switch (currentSlide) {
       case 1:
         const { teamName } = data as CreateTeamS1;
         if (teams.find((team) => team.teamName === teamName)) {
-          return setError({ info: { message: "Team name already exists!" } });
+          // Manually set the error
+          setError("teamName", {
+            type: "manual",
+            message: "Team name already exists!",
+          });
+          return; // Stop further processing
         }
-        setNewTeam((prevState) => ({ ...prevState, teamName: teamName }));
+        setNewTeam((prevState) => ({ ...prevState, teamName }));
+
         reset();
         break;
 
@@ -80,12 +85,11 @@ function CreateTeam({ onDone }: CreateTeamProps) {
         const foundUser = users.find((user) => user.email === email);
         if (foundUser) {
           if (newTeam.members.find((member) => member.email === email)) {
-            return setError({
-              info: {
-                message:
-                  "User already added to the team. Choose a different user!",
-              },
+            setError("email", {
+              type: "manual",
+              message: "User already invited!",
             });
+            return; // Stop further processin
           }
 
           // Add the found user to the team members
@@ -99,9 +103,12 @@ function CreateTeam({ onDone }: CreateTeamProps) {
         }
         break;
       case 3:
+        await new Promise((resolve) => setTimeout(resolve, 2000));
         dispatch(teamSlice.actions.addTeam(newTeam));
+        console.log("Team created:", newTeam);
+        // TODO - send to the server
+        onDone();
         reset();
-        onDone(); // Close the modal after creating the team
 
         break;
     }
@@ -116,24 +123,14 @@ function CreateTeam({ onDone }: CreateTeamProps) {
   }
   function handleNext() {
     setCurrentSlide((prev) => Math.min(prev + 1, 3));
-    setError(null);
   }
   function handlePrev() {
     setCurrentSlide((prev) => Math.max(prev - 1, 1));
-    setError(null);
   }
 
   let heading;
   let formInputs;
   let infobox;
-
-  if (error) {
-    infobox = (
-      <ErrorBlock mode="warning" severity="high">
-        {error.info.message}
-      </ErrorBlock>
-    );
-  }
 
   if (currentSlide === 1) {
     heading = "Create Team";
@@ -174,7 +171,7 @@ function CreateTeam({ onDone }: CreateTeamProps) {
           {...register("email")}
         />
 
-        <Button className={`btn-invite`}>Add</Button>
+        <button className={`btn-invite`}>Add</button>
 
         <InvitationTable
           TeamMembers={newTeam.members}
@@ -199,7 +196,10 @@ function CreateTeam({ onDone }: CreateTeamProps) {
           ))}
         </ul>
         <br />
-        <Button className="btn-submit">Create Team</Button>
+        {console.log(newTeam)}
+        <button className={`btn-submit`} disabled={isSubmitting}>
+          Create Team
+        </button>
       </>
     );
   }
@@ -210,18 +210,18 @@ function CreateTeam({ onDone }: CreateTeamProps) {
       >
         <h2 className="text-white">{heading}</h2>
         <RadioButtons currentSlide={currentSlide} />
-        <Button className="absolute right-3 top-2 text-white " onClick={onDone}>
+        <button className="absolute right-3 top-2 text-white " onClick={onDone}>
           &#x2717;
-        </Button>
+        </button>
       </div>
-      <Button
+      <button
         type="button"
         className={` btn-arrow-L ${currentSlide === 1 && "text-gray-300"}`}
         onClick={handlePrev}
         disabled={currentSlide === 1}
       >
         {"<"}
-      </Button>
+      </button>
 
       <form
         className="flex flex-col w-full p-10 pt-0"
@@ -232,14 +232,14 @@ function CreateTeam({ onDone }: CreateTeamProps) {
       </form>
 
       {newTeam.teamName !== "" && (
-        <Button
+        <button
           type="button"
           className={`btn-arrow-R ${currentSlide === 3 && "text-gray-300"}`}
           onClick={handleNext}
           disabled={currentSlide === 3}
         >
           {">"}
-        </Button>
+        </button>
       )}
     </Modal>
   );
