@@ -6,15 +6,21 @@ import RadioButtons from "../UI/RadioButtons";
 import ErrorBlock from "../UI/ErrorBlock";
 import { teamSlice } from "../../store/teams-slice";
 import { useDispatch, useSelector } from "react-redux";
-import users from "../../dummy_users";
+import users, { User } from "../../dummy_users";
 import { RootState as ReduxRootState } from "../../store"; // Assuming your store is defined in `store.ts`
 import { useAuth } from "../../store/authContext";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { userSchema } from "../../dummy_users";
+
 type CreateTeamProps = {
   onDone: () => void;
+};
+type Team = {
+  teamName: string;
+  email: string;
+  members: User[];
+  createdBy: User;
 };
 
 function CreateTeam({ onDone }: CreateTeamProps) {
@@ -22,7 +28,8 @@ function CreateTeam({ onDone }: CreateTeamProps) {
   const [currentSlide, setCurrentSlide] = useState<number>(1);
 
   const dispatch = useDispatch();
-  const { currentUser } = useAuth();
+  /*   const { currentUser } = useAuth(); */
+  const currentUser = users[0];
 
   const createTeamS1 = z.object({
     teamName: z.string().min(3, "Team name must be at least 3 characters!"),
@@ -30,27 +37,26 @@ function CreateTeam({ onDone }: CreateTeamProps) {
   const createTeamS2 = z.object({
     email: z.string().email(),
   });
-  const createTeamS3 = z.object({
-    teamName: z.string().min(3, "Team name must be at least 3 characters!"),
-    members: z.array(userSchema),
-    createdBy: userSchema,
-  });
+
   type CreateTeamS1 = z.infer<typeof createTeamS1>;
   type CreateTeamS2 = z.infer<typeof createTeamS2>;
-  type CreateTeamS3 = z.infer<typeof createTeamS3>;
 
-  const [newTeam, setNewTeam] = useState<CreateTeamS3>({
+  const [newTeam, setNewTeam] = useState<Team>({
     teamName: "",
+    email: "",
     members: [],
-    createdBy: currentUser!,
+    createdBy: currentUser,
   });
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-  } = useForm<CreateTeamS1 | CreateTeamS2 | CreateTeamS3>({
+    setValue,
+    clearErrors,
+  } = useForm<CreateTeamS1 | CreateTeamS2>({
     resolver: zodResolver(currentSlide === 1 ? createTeamS1 : createTeamS2),
+    mode: "onChange", // Optional: enables validation on change
   });
 
   const [error, setError] = useState<{ info: { message: string } } | null>(
@@ -63,48 +69,39 @@ function CreateTeam({ onDone }: CreateTeamProps) {
     }
   }, []);
 
-  function onSubmit(data: CreateTeamS1 | CreateTeamS2 | CreateTeamS3) {
+  const onSubmit = (data: CreateTeamS1 | CreateTeamS2) => {
     setError(null);
-    switch (currentSlide) {
-      case 1:
-        const { teamName } = data as CreateTeamS1;
-        if (teams.find((team) => team.teamName === teamName)) {
-          return setError({ info: { message: "Team name already exists!" } });
-        }
-        setNewTeam((prevState) => ({ ...prevState, teamName: teamName }));
-        break;
-
-      case 2:
-        const { email } = data as CreateTeamS2;
-        const foundUser = users.find((user) => user.email === email);
-        if (foundUser) {
-          if (newTeam.members.find((member) => member.email === email)) {
-            return setError({
-              info: {
-                message:
-                  "User already added to the team. Choose a different user!",
-              },
-            });
-          }
-
-          // Add the found user to the team members
+    if (currentSlide === 1) {
+      // Handle step 1 submission
+      const { teamName } = data as CreateTeamS1;
+      if (teams.find((team) => team.teamName === teamName)) {
+        setError({ info: { message: "Team name already exists!" } });
+      } else {
+        setNewTeam((prevState) => ({ ...prevState, teamName }));
+        handleNext(); // Move to next step
+      }
+    } else if (currentSlide === 2) {
+      // Handle step 2 submission
+      const { email } = data as CreateTeamS2;
+      const foundUser = users.find((user) => user.email === email);
+      if (foundUser) {
+        if (newTeam.members.find((member) => member.email === email)) {
+          setError({ info: { message: "User already added to the team!" } });
+        } else {
           setNewTeam((prevState) => ({
             ...prevState,
             members: [...prevState.members, foundUser],
           }));
-
-          // Clear the input field after inviting
         }
-        break;
-      case 3:
-        dispatch(teamSlice.actions.addTeam(newTeam));
-        console.log("Jebe");
-        reset();
-        onDone(); // Close the modal after creating the team
-
-        break;
+      } else {
+        setError({ info: { message: "User not found!" } });
+      }
+    } else if (currentSlide === 3) {
+      // Handle final submission
+      dispatch(teamSlice.actions.addTeam(newTeam));
+      onDone(); // Close the modal
     }
-  }
+  };
 
   function handleDelete(id: number) {
     setNewTeam((prevState) => ({
@@ -114,6 +111,7 @@ function CreateTeam({ onDone }: CreateTeamProps) {
     console.log("Invitation deleted:", id);
   }
   function handleNext() {
+    clearErrors();
     setCurrentSlide((prev) => Math.min(prev + 1, 3));
     setError(null);
   }

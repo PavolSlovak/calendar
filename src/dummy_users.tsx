@@ -1,14 +1,13 @@
 import { z } from "zod";
 
-export const userSchema = z.object({
-  id: z.number(),
-  username: z.string(),
-  email: z.string().email(),
-  profilePicture: z.string(),
-  hashedPassword: z.string(),
-  role: z.enum(["Admin", "Editor", "User"]),
-});
-export type User = z.infer<typeof userSchema>;
+export type User = {
+  id: number;
+  username: string;
+  email: string;
+  profilePicture: string;
+  role: "Admin" | "Editor" | "Viewer";
+  hashedPassword: string;
+};
 
 const users: User[] = [
   {
