@@ -1,7 +1,6 @@
 import firebase from "firebase/app";
 import { getAuth } from "firebase/auth"; // New import
 import { TFirebaseConfig } from "./lib/types";
-
 const firebaseConfig: TFirebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,

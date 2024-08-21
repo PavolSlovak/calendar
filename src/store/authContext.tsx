@@ -1,27 +1,29 @@
-import { createContext, ReactNode, useContext, useReducer } from "react";
-import { User } from "../dummy_users";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { auth } from "../firebase";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { User as FirebaseUser } from "firebase/auth";
 
 type AuthState = {
-  users: User[];
-  currentUser: User | null;
+  currentUser: FirebaseUser | null;
 };
 type AuthContextType = AuthState & {
-  login: (email:string, password: string) => void;
+  signup: ({ email, password }: AuthProps) => void;
+  login: ({ email, password }: AuthProps) => void;
   logout: () => void;
 };
-type LoginAction = {
-  type: "LOGIN";
-  payload: {
-    email: string;
-    password: string;
-  };
+type AuthProps = {
+  email: string;
+  password: string;
 };
-type LogoutAction = {
-  type: "LOGOUT";
-};
-type AuthAction = LoginAction | LogoutAction;
-
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {
@@ -32,39 +34,31 @@ export function useAuth() {
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
-function authReducer(state: AuthState, action: AuthAction) {
-  switch (action.type) {
-    case "LOGIN":
-      return {
-        ...state,
-        user: state.users.find((u) => u.email === action.payload.email),
-      };
-    case "LOGOUT":
-      return { ...state, user: null };
-    default:
-      return state;
-  }
-}
-
 export default function AuthProvider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(authReducer, {
-    users: [],
-    currentUser: null,
-  });
-  function login(email, password : ) {
-    dispatch({
-      type: "LOGIN",
-      payload: { email: email, password: password },
+  const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
+
+  useEffect(() => {
+    // firebase auth state change listener to update the current user
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      setCurrentUser(user);
     });
+    return unsubscribe;
+  }, []);
+
+  function signup({ email, password }: AuthProps) {
+    return createUserWithEmailAndPassword(auth, email, password);
   }
-  function logout() {
-    dispatch({ type: "LOGOUT" });
+
+  function login({ email, password }: AuthProps) {
+    return signInWithEmailAndPassword(auth, email, password);
   }
-  const ctxValue = {
-    currentUser: state.currentUser,
+  function logout() {}
+  const ctxValue: AuthContextType = {
+    currentUser,
+    signup,
     login,
     logout,
-  } as AuthContextType;
+  };
   return (
     <AuthContext.Provider value={ctxValue}>{children}</AuthContext.Provider>
   );
