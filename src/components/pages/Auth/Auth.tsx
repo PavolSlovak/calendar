@@ -18,7 +18,7 @@ function Auth() {
 
   // Auth form animation
   const authVariants = {
-    hidden: { opacity: 0, y: "-10vh" },
+    hidden: { opacity: 0, y: "-5vh" },
     visible: {
       opacity: 1,
       y: 0,
@@ -30,7 +30,7 @@ function Auth() {
       initial={"hidden"}
       animate={"visible"}
       variants={authVariants}
-      transition={{ type: "spring", stiffness: 120, duration: 0.1 }}
+      transition={{ type: "spring", stiffness: 100 }}
     >
       {component}
     </motion.div>

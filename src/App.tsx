@@ -1,4 +1,3 @@
-import "./App.css";
 import Calendar from "./components/pages/Calendar";
 import { Route, Routes } from "react-router-dom";
 import Root from "./components/pages/Root";

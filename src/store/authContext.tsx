@@ -1,18 +1,19 @@
 import { createContext, ReactNode, useContext, useReducer } from "react";
 import { User } from "../dummy_users";
+import { auth } from "../firebase";
 
 type AuthState = {
   users: User[];
   currentUser: User | null;
 };
 type AuthContextType = AuthState & {
-  login: () => void;
+  login: (email:string, password: string) => void;
   logout: () => void;
 };
 type LoginAction = {
   type: "LOGIN";
   payload: {
-    username: string;
+    email: string;
     password: string;
   };
 };
@@ -36,7 +37,7 @@ function authReducer(state: AuthState, action: AuthAction) {
     case "LOGIN":
       return {
         ...state,
-        user: state.users.find((u) => u.username === action.payload.username),
+        user: state.users.find((u) => u.email === action.payload.email),
       };
     case "LOGOUT":
       return { ...state, user: null };
@@ -50,10 +51,10 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     users: [],
     currentUser: null,
   });
-  function login() {
+  function login(email, password : ) {
     dispatch({
       type: "LOGIN",
-      payload: { username: "test", password: "test" },
+      payload: { email: email, password: password },
     });
   }
   function logout() {

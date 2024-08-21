@@ -18,3 +18,13 @@ export const loginSchema = z.object({
   password: z.string().min(8, "Password must be at least 10 characters!"),
 });
 export type TLoginSchema = z.infer<typeof loginSchema>;
+
+export type TFirebaseConfig = {
+  apiKey: string | undefined;
+  authDomain: string | undefined;
+  projectId: string | undefined;
+  storageBucket: string | undefined;
+  messagingSenderId: string | undefined;
+  appId: string | undefined;
+  measurementId: string | undefined;
+};
