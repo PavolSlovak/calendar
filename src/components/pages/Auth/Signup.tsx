@@ -11,7 +11,7 @@ function Signup() {
   } = useForm<TSignUpSchema>({
     resolver: zodResolver(signUpSchema),
   });
-
+  const inputStyles = "px-4 p-2 mt-2 rounded border border-black";
   async function onSubmit(data: TSignUpSchema) {
     // useFormHook handleSubmit function already prevents default
 
@@ -20,53 +20,56 @@ function Signup() {
     console.log(data);
     reset();
   }
-  return (
-    <div className="flex justify-center py-2">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col  bg-yellow-200 rounded items-center"
-      >
-        <h1>Sign Up</h1>
-        <input
-          {...register("email")}
-          type="email"
-          placeholder="Email"
-          className="px-4 p-2 mt-2  rounded"
-        />
-        {errors.email && (
-          <p className="text-red-500">{`${errors.email.message}`}</p>
-        )}
-        <input
-          {...register("password", {
-            // whatever is returned from the register, it will be passed to the input element. So value will be reflected in the input element
-          })}
-          type="password"
-          placeholder="Password"
-          className="px-4 p-2 mt-2 rounded"
-        />
-        {errors.password && (
-          <p className="text-red-500">{`${errors.password.message}`}</p>
-        )}
 
-        <input
-          {...register("confirmPassword")}
-          type="password"
-          placeholder="Confirm Password"
-          className="px-4 p-2 mt-2 rounded"
-        />
-        {errors.confirmPassword && (
-          <p className="text-red-500">{`${errors.confirmPassword.message}`}</p>
-        )}
-        <button
-          className="btn-blue mt-2 disabled:bg-gray-300"
-          disabled={isSubmitting}
-        >
-          Sign Up
-        </button>
+  return (
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex flex-col bg-slate-100 rounded items-center shadow-lg border"
+    >
+      <h1 className="p-2">Sign Up</h1>
+      <input
+        {...register("email")}
+        type="email"
+        placeholder="Email"
+        className={inputStyles}
+      />
+      {errors.email && (
+        <p className="text-red-500">{`${errors.email.message}`}</p>
+      )}
+      <input
+        {...register("password", {
+          // whatever is returned from the register, it will be passed to the input element. So value will be reflected in the input element
+        })}
+        type="password"
+        placeholder="Password"
+        className={inputStyles}
+      />
+      {errors.password && (
+        <p className="text-red-500">{`${errors.password.message}`}</p>
+      )}
+
+      <input
+        {...register("confirmPassword")}
+        type="password"
+        placeholder="Confirm Password"
+        className={inputStyles}
+      />
+      {errors.confirmPassword && (
+        <p className="text-red-500">{`${errors.confirmPassword.message}`}</p>
+      )}
+      <button
+        className="btn-blue mt-2 disabled:bg-gray-300"
+        disabled={isSubmitting}
+      >
+        Sign Up
+      </button>
+      <div className="flex flex-col items-center p-2">
         <p>If you don't have an account, please sign up:</p>
-        <a href="/auth?signup">Sign Up</a>
-      </form>
-    </div>
+        <a href="/auth?login" className="underline">
+          Log In
+        </a>
+      </div>
+    </form>
   );
 }
 // with Zod validation schema i can use validation schema on client side and server side

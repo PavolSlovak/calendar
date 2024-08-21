@@ -12,7 +12,7 @@
 }
 @layer components {
   .btn-blue {
-    @apply bg-blue-500  px-6 rounded-xl  text-white hover:bg-blue-400;
+    @apply bg-blue-500  px-6 py-2 rounded-xl  text-white hover:bg-blue-400;
   }
   .btn-delete {
     @apply bg-red-500 py-1 px-4 rounded  text-white hover:bg-red-400;
@@ -34,7 +34,7 @@
   }
 }
 .infobox {
-  @apply mt-2 p-2 text-center text-sm shadow-md rounded-lg;
+  @apply mt-4 p-2 text-center text-sm shadow-md rounded-lg;
 }
 .infobox-hint {
   @apply text-blue-300 border border-blue-300;

@@ -3,7 +3,7 @@ import Footer from "../Footer";
 import Header from "../Navigation/Header";
 import MenuColumn from "../Navigation/MenuColumn";
 import { AnimatePresence } from "framer-motion";
-import CreateTeam from "../Teams/CreateTeam";
+import CreateTeam from "../Teams/CreateTeamForms/CreateTeam";
 import useScreenController from "../../store/hooks/useScreenController";
 import AuthProvider, { useAuth } from "../../store/authContext";
 import { Outlet, useLocation } from "react-router-dom";
