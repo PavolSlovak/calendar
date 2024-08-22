@@ -9,21 +9,17 @@ import { auth } from "../firebase";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  User as FirebaseUser, // Import User directly from firebase/auth
 } from "firebase/auth";
-import { User as FirebaseUser } from "firebase/auth";
-
 type AuthState = {
   currentUser: FirebaseUser | null;
 };
 type AuthContextType = AuthState & {
-  signup: ({ email, password }: AuthProps) => void;
-  login: ({ email, password }: AuthProps) => void;
+  signup: (email: string, password: string) => void;
+  login: (email: string, password: string) => void;
   logout: () => void;
 };
-type AuthProps = {
-  email: string;
-  password: string;
-};
+
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {
@@ -40,16 +36,16 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // firebase auth state change listener to update the current user
     const unsubscribe = auth.onAuthStateChanged((user) => {
-      setCurrentUser(user);
+      setCurrentUser(user as FirebaseUser);
     });
     return unsubscribe;
   }, []);
 
-  function signup({ email, password }: AuthProps) {
+  function signup(email: string, password: string) {
     return createUserWithEmailAndPassword(auth, email, password);
   }
 
-  function login({ email, password }: AuthProps) {
+  function login(email: string, password: string) {
     return signInWithEmailAndPassword(auth, email, password);
   }
   function logout() {}

@@ -1,6 +1,9 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signUpSchema, TSignUpSchema } from "../../../lib/types";
+import { useAuth } from "../../../store/authContext";
+import { useState } from "react";
+import ErrorBlock from "../../UI/ErrorBlock";
 
 function Signup() {
   const {
@@ -11,11 +14,23 @@ function Signup() {
   } = useForm<TSignUpSchema>({
     resolver: zodResolver(signUpSchema),
   });
+
+  const [signupError, setSignupError] = useState<string | null>(null);
+  const { signup } = useAuth();
   const inputStyles = "px-4 p-2 mt-4 rounded border border-black";
   async function onSubmit(data: TSignUpSchema) {
     // useFormHook handleSubmit function already prevents default
+    try {
+      // TODO : submit to server
+      setSignupError(null);
+      await signup(data.email, data.password);
+    } catch (error) {
+      console.error("Login error:", error);
+      setSignupError("Failed to create an account");
+    }
 
     // TODO : submit to server
+
     await new Promise((resolve) => setTimeout(resolve, 1000));
     console.log(data);
     reset();
@@ -28,6 +43,11 @@ function Signup() {
     >
       <div className="flex flex-col p-4  ">
         <h1 className="p-2 w-full text-center">Sign Up</h1>
+        {signupError && (
+          <ErrorBlock mode="warning" severity="medium">
+            {signupError}
+          </ErrorBlock>
+        )}
         <input
           {...register("email")}
           type="email"

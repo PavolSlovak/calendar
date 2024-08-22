@@ -5,14 +5,13 @@ import MenuColumn from "../Navigation/MenuColumn";
 import { AnimatePresence } from "framer-motion";
 import CreateTeam from "../Teams/CreateTeamForms/CreateTeam";
 import useScreenController from "../../store/hooks/useScreenController";
-import AuthProvider, { useAuth } from "../../store/authContext";
+import AuthProvider from "../../store/authContext";
 import { Outlet, useLocation } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "../../store";
 
 function Root() {
   const [isCreateTeamOpen, setIsCreateTeamOpen] = useState<boolean>(false);
-  const [isAuthOpen, setIsAuthOpen] = useState<boolean>(false);
   const [openMobileMenu, setOpenMobileMenu] = useState<boolean>(false);
 
   const { isMobile, closeMobileOnResize } = useScreenController({
@@ -57,9 +56,7 @@ function Root() {
         <AnimatePresence>
           {isCreateTeamOpen && <CreateTeam onDone={closeModal} />}
         </AnimatePresence>
-        <AnimatePresence>
-          {isAuthOpen && <CreateTeam onDone={closeModal} />}
-        </AnimatePresence>
+
         <Outlet />
         <Footer />
       </AuthProvider>
