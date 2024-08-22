@@ -1,10 +1,9 @@
 import { AnimatePresence, motion } from "framer-motion";
 import Button from "../UI/Button";
-import { User } from "./CreateTeamForms/CreateTeam";
 
 type InvitationTableProps = {
-  TeamMembers: User[];
-  handleDelete: (id: number) => void;
+  invitations: string[];
+  handleDelete: (invitation: string) => void;
 };
 
 const tableVariants = {
@@ -18,13 +17,13 @@ const tableVariants = {
   },
 };
 
-function InvitationTable({ TeamMembers, handleDelete }: InvitationTableProps) {
+function InvitationTable({ invitations, handleDelete }: InvitationTableProps) {
   return (
     <>
       <p className="pb-2">Invitations:</p>
 
       <AnimatePresence>
-        {TeamMembers.length === 0 ? (
+        {invitations.length === 0 ? (
           <motion.p
             className="text-center"
             initial={{ opacity: 0 }}
@@ -36,9 +35,9 @@ function InvitationTable({ TeamMembers, handleDelete }: InvitationTableProps) {
           </motion.p>
         ) : (
           <ul>
-            {TeamMembers.map((member: User) => (
+            {invitations.map((invitation) => (
               <motion.li
-                key={member.id}
+                key={invitation}
                 className="flex w-full border items-center"
                 initial="hidden"
                 animate="visible"
@@ -46,11 +45,11 @@ function InvitationTable({ TeamMembers, handleDelete }: InvitationTableProps) {
                 transition={{ duration: 0.5 }}
                 variants={tableVariants}
               >
-                <span className="text-sm flex w-2/3">{member.email}</span>
+                <span className="text-sm flex w-2/3">{invitation}</span>
                 <span className="text-sm flex w-1/3 justify-end">
                   <Button
                     className="btn-delete"
-                    onClick={() => handleDelete(member.id)}
+                    onClick={() => handleDelete(invitation)}
                   >
                     x
                   </Button>

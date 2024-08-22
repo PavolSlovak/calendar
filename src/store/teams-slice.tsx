@@ -1,10 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { UserSchema } from "../components/Teams/CreateTeamForms/CreateTeam";
 import { z } from "zod";
 
+// Define a Zod schema for user data
+export const UserSchema = z.object({
+  uid: z.string(),
+  email: z.string().email(), // Email can be null
+  displayName: z.string().nullable(), // DisplayName can be null
+  photoURL: z.string().nullable(), // PhotoURL can be null
+});
 export const Team = z.object({
   teamName: z.string().min(3, "Team name must be at least 3 characters!"),
-  members: z.array(z.string().email()),
+  invitations: z.array(z.string().email()),
   createdBy: UserSchema,
 });
 export type Team = z.infer<typeof Team>;

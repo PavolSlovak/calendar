@@ -7,7 +7,6 @@ import { Team } from "../../../store/teams-slice";
 import { User } from "./CreateTeam";
 import { auth } from "../../../firebase";
 
- 
 const createTeamS2 = z.object({
   email: z.string().email(),
 });
@@ -24,6 +23,7 @@ function FormS2({ setNewTeam, newTeam }: FormS2Props) {
     handleSubmit,
     formState: { errors },
     setError,
+    reset,
   } = useForm<CreateTeamS2>({
     resolver: zodResolver(createTeamS2),
   });
@@ -32,8 +32,7 @@ function FormS2({ setNewTeam, newTeam }: FormS2Props) {
     const { email } = data;
     /* const foundUser: User | null = users.find((user) => user.email === email); */
     try {
-
-      if (newTeam.members.find((member) => member.email === email)) {
+      if (newTeam.invitations.find((invitation) => invitation === email)) {
         setError("email", {
           message: "User is already a member of the team!",
         });
@@ -43,20 +42,14 @@ function FormS2({ setNewTeam, newTeam }: FormS2Props) {
       const foundUser = await auth.fetchSignInMethodsForEmail(email);
       if (foundUser.length > 0) {
         console.log("User exists !");
-
-        }
-   
-        // Add user to team members
-        setNewTeam((prevTeam: Team) => ({
-          ...prevTeam,
-          members: [...prevTeam.members, formattedUser],
-        }));
-      } else {
-        console.log("User not found!");
-        setError("email", {
-          message: "User not found!",
-        });
       }
+
+      // Add user to team members
+      setNewTeam((prevTeam: Team) => ({
+        ...prevTeam,
+        invitations: [...prevTeam.invitations, email],
+      }));
+      reset();
     } catch (error) {
       console.error("Error fetching user:", error);
       setError("email", {
@@ -64,11 +57,15 @@ function FormS2({ setNewTeam, newTeam }: FormS2Props) {
       });
     }
   }
-  function handleDelete(id: number) {
+  function handleDelete(invitation: string) {
     setNewTeam((prevTeam: Team) => ({
       ...prevTeam,
-      members: prevTeam.members.filter((member) => member.uid !== id),
+      invitations: prevTeam.invitations.filter(
+        (InvitedMail) => InvitedMail !== invitation
+      ),
     }));
+    reset();
+
     // TODO: Add logic to remove the user from the team
   }
 
@@ -105,7 +102,7 @@ function FormS2({ setNewTeam, newTeam }: FormS2Props) {
         <button className={`btn-invite`}>Add</button>
 
         <InvitationTable
-          TeamMembers={newTeam.members}
+          invitations={newTeam.invitations}
           handleDelete={handleDelete}
         />
       </>

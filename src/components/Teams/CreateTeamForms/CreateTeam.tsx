@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import Modal, { ModalHandle } from "../../UI/Modal";
 import Button from "../../UI/Button";
 import RadioButtons from "../../UI/RadioButtons";
-import { teamSlice } from "../../../store/teams-slice";
+import { teamSlice, UserSchema } from "../../../store/teams-slice";
 import { useDispatch } from "react-redux";
 import { z } from "zod";
 import FormS1 from "./FormS1";
@@ -13,18 +13,11 @@ type CreateTeamProps = {
   onDone: () => void;
 };
 
-// Define a Zod schema for user data
-export const UserSchema = z.object({
-  uid: z.string(),
-  email: z.string().email(), // Email can be null
-  displayName: z.string().nullable(), // DisplayName can be null
-  photoURL: z.string().nullable(), // PhotoURL can be null
-});
 export type User = z.infer<typeof UserSchema>;
 // Define the Zod schema for a Team
 const TeamSchema = z.object({
   teamName: z.string().min(3, "Team name must be at least 3 characters!"),
-  members: z.array(z.string().email()),
+  invitations: z.array(z.string().email()),
   createdBy: UserSchema,
 });
 
@@ -47,7 +40,7 @@ function CreateTeam({ onDone }: CreateTeamProps) {
 
   const [newTeam, setNewTeam] = useState<Team>({
     teamName: "",
-    members: [],
+    invitations: [],
     createdBy: createdBy!,
   });
 
@@ -90,10 +83,10 @@ function CreateTeam({ onDone }: CreateTeamProps) {
         <div className="flex flex-col justify-center w-full p-10 pt-0">
           <h2>Review your team</h2>
           <p>Team name: {newTeam.teamName}</p>
-          <p>Members:</p>
+          <p>Invitations:</p>
           <ul>
-            {newTeam.members.map((member) => (
-              <li key={member}>{member}</li>
+            {newTeam.invitations.map((invitedEmail) => (
+              <li key={invitedEmail}>{invitedEmail}</li>
             ))}
           </ul>
           <button
