@@ -6,11 +6,7 @@ import {
   useState,
 } from "react";
 import { auth } from "../firebase";
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  User as FirebaseUser, // Import User directly from firebase/auth
-} from "firebase/auth";
+import { User as FirebaseUser } from "firebase/auth";
 type AuthState = {
   currentUser: FirebaseUser | null;
 };
@@ -18,6 +14,7 @@ type AuthContextType = AuthState & {
   signup: (email: string, password: string) => void;
   login: (email: string, password: string) => void;
   logout: () => void;
+  resetPassword: (email: string) => void;
 };
 
 export function useAuth() {
@@ -44,18 +41,24 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   function signup(email: string, password: string) {
-    return createUserWithEmailAndPassword(auth, email, password);
+    return auth.createUserWithEmailAndPassword(email, password);
   }
 
   function login(email: string, password: string) {
-    return signInWithEmailAndPassword(auth, email, password);
+    return auth.signInWithEmailAndPassword(email, password);
   }
-  function logout() {}
+  function logout() {
+    return auth.signOut();
+  }
+  function resetPassword(email: string) {
+    return auth.sendPasswordResetEmail(email);
+  }
   const ctxValue: AuthContextType = {
     currentUser,
     signup,
     login,
     logout,
+    resetPassword,
   };
   return (
     <AuthContext.Provider value={ctxValue}>

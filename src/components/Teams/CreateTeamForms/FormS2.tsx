@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import InvitationTable from "../InvitationTable";
 import { Team } from "../../../store/teams-slice";
-import { User } from "./CreateTeam";
 import { auth } from "../../../firebase";
 
 const createTeamS2 = z.object({
@@ -42,18 +41,20 @@ function FormS2({ setNewTeam, newTeam }: FormS2Props) {
       const foundUser = await auth.fetchSignInMethodsForEmail(email);
       if (foundUser.length > 0) {
         console.log("User exists !");
+        // Add user to team members
+        setNewTeam((prevTeam: Team) => ({
+          ...prevTeam,
+          invitations: [...prevTeam.invitations, email],
+        }));
+      } else {
+        setError("email", {
+          message: "User not found!",
+        });
       }
-
-      // Add user to team members
-      setNewTeam((prevTeam: Team) => ({
-        ...prevTeam,
-        invitations: [...prevTeam.invitations, email],
-      }));
-      reset();
     } catch (error) {
       console.error("Error fetching user:", error);
       setError("email", {
-        message: "User not found!",
+        message: "Error fetching user!",
       });
     }
   }

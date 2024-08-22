@@ -4,6 +4,7 @@ import { signUpSchema, TSignUpSchema } from "../../../lib/types";
 import { useAuth } from "../../../store/authContext";
 import { useState } from "react";
 import ErrorBlock from "../../UI/ErrorBlock";
+import { useNavigate } from "react-router-dom";
 
 function Signup() {
   const {
@@ -14,7 +15,7 @@ function Signup() {
   } = useForm<TSignUpSchema>({
     resolver: zodResolver(signUpSchema),
   });
-
+  const navigate = useNavigate();
   const [signupError, setSignupError] = useState<string | null>(null);
   const { signup } = useAuth();
   const inputStyles = "px-4 p-2 mt-4 rounded border border-black";
@@ -24,6 +25,7 @@ function Signup() {
       // TODO : submit to server
       setSignupError(null);
       await signup(data.email, data.password);
+      navigate("/"); // Redirect to home page
     } catch (error) {
       console.error("Login error:", error);
       setSignupError("Failed to create an account");
@@ -85,7 +87,7 @@ function Signup() {
           Sign Up
         </button>
         <div className="flex flex-col items-center p-2">
-          <p>If you don't have an account, please sign up:</p>
+          <p>If you already have account, please login:</p>
           <a href="/auth?login" className="underline">
             Log In
           </a>

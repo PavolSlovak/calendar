@@ -13,7 +13,6 @@ function Header({ handleToggle, openModal, path }: HeaderProps) {
     "flex grow items-center justify-center px-4  hover:bg-slate-300 cursor-pointer";
   useNavbarSticky(); // Custom hook to add sticky behavior to the header
   const { currentUser } = useAuth();
-
   return (
     <header className="flex w-screen h-20 items-center  top-0 bg-white ">
       <div className="flex h-full w-40 justify-center items-center">
