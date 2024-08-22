@@ -2,11 +2,12 @@ import { z } from "zod";
 import ErrorBlock from "../../UI/ErrorBlock";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import users, { User } from "../../../dummy_users";
 import InvitationTable from "../InvitationTable";
 import { Team } from "../../../store/teams-slice";
-import { useEffect } from "react";
+import { User } from "./CreateTeam";
+import { auth } from "../../../firebase";
 
+ 
 const createTeamS2 = z.object({
   email: z.string().email(),
 });
@@ -22,42 +23,51 @@ function FormS2({ setNewTeam, newTeam }: FormS2Props) {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
     setError,
   } = useForm<CreateTeamS2>({
     resolver: zodResolver(createTeamS2),
   });
 
-  function onSubmit(data: CreateTeamS2) {
+  async function onSubmit(data: CreateTeamS2) {
     const { email } = data;
-    const foundUser: User | undefined = users.find(
-      (user) => user.email === email
-    );
-    if (foundUser) {
+    /* const foundUser: User | null = users.find((user) => user.email === email); */
+    try {
+
       if (newTeam.members.find((member) => member.email === email)) {
         setError("email", {
           message: "User is already a member of the team!",
         });
-
         return;
       }
-      // Add user to team members
-      setNewTeam((prevTeam: Team) => ({
-        ...prevTeam,
-        members: [...prevTeam.members, foundUser],
-      }));
-    } else {
-      console.log("User not found!");
+
+      const foundUser = await auth.fetchSignInMethodsForEmail(email);
+      if (foundUser.length > 0) {
+        console.log("User exists !");
+
+        }
+   
+        // Add user to team members
+        setNewTeam((prevTeam: Team) => ({
+          ...prevTeam,
+          members: [...prevTeam.members, formattedUser],
+        }));
+      } else {
+        console.log("User not found!");
+        setError("email", {
+          message: "User not found!",
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching user:", error);
       setError("email", {
         message: "User not found!",
       });
     }
   }
-
   function handleDelete(id: number) {
     setNewTeam((prevTeam: Team) => ({
       ...prevTeam,
-      members: prevTeam.members.filter((member) => member.id !== id),
+      members: prevTeam.members.filter((member) => member.uid !== id),
     }));
     // TODO: Add logic to remove the user from the team
   }

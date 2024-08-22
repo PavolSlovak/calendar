@@ -4,29 +4,27 @@ import Button from "../../UI/Button";
 import RadioButtons from "../../UI/RadioButtons";
 import { teamSlice } from "../../../store/teams-slice";
 import { useDispatch } from "react-redux";
-import users from "../../../dummy_users";
 import { z } from "zod";
 import FormS1 from "./FormS1";
 import FormS2 from "./FormS2";
+import { useAuth } from "../../../store/authContext";
 
 type CreateTeamProps = {
   onDone: () => void;
 };
 
-// Define the Zod schema for a User
-const UserSchema = z.object({
-  id: z.number(),
-  username: z.string(),
-  email: z.string().email(),
-  profilePicture: z.string(),
-  role: z.enum(["Admin", "Editor", "Viewer"]),
-  hashedPassword: z.string(),
+// Define a Zod schema for user data
+export const UserSchema = z.object({
+  uid: z.string(),
+  email: z.string().email(), // Email can be null
+  displayName: z.string().nullable(), // DisplayName can be null
+  photoURL: z.string().nullable(), // PhotoURL can be null
 });
-
+export type User = z.infer<typeof UserSchema>;
 // Define the Zod schema for a Team
 const TeamSchema = z.object({
   teamName: z.string().min(3, "Team name must be at least 3 characters!"),
-  members: z.array(UserSchema),
+  members: z.array(z.string().email()),
   createdBy: UserSchema,
 });
 
@@ -37,13 +35,20 @@ function CreateTeam({ onDone }: CreateTeamProps) {
   const [currentSlide, setCurrentSlide] = useState<number>(1);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const dispatch = useDispatch();
-  /* const { currentUser } = useAuth(); */
-  const currentUser = users[1];
+  const { currentUser } = useAuth();
+
+  // Extract necessary fields from FirebaseUser
+  const createdBy = {
+    uid: currentUser!.uid,
+    email: currentUser!.email!,
+    displayName: currentUser!.displayName!,
+    photoURL: currentUser!.photoURL!,
+  };
 
   const [newTeam, setNewTeam] = useState<Team>({
     teamName: "",
     members: [],
-    createdBy: currentUser,
+    createdBy: createdBy!,
   });
 
   useEffect(() => {
@@ -88,7 +93,7 @@ function CreateTeam({ onDone }: CreateTeamProps) {
           <p>Members:</p>
           <ul>
             {newTeam.members.map((member) => (
-              <li key={member.id}>{member.username}</li>
+              <li key={member}>{member}</li>
             ))}
           </ul>
           <button

@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { User } from "../../dummy_users";
 import Button from "../UI/Button";
+import { User } from "./CreateTeamForms/CreateTeam";
 
 type InvitationTableProps = {
   TeamMembers: User[];
@@ -38,8 +38,8 @@ function InvitationTable({ TeamMembers, handleDelete }: InvitationTableProps) {
           <ul>
             {TeamMembers.map((member: User) => (
               <motion.li
-                className="flex w-full border items-center"
                 key={member.id}
+                className="flex w-full border items-center"
                 initial="hidden"
                 animate="visible"
                 exit="hidden"

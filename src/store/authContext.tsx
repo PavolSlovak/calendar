@@ -32,11 +32,13 @@ export const AuthContext = createContext<AuthContextType | null>(null);
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // firebase auth state change listener to update the current user
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setCurrentUser(user as FirebaseUser);
+      setLoading(false);
     });
     return unsubscribe;
   }, []);
@@ -56,6 +58,8 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     logout,
   };
   return (
-    <AuthContext.Provider value={ctxValue}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={ctxValue}>
+      {!loading && children}
+    </AuthContext.Provider>
   );
 }
