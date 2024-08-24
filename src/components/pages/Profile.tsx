@@ -1,7 +1,14 @@
-import React from "react";
+import { useAuth } from "../../store/authContext";
+import Card from "../UI/Card";
 
 function Profile() {
-  return <div>Profile</div>;
+  const { currentUser } = useAuth();
+  return (
+    <Card>
+      <h1>Profile</h1>
+      {currentUser?.email}
+    </Card>
+  );
 }
 
 export default Profile;

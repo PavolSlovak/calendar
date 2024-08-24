@@ -56,7 +56,6 @@ function Header({ handleToggle, openModal, path }: HeaderProps) {
       </nav>
       <div className="flex justify-center items-center h-full  w-60">
         <div className="mr-5">
-          <span>{currentUser?.email}</span>
           <button onClick={openModal} className="btn-blue h-10 mr-5">
             New Team
           </button>

@@ -45,48 +45,46 @@ function Login() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex  bg-slate-100 rounded shadow-lg border"
+      className="flex flex-col align-middle"
     >
-      <div className="flex flex-col p-4  ">
-        <h1 className="p-2 w-full text-center">Log In</h1>
-        {loginupError && (
-          <ErrorBlock mode="warning" severity="medium">
-            {loginupError}
-          </ErrorBlock>
-        )}
-        <input
-          {...register("email")}
-          type="email"
-          placeholder="Email"
-          className={inputStyles}
-        />
-        {errors.email && (
-          <p className="text-red-500">{`${errors.email.message}`}</p>
-        )}
-        <input
-          {...register("password", {
-            // whatever is returned from the register, it will be passed to the input element. So value will be reflected in the input element
-          })}
-          type="password"
-          placeholder="Password"
-          className={inputStyles}
-        />
-        {errors.password && (
-          <p className="text-red-500">{`${errors.password.message}`}</p>
-        )}
+      <h1 className="p-2 w-full text-center">Log In</h1>
+      {loginupError && (
+        <ErrorBlock mode="warning" severity="medium">
+          {loginupError}
+        </ErrorBlock>
+      )}
+      <input
+        {...register("email")}
+        type="email"
+        placeholder="Email"
+        className={inputStyles}
+      />
+      {errors.email && (
+        <p className="text-red-500">{`${errors.email.message}`}</p>
+      )}
+      <input
+        {...register("password", {
+          // whatever is returned from the register, it will be passed to the input element. So value will be reflected in the input element
+        })}
+        type="password"
+        placeholder="Password"
+        className={inputStyles}
+      />
+      {errors.password && (
+        <p className="text-red-500">{`${errors.password.message}`}</p>
+      )}
 
-        <button
-          className="btn-blue mt-4 disabled:bg-gray-300"
-          disabled={isSubmitting}
-        >
-          Log In
-        </button>
-        <div className="flex flex-col items-center p-2">
-          <p>If you don't have an account, please sign up:</p>
-          <a href="/auth?signup" className="underline">
-            Sign Up
-          </a>
-        </div>
+      <button
+        className="btn-blue mt-4 disabled:bg-gray-300"
+        disabled={isSubmitting}
+      >
+        Log In
+      </button>
+      <div className="flex flex-col items-center p-2">
+        <p>If you don't have an account, please sign up:</p>
+        <a href="/auth?signup" className="underline">
+          Sign Up
+        </a>
       </div>
     </form>
   );

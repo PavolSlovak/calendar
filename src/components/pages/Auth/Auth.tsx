@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Signup from "./Signup";
 import Login from "./Login";
-import { motion } from "framer-motion";
+import Card from "../../UI/Card";
 
 function Auth() {
   const [component, setComponent] = useState<JSX.Element>();
@@ -16,25 +16,7 @@ function Auth() {
     }
   }, [location.search]);
 
-  // Auth form animation
-  const authVariants = {
-    hidden: { opacity: 0, y: "-5vh" },
-    visible: {
-      opacity: 1,
-      y: 0,
-    },
-  };
-  return (
-    <motion.div
-      className="flex justify-center py-10"
-      initial={"hidden"}
-      animate={"visible"}
-      variants={authVariants}
-      transition={{ type: "spring", stiffness: 100 }}
-    >
-      {component}
-    </motion.div>
-  );
+  return <Card>{component}</Card>;
 }
 
 export default Auth;
