@@ -5,7 +5,6 @@ import MenuColumn from "../Navigation/MenuColumn";
 import { AnimatePresence } from "framer-motion";
 import CreateTeam from "../Teams/CreateTeamForms/CreateTeam";
 import useScreenController from "../../store/hooks/useScreenController";
-import AuthProvider from "../../store/authContext";
 import { Outlet, useLocation } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "../../store";
@@ -42,24 +41,22 @@ function Root() {
 
   return (
     <Provider store={store}>
-      <AuthProvider>
-        <Header
-          handleToggle={handleMobileMenu}
-          openModal={openModal}
-          path={currentPath}
-        />
-        <AnimatePresence>
-          {openMobileMenu && (
-            <MenuColumn handleToggle={handleMobileMenu} path={currentPath} />
-          )}
-        </AnimatePresence>
-        <AnimatePresence>
-          {isCreateTeamOpen && <CreateTeam onDone={closeModal} />}
-        </AnimatePresence>
+      <Header
+        handleToggle={handleMobileMenu}
+        openModal={openModal}
+        path={currentPath}
+      />
+      <AnimatePresence>
+        {openMobileMenu && (
+          <MenuColumn handleToggle={handleMobileMenu} path={currentPath} />
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {isCreateTeamOpen && <CreateTeam onDone={closeModal} />}
+      </AnimatePresence>
 
-        <Outlet />
-        <Footer />
-      </AuthProvider>
+      <Outlet />
+      <Footer />
     </Provider>
   );
 }

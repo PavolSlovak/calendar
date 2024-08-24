@@ -15,7 +15,7 @@
     @apply flex grow items-center justify-center px-4  hover:bg-slate-300 cursor-pointer;
   }
   .btn-blue {
-    @apply bg-blue-500  px-6 py-2 rounded-xl  text-white hover:bg-blue-400;
+    @apply flex justify-center bg-blue-500  px-6 py-2 rounded-lg text-white hover:bg-blue-400;
   }
   .btn-delete {
     @apply bg-red-500 py-1 px-4 rounded  text-white hover:bg-red-400;
