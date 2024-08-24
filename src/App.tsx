@@ -12,6 +12,7 @@ function App() {
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/teams" element={<h1>Teams</h1>} />
         <Route path="/auth" element={<Auth />} />
+        <Route path="profile" element={<h1>Profile</h1>} />
         <Route path="*" element={<h1>404</h1>} />
       </Route>
     </Routes>

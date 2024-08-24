@@ -11,6 +11,9 @@
   }
 }
 @layer components {
+  .linkclasses {
+    @apply flex grow items-center justify-center px-4  hover:bg-slate-300 cursor-pointer;
+  }
   .btn-blue {
     @apply bg-blue-500  px-6 py-2 rounded-xl  text-white hover:bg-blue-400;
   }
@@ -48,6 +51,7 @@
 .warning--high {
   @apply text-red-500 border border-red-500;
 }
+
 /* .content-area {
   @apply bg-green-200;
 }

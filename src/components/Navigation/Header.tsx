@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { useAuth } from "../../store/authContext";
 import useNavbarSticky from "../../store/hooks/useNavbarSticky";
 import NavbarLink from "../UI/NavLink";
+import DropdownMenu from "./DropdownMenu";
 
 type HeaderProps = {
   handleToggle: () => void;
@@ -9,10 +11,10 @@ type HeaderProps = {
 };
 
 function Header({ handleToggle, openModal, path }: HeaderProps) {
-  const linkClasses =
-    "flex grow items-center justify-center px-4  hover:bg-slate-300 cursor-pointer";
   useNavbarSticky(); // Custom hook to add sticky behavior to the header
   const { currentUser } = useAuth();
+  console.log(currentUser?.uid);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   return (
     <header className="flex w-screen h-20 items-center  top-0 bg-white ">
       <div className="flex h-full w-40 justify-center items-center">
@@ -36,25 +38,17 @@ function Header({ handleToggle, openModal, path }: HeaderProps) {
         </svg>
         <ul className="hidden sm:flex h-full ">
           <li className={`flex flex-col justify-center`}>
-            <NavbarLink styles={linkClasses} location={"/"} onActive={path}>
+            <NavbarLink location={"/"} onActive={path}>
               Home
             </NavbarLink>
           </li>
           <li className={`flex flex-col justify-center`}>
-            <NavbarLink
-              styles={linkClasses}
-              location={"/calendar"}
-              onActive={path}
-            >
+            <NavbarLink location={"/calendar"} onActive={path}>
               Calendar
             </NavbarLink>
           </li>
           <li className={`flex flex-col justify-center`}>
-            <NavbarLink
-              styles={linkClasses}
-              location={"/teams"}
-              onActive={path}
-            >
+            <NavbarLink location={"/teams"} onActive={path}>
               Teams
             </NavbarLink>
           </li>
@@ -62,24 +56,23 @@ function Header({ handleToggle, openModal, path }: HeaderProps) {
       </nav>
       <div className="flex justify-center items-center h-full  w-60">
         <div className="mr-5">
-          {/*   {currentUser && (
-            <button onClick={openModal} className="btn-blue h-10 mr-5">
-              New Team
-            </button>
-          )}
-          <Button to={"/auth?login"} className="btn-submit">
-            Login
-          </Button>
-          <Button to={"/auth?signup"} className="btn-submit">
-            Sign Up
-          </Button> */}
+          <span>{currentUser?.email}</span>
           <button onClick={openModal} className="btn-blue h-10 mr-5">
             New Team
           </button>
         </div>
-        <div className="flex  items-center justify-center  w-10 h-10">
-          <span className="flex h-10 w-10  rounded-full bg-black"></span>
-        </div>
+
+        {currentUser?.uid ? (
+          <DropdownMenu
+            path={path}
+            onOpen={setDropdownOpen}
+            isOpen={dropdownOpen}
+          />
+        ) : (
+          <NavbarLink location={"/auth"} onActive={path}>
+            Login
+          </NavbarLink>
+        )}
       </div>
     </header>
   );

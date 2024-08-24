@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import InvitationTable from "../InvitationTable";
 import { Team } from "../../../store/teams-slice";
-import { auth } from "../../../firebase";
+import users from "../../../dummy_users";
 
 const createTeamS2 = z.object({
   email: z.string().email(),
@@ -26,10 +26,13 @@ function FormS2({ setNewTeam, newTeam }: FormS2Props) {
   } = useForm<CreateTeamS2>({
     resolver: zodResolver(createTeamS2),
   });
-
   async function onSubmit(data: CreateTeamS2) {
     const { email } = data;
-    /* const foundUser: User | null = users.find((user) => user.email === email); */
+    /*    async function checkIfEmailExists(email: string): Promise<boolean> {
+      // TODO: Add logic to check if the user exists on backend
+      return false;
+    } */
+
     try {
       if (newTeam.invitations.find((invitation) => invitation === email)) {
         setError("email", {
@@ -37,9 +40,10 @@ function FormS2({ setNewTeam, newTeam }: FormS2Props) {
         });
         return;
       }
+      /*  await checkIfEmailExists(email) */
+      const user = users.find((user: any) => user.email === email);
 
-      const foundUser = await auth.fetchSignInMethodsForEmail(email);
-      if (foundUser.length > 0) {
+      if (user) {
         console.log("User exists !");
         // Add user to team members
         setNewTeam((prevTeam: Team) => ({
