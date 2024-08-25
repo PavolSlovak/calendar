@@ -3,16 +3,25 @@ import { useLocation } from "react-router-dom";
 import Signup from "./Signup";
 import Login from "./Login";
 import Card from "../../UI/Card";
+import ForgotPassword from "./ForgotPassword";
 
 function Auth() {
   const [component, setComponent] = useState<JSX.Element>();
   const location = useLocation();
 
   useEffect(() => {
-    if (location.search.includes("signup")) {
-      setComponent(<Signup />);
-    } else if (location.search.includes("login")) {
-      setComponent(<Login />);
+    switch (location.search) {
+      case "?signup":
+        setComponent(<Signup />);
+        break;
+      case "?login":
+        setComponent(<Login />);
+        break;
+      case "?forgot-password":
+        setComponent(<ForgotPassword />);
+        break;
+      default:
+        setComponent(<Login />);
     }
   }, [location.search]);
 

@@ -21,7 +21,7 @@ function Card({ children }: CardProps) {
       variants={authVariants}
       transition={{ type: "spring", stiffness: 100 }}
     >
-      <div className="flex flex-col w-full sm:w-lg max-w-lg h-3/5 bg-slate-100 rounded shadow-lg border border-slate-200 p-5 ">
+      <div className="flex flex-col w-full sm:w-lg max-w-lg h-3/5 bg-slate-100 rounded shadow-lg border border-slate-200 p-5 mt-10 ">
         {children}
       </div>
     </motion.div>

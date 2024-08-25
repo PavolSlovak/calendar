@@ -4,7 +4,7 @@ import { signUpSchema, TSignUpSchema } from "../../../lib/types";
 import { useAuth } from "../../../store/authContext";
 import { useState } from "react";
 import ErrorBlock from "../../UI/ErrorBlock";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Signup() {
   const {
@@ -82,11 +82,11 @@ function Signup() {
       >
         Sign Up
       </button>
-      <div className="flex flex-col items-center p-2">
+      <div className="flex flex-col items-center">
         <p>If you already have account, please login:</p>
-        <a href="/auth?login" className="underline">
+        <Link to="/auth?login" className="underline">
           Log In
-        </a>
+        </Link>
       </div>
     </form>
   );

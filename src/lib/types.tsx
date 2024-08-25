@@ -19,6 +19,11 @@ export const loginSchema = z.object({
 });
 export type TLoginSchema = z.infer<typeof loginSchema>;
 
+export const resetPasswordSchema = z.object({
+  email: z.string().email(),
+});
+export type TResetPasswordSchema = z.infer<typeof resetPasswordSchema>;
+
 export type TFirebaseConfig = {
   apiKey: string | undefined;
   authDomain: string | undefined;
