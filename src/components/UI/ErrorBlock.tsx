@@ -2,16 +2,12 @@ import { motion } from "framer-motion";
 import { ReactNode } from "react";
 
 // discriminated union
-type HintBoxProps = {
-  mode: "hint";
+type InfoBoxProps = {
+  mode: "hint" | "warning" | "success";
+  severity?: "low" | "medium" | "high";
   children: ReactNode;
 };
-type WarningBoxProps = {
-  mode: "warning";
-  severity: "low" | "medium" | "high"; // with ? its optional - can be undefined
-  children: ReactNode;
-};
-type InfoBoxProps = HintBoxProps | WarningBoxProps;
+
 const infoBoxVariants = {
   hidden: {
     opacity: 0,
@@ -22,22 +18,28 @@ const infoBoxVariants = {
 };
 
 function InfoBox(props: InfoBoxProps) {
-  const { children } = props;
-  if (props.mode === "hint") {
-    return (
-      <aside className="infobox infobox-hint">
-        <p>{children}</p>
-      </aside>
-    );
+  const { children, severity, mode } = props;
+
+  let styles;
+  switch (mode) {
+    case "hint":
+      styles = "infobox infobox-hint";
+      break;
+    case "warning":
+      styles = `infobox warning--${severity}`;
+      break;
+    case "success":
+      styles = "infobox infobox-success";
+      break;
   }
-  const { severity } = props;
+
   return (
     <motion.aside
       initial="hidden"
       animate="visible"
       variants={infoBoxVariants}
       transition={{ duration: 0.5 }}
-      className={`infobox warning--${severity}`}
+      className={styles}
     >
       <p>{children}</p>
     </motion.aside>

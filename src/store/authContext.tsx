@@ -15,6 +15,8 @@ type AuthContextType = AuthState & {
   login: (email: string, password: string) => void;
   logout: () => void;
   resetPassword: (email: string) => void;
+  updateEmail: (email: string) => void;
+  updatePassword: (password: string) => void;
 };
 
 export function useAuth() {
@@ -53,12 +55,23 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   function resetPassword(email: string) {
     return auth.sendPasswordResetEmail(email);
   }
+  function updateEmail(email: string) {
+    console.log("updateEmail", email);
+    return auth.currentUser?.updateEmail(email);
+  }
+
+  function updatePassword(password: string) {
+    return auth.currentUser?.updatePassword(password);
+  }
+
   const ctxValue: AuthContextType = {
     currentUser,
     signup,
     login,
     logout,
     resetPassword,
+    updateEmail,
+    updatePassword,
   };
   return (
     <AuthContext.Provider value={ctxValue}>

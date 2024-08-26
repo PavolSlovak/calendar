@@ -54,6 +54,7 @@ function ForgorPassword() {
           {errors.email.message}
         </ErrorBlock>
       )}
+      {message && <ErrorBlock mode="success">{message}</ErrorBlock>}
       <input
         {...register("email")}
         type="email"

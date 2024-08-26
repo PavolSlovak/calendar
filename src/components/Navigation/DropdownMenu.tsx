@@ -20,11 +20,6 @@ function DropdownMenu({ path, onOpen, isOpen }: DropdownMenuProps) {
                 Profile
               </NavbarLink>
             </li>
-            <li>
-              <NavbarLink location={"/auth?logout"} onActive={path}>
-                Logout
-              </NavbarLink>
-            </li>
           </ul>
         </div>
       )}

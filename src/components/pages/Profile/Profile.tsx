@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useAuth } from "../../store/authContext";
-import Card from "../UI/Card";
-import ErrorBlock from "../UI/ErrorBlock";
+import { useAuth } from "../../../store/authContext";
+import Card from "../../UI/Card";
+import ErrorBlock from "../../UI/ErrorBlock";
 import { Link, useNavigate } from "react-router-dom";
 
 function Profile() {
