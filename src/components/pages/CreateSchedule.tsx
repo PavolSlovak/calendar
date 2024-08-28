@@ -48,7 +48,7 @@ function Sidebar({ teams, onTeamSelect }: SidebarProps) {
 }
 
 // Main Content component
-function MainContent({ activeTeam }: { activeTeam: Team | null }) {
+function MainContent({ activeTeam }: { activeTeam: Team }) {
   return (
     <div className="w-3/4 p-4">
       <ScheduleHeader teamName={activeTeam?.teamName} />

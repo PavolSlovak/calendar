@@ -12,15 +12,14 @@ export default function ScheduleCalendar({
   const [checkedMember, setCheckedMember] = useState<User | null>(null);
   const [updatedTeam, setUpdateTeam] = useState<Team>(activeTeam);
   const days: string[] = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  console.log("Checked member:", checkedMember);
   useEffect(() => {
     console.log("updatedTeam", updatedTeam);
   });
   function handleAddShift(day: string) {
     if (!checkedMember) return;
 
-    setUpdateTeam((prevTeam) => {
-      const updatedMembers = prevTeam.members.map((member) => {
+    setUpdateTeam((prev) => {
+      const updatedMembers = prev.members.map((member) => {
         if (member.uid === checkedMember.uid) {
           return {
             ...member,
@@ -29,8 +28,10 @@ export default function ScheduleCalendar({
         }
         return member;
       });
-
-      return { ...prevTeam, members: updatedMembers };
+      return {
+        ...prev,
+        members: updatedMembers,
+      };
     });
   }
   return (
