@@ -11,12 +11,15 @@ export default function ScheduleCalendar({
   activeTeam,
 }: ScheduleCalendarProps) {
   const [selectedDay, setSelectedDay] = useState<string>();
-
+  const [checkedMember, setCheckedMember] = useState<string | null>();
   const days: string[] = ["S", "M", "T", "W", "T", "F", "S"];
-  function handleAddShift(setSelectedDay: string) {}
   return (
     <>
-      <MembersAccordion team={activeTeam} />
+      <MembersAccordion
+        team={activeTeam}
+        setCheckedMember={setCheckedMember}
+        checkedMember={checkedMember}
+      />
       <div className="grid grid-cols-7 mt-2 text-sm">
         {days.map((day, dayIdx) => (
           <div key={dayIdx} className={"py-1.5"}>
@@ -33,12 +36,18 @@ export default function ScheduleCalendar({
     </>
   );
 }
+
 type MembersAccordionProps = {
   team: Team | null;
+  checkedMember: (uid: string | null) => void; // Updated type here
+  setcheckedmember: React.Dispatch<React.SetStateAction<string | null>>; // The correct type, but it's not defined
 };
 
-function MembersAccordion({ team }: MembersAccordionProps) {
-  const [selectedMembers, setSelectedMembers] = useState<string>();
+function MembersAccordion({
+  team,
+  setcheckedmember,
+  checkedMember,
+}: MembersAccordionProps) {
   const [accordionOpen, setAccordionOpen] = useState<boolean>(false);
 
   const accordeonVariants = {
@@ -46,7 +55,7 @@ function MembersAccordion({ team }: MembersAccordionProps) {
     closed: { opacity: 0, height: 0 },
   };
   function handleCheckMember(uid: string) {
-    setSelectedMembers((prev) => (prev === uid ? undefined : uid));
+    setcheckedmember((prev) => (prev === uid ? null : uid));
   }
 
   return (
@@ -67,7 +76,7 @@ function MembersAccordion({ team }: MembersAccordionProps) {
                   {member.email}
                   <input
                     type="checkbox"
-                    checked={selectedMembers === member.uid}
+                    checked={checkedMember === member.uid}
                     onChange={() => handleCheckMember(member.uid)}
                   />
                 </li>
