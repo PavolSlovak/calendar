@@ -9,6 +9,7 @@ export const UserSchema = z.object({
   schedule: z.array(z.string()), // Schedule can be null
   photoURL: z.string().nullable(), // PhotoURL can be null
 });
+export type User = z.infer<typeof UserSchema>;
 export const Team = z.object({
   id: z.string(),
   teamName: z.string().min(3, "Team name must be at least 3 characters!"),

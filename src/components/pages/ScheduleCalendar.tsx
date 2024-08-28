@@ -1,18 +1,38 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Team } from "../../store/teams-slice";
-
 import { motion, AnimatePresence } from "framer-motion";
-import { User } from "../../dummy_users";
+import { User } from "../../store/teams-slice";
 type ScheduleCalendarProps = {
-  activeTeam: Team | null;
+  activeTeam: Team;
 };
 
 export default function ScheduleCalendar({
   activeTeam,
 }: ScheduleCalendarProps) {
-  const [selectedDay, setSelectedDay] = useState<string>();
-  const [checkedMember, setCheckedMember] = useState<string | null>(null);
-  const days: string[] = ["S", "M", "T", "W", "T", "F", "S"];
+  const [checkedMember, setCheckedMember] = useState<User | null>(null);
+  const [updatedTeam, setUpdateTeam] = useState<Team>(activeTeam);
+  const days: string[] = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  console.log("Checked member:", checkedMember);
+  useEffect(() => {
+    console.log("updatedTeam", updatedTeam);
+  });
+  function handleAddShift(day: string) {
+    if (!checkedMember) return;
+
+    setUpdateTeam((prevTeam) => {
+      const updatedMembers = prevTeam.members.map((member) => {
+        if (member.uid === checkedMember.uid) {
+          return {
+            ...member,
+            schedule: [...member.schedule, day],
+          };
+        }
+        return member;
+      });
+
+      return { ...prevTeam, members: updatedMembers };
+    });
+  }
   return (
     <>
       <MembersAccordion
@@ -39,8 +59,8 @@ export default function ScheduleCalendar({
 
 type MembersAccordionProps = {
   team: Team | null;
-  checkedMember: string | null; // The correct type, but it's not defined
-  setCheckedMember: React.Dispatch<React.SetStateAction<string | null>>; // The correct type, but it's not defined
+  checkedMember: User | null; // The correct type, but it's not defined
+  setCheckedMember: React.Dispatch<React.SetStateAction<User | null>>; // The correct type, but it's not defined
 };
 
 function MembersAccordion({
@@ -54,8 +74,10 @@ function MembersAccordion({
     open: { opacity: 1, height: "auto" },
     closed: { opacity: 0, height: 0 },
   };
-  function handleCheckMember(uid: string) {
-    checkedMember === uid ? setCheckedMember(null) : setCheckedMember(uid);
+  function handleCheckMember(member: User) {
+    checkedMember?.uid === member.uid
+      ? setCheckedMember(null)
+      : setCheckedMember(member);
   }
 
   return (
@@ -76,8 +98,8 @@ function MembersAccordion({
                   {member.email}
                   <input
                     type="checkbox"
-                    checked={checkedMember === member.uid}
-                    onChange={() => handleCheckMember(member.uid)}
+                    checked={checkedMember?.uid === member.uid}
+                    onChange={() => handleCheckMember(member)}
                   />
                 </li>
               ))}

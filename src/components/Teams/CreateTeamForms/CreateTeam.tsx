@@ -37,6 +37,7 @@ function CreateTeam({ onDone }: CreateTeamProps) {
     uid: currentUser!.uid,
     email: currentUser!.email!,
     displayName: currentUser!.displayName!,
+    schedule: [],
     photoURL: currentUser!.photoURL!,
   };
 

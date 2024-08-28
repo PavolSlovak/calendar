@@ -26,7 +26,7 @@ export default function CreateSchedule() {
   );
 }
 // Sidebar component
-function Sidebar({ teams, activeTeam, onTeamSelect }: SidebarProps) {
+function Sidebar({ teams, onTeamSelect }: SidebarProps) {
   return (
     <div className="w-1/4 bg-gray-200">
       <h2 className="text-lg font-semibold mb-4">Teams</h2>
