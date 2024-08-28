@@ -14,6 +14,10 @@
   .linkclasses {
     @apply flex grow items-center justify-center px-4  hover:bg-slate-300 cursor-pointer;
   }
+  .columnLinkClasses {
+    @apply flex flex-col items-center justify-center px-4  hover:bg-slate-300 cursor-pointer;
+  }
+
   .btn-blue {
     @apply flex justify-center bg-blue-500  px-6 py-2 rounded-lg text-white hover:bg-blue-400;
   }

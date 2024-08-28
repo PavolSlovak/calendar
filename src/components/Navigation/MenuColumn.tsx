@@ -1,4 +1,3 @@
-import { NavLink } from "react-router-dom";
 import Button from "../UI/Button";
 import { motion } from "framer-motion";
 import NavbarLink from "../UI/NavLink";
@@ -21,8 +20,6 @@ const menuVariants = {
 };
 
 function MenuColumn({ handleToggle, path }: MenuColumnProps) {
-  const navLinkClasses =
-    "py-10 w-full flex justify-center border-b hover:bg-slate-300 cursor-pointer";
   return (
     <motion.div
       className={`flex flex-col fixed top-0 bg-white w-full h-full z-10 `}
@@ -38,19 +35,13 @@ function MenuColumn({ handleToggle, path }: MenuColumnProps) {
       </span>
       <ul>
         <li className="border-t">
-          <NavbarLink
-            location="/"
-            styles={`${navLinkClasses} `}
-            onActive={path}
-            onClickAction={handleToggle}
-          >
+          <NavbarLink location="/" onActive={path} onClickAction={handleToggle}>
             Home
           </NavbarLink>
         </li>
         <li>
           <NavbarLink
             location="/calendar"
-            styles={navLinkClasses}
             onActive={path}
             onClickAction={handleToggle}
           >
@@ -60,7 +51,6 @@ function MenuColumn({ handleToggle, path }: MenuColumnProps) {
         <li>
           <NavbarLink
             location="/teams"
-            styles={navLinkClasses}
             onActive={path}
             onClickAction={handleToggle}
           >

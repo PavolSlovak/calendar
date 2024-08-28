@@ -16,8 +16,10 @@ type CreateTeamProps = {
 export type User = z.infer<typeof UserSchema>;
 // Define the Zod schema for a Team
 const TeamSchema = z.object({
+  id: z.string(),
   teamName: z.string().min(3, "Team name must be at least 3 characters!"),
   invitations: z.array(z.string().email()),
+  members: z.array(UserSchema),
   createdBy: UserSchema,
 });
 
@@ -39,8 +41,10 @@ function CreateTeam({ onDone }: CreateTeamProps) {
   };
 
   const [newTeam, setNewTeam] = useState<Team>({
+    id: Math.random(),
     teamName: "",
     invitations: [],
+    members: [],
     createdBy: createdBy!,
   });
 
@@ -63,6 +67,7 @@ function CreateTeam({ onDone }: CreateTeamProps) {
     // TODO - Add the new team to the database
     new Promise((resolve) => setTimeout(resolve, 1000));
     console.log("New team:", newTeam);
+    newTeam.members.push(createdBy);
     dispatch(teamSlice.actions.addTeam(newTeam));
     setIsSubmitting(false);
     onDone(); // Close the modal

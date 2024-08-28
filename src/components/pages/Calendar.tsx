@@ -229,8 +229,8 @@ function Meeting({ meeting }: MeetingProps) {
         <p className="mt-0.5">
           <time dateTime={meeting.startDatetime}>
             {format(startDateTime, "h:mm a")}
-          </time>{" "}
-          -{" "}
+          </time>
+          -
           <time dateTime={meeting.endDatetime}>
             {format(endDateTime, "h:mm a")}
           </time>

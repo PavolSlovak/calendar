@@ -12,12 +12,8 @@ function UpdateProfile() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    reset,
   } = useForm<TUpdateProfileSchema>({
     resolver: zodResolver(updateProfileSchema),
-  });
-  useEffect(() => {
-    console.log(errors);
   });
   const navigate = useNavigate();
   const [updateError, setUpdateError] = useState<string | null>(null);
@@ -41,6 +37,7 @@ function UpdateProfile() {
         promises.push(updatePassword(data.password));
       }
       Promise.all(promises);
+
       navigate("/");
     } catch (error) {
       setUpdateError("Profile update failed!");

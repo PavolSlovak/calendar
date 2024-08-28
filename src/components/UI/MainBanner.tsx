@@ -28,6 +28,7 @@ export default function MainBanner({ children }: ArticleProps) {
   };
   return (
     <motion.section
+      className="flex flex-col justify-center items-center"
       initial="hidden"
       animate="visible"
       transition={{

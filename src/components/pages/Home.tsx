@@ -1,15 +1,11 @@
-import { motion, useInView, useAnimation } from "framer-motion";
-import { useEffect, useRef } from "react";
+import { useAuth } from "../../store/authContext";
 import Article from "../UI/Article";
 import MainBanner from "../UI/MainBanner";
-import { Link } from "react-router-dom";
 
 function Home() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true });
-
+  const { logout } = useAuth();
   return (
-    <main className=" w-full">
+    <main>
       <MainBanner>
         <article className="px-20">
           <h1 className="font-bold">Hello, Create Your Calendar!</h1>
@@ -23,12 +19,9 @@ function Home() {
             delectus earum vero ut nihil maiores accusamus inventore amet.
           </p>
         </article>
-        <Link to={"/auth?signup"} className="btn-blue">
-          Sign Up
-        </Link>
-        <Link to={"/auth?login"} className="btn-blue">
-          Log In
-        </Link>
+        <button onClick={logout} className="btn-blue">
+          Log Out
+        </button>
       </MainBanner>
       <Article>
         <h2>Features</h2>
