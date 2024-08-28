@@ -1,16 +1,13 @@
+import { CalendarIcon } from "@heroicons/react/outline";
 type ScheduleHeaderProps = {
-  currentMonth: string;
-  onMonthChange: (month: string) => void;
+  teamName: string | undefined;
 };
-
-function ScheduleHeader({ currentMonth, onMonthChange }: ScheduleHeaderProps) {
+function ScheduleHeader({ teamName }: ScheduleHeaderProps) {
   return (
     <div className="flex justify-between items-center">
-      <h1 className="text-2xl font-semibold">{currentMonth}</h1>
-      <div>
-        <button onClick={() => onMonthChange("prev")}>Prev</button>
-        <button onClick={() => onMonthChange("next")}>Next</button>
-      </div>
+      <h2 className="flex text-lg font-semibold mb-4 justify-center items-center">
+        <CalendarIcon className="h-6 w-6" /> {teamName}
+      </h2>
     </div>
   );
 }

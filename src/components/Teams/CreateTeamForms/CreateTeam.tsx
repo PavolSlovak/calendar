@@ -41,7 +41,7 @@ function CreateTeam({ onDone }: CreateTeamProps) {
   };
 
   const [newTeam, setNewTeam] = useState<Team>({
-    id: Math.random(),
+    id: Math.random().toString(),
     teamName: "",
     invitations: [],
     members: [],

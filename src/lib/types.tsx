@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { Team } from "../store/teams-slice";
 
 export const signUpSchema = z
   .object({
@@ -49,4 +50,9 @@ export type TFirebaseConfig = {
   messagingSenderId: string | undefined;
   appId: string | undefined;
   measurementId: string | undefined;
+};
+export type SidebarProps = {
+  teams: Team[];
+  activeTeam: Team | null;
+  onTeamSelect: (team: Team) => void;
 };

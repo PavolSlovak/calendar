@@ -6,6 +6,7 @@ export const UserSchema = z.object({
   uid: z.string(),
   email: z.string().email(), // Email can be null
   displayName: z.string().nullable(), // DisplayName can be null
+  schedule: z.array(z.string()), // Schedule can be null
   photoURL: z.string().nullable(), // PhotoURL can be null
 });
 export const Team = z.object({
