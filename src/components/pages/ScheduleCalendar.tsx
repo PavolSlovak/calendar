@@ -11,7 +11,7 @@ export default function ScheduleCalendar({
   activeTeam,
 }: ScheduleCalendarProps) {
   const [selectedDay, setSelectedDay] = useState<string>();
-  const [checkedMember, setCheckedMember] = useState<string | null>();
+  const [checkedMember, setCheckedMember] = useState<string | null>(null);
   const days: string[] = ["S", "M", "T", "W", "T", "F", "S"];
   return (
     <>
@@ -39,13 +39,13 @@ export default function ScheduleCalendar({
 
 type MembersAccordionProps = {
   team: Team | null;
-  checkedMember: (uid: string | null) => void; // Updated type here
-  setcheckedmember: React.Dispatch<React.SetStateAction<string | null>>; // The correct type, but it's not defined
+  checkedMember: string | null; // The correct type, but it's not defined
+  setCheckedMember: React.Dispatch<React.SetStateAction<string | null>>; // The correct type, but it's not defined
 };
 
 function MembersAccordion({
   team,
-  setcheckedmember,
+  setCheckedMember, // This is causing the TypeScript issue
   checkedMember,
 }: MembersAccordionProps) {
   const [accordionOpen, setAccordionOpen] = useState<boolean>(false);
@@ -55,7 +55,7 @@ function MembersAccordion({
     closed: { opacity: 0, height: 0 },
   };
   function handleCheckMember(uid: string) {
-    setcheckedmember((prev) => (prev === uid ? null : uid));
+    checkedMember === uid ? setCheckedMember(null) : setCheckedMember(uid);
   }
 
   return (
