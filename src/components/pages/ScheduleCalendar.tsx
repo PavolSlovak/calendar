@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Team } from "../../lib/types";
 import { User } from "../../lib/types";
+import { useDispatch } from "react-redux";
+import { teamSlice } from "../../store/teams-slice";
 type ScheduleCalendarProps = {
   activeTeam: Team;
 };
@@ -10,35 +12,24 @@ export default function ScheduleCalendar({
   activeTeam,
 }: ScheduleCalendarProps) {
   const [checkedMember, setCheckedMember] = useState<User | null>(null);
-  const [updatedTeam, setUpdateTeam] = useState<Team>(activeTeam);
+  /*   const [updatedTeam, setUpdateTeam] = useState<Team>(activeTeam); */
+  const dispatch = useDispatch();
   const days: string[] = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  useEffect(() => {
-    console.log("updatedTeam", updatedTeam);
-  });
-
   function handleAddShift(day: string) {
     if (!checkedMember) return;
-
-    setUpdateTeam((prev) => {
-      const updatedMembers = prev.members.map((member) => {
-        if (member.uid === checkedMember.uid) {
-          return {
-            ...member,
-            schedule: [...member.schedule, day],
-          };
-        }
-        return member;
-      });
-      return {
-        ...prev,
-        members: updatedMembers,
-      };
-    });
+    dispatch(
+      teamSlice.actions.updateMemberSchedule({
+        teamId: currentTeam.id,
+        memberId: checkedMember.uid,
+        day,
+      })
+    );
   }
   return (
     <>
       <MembersAccordion
         team={activeTeam}
+        activeTeam={activeTeam}
         setCheckedMember={setCheckedMember}
         checkedMember={checkedMember}
       />
@@ -48,7 +39,8 @@ export default function ScheduleCalendar({
             <button
               type="button"
               onClick={() => handleAddShift(day)}
-              className={`mx-auto flex h-8 w-8 items-center justify-center rounded-full bg-slate-200`}
+              className={`mx-auto flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:text-gray-100`}
+              disabled={!checkedMember}
             >
               <span>
                 {day}
@@ -70,15 +62,32 @@ export default function ScheduleCalendar({
     </>
   );
 }
-
+type ColorPickerProps = {
+  color: string | null;
+  setColor: React.Dispatch<React.SetStateAction<string>>;
+};
+function ColorPicker({ color, setColor }: ColorPickerProps) {
+  return (
+    <div className="flex items-center">
+      <label className="mr-2">Color:</label>
+      <input
+        type="color"
+        value={color}
+        onChange={(e) => setColor(e.target.value)}
+      />
+    </div>
+  );
+}
 type MembersAccordionProps = {
   team: Team | null;
+  activeTeam: Team;
   checkedMember: User | null; // The correct type, but it's not defined
   setCheckedMember: React.Dispatch<React.SetStateAction<User | null>>; // The correct type, but it's not defined
 };
 
 function MembersAccordion({
   team,
+  activeTeam,
   setCheckedMember, // This is causing the TypeScript issue
   checkedMember,
 }: MembersAccordionProps) {
@@ -93,6 +102,7 @@ function MembersAccordion({
       ? setCheckedMember(null)
       : setCheckedMember(member);
   }
+  function handleChangeColor(member: User) {}
 
   return (
     <>
@@ -110,6 +120,12 @@ function MembersAccordion({
               {team?.members.map((member) => (
                 <li key={member.uid} className="flex justify-between p-2">
                   {member.email}
+                  <ColorPicker
+                    color={member.colorStamp}
+                    setColor={() => {
+                      handleChangeColor(member);
+                    }}
+                  />
                   <input
                     type="checkbox"
                     checked={checkedMember?.uid === member.uid}

@@ -62,6 +62,7 @@ export const UserSchema = z.object({
   displayName: z.string().nullable(), // DisplayName can be null
   schedule: z.array(z.string()), // Schedule can be null
   photoURL: z.string().nullable(), // PhotoURL can be null
+  colorStamp: z.string().nullable(), // ColorStamp can be null
 });
 export type User = z.infer<typeof UserSchema>;
 

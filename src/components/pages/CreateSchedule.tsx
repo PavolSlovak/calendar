@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState as ReduxRootState } from "../../store";
 import { Team } from "../../lib/types";
@@ -9,7 +9,11 @@ import { SidebarProps } from "../../lib/types";
 export default function CreateSchedule() {
   const teams = useSelector((state: ReduxRootState) => state.teams.teams);
   const [activeTeam, setActiveTeam] = useState<Team>(teams[0]);
-
+  useEffect(() => {
+    if (teams.length > 0) {
+      setActiveTeam(teams[0]);
+    }
+  }, [teams]);
   const handleTeamSelect = (team: Team) => {
     setActiveTeam((prev) => (prev?.id === team.id ? teams[0] : team));
   };
