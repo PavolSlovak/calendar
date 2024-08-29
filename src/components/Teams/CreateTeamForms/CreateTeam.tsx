@@ -2,12 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import Modal, { ModalHandle } from "../../UI/Modal";
 import Button from "../../UI/Button";
 import RadioButtons from "../../UI/RadioButtons";
-import { teamSlice, UserSchema } from "../../../store/teams-slice";
+import { teamSlice } from "../../../store/teams-slice";
 import { useDispatch } from "react-redux";
 import { z } from "zod";
 import FormS1 from "./FormS1";
 import FormS2 from "./FormS2";
 import { useAuth } from "../../../store/authContext";
+import { UserSchema } from "../../../lib/types";
 
 type CreateTeamProps = {
   onDone: () => void;

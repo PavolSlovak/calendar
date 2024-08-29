@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Team } from "../../store/teams-slice";
 import { motion, AnimatePresence } from "framer-motion";
-import { User } from "../../store/teams-slice";
+import { Team } from "../../lib/types";
+import { User } from "../../lib/types";
 type ScheduleCalendarProps = {
   activeTeam: Team;
 };
@@ -15,6 +15,7 @@ export default function ScheduleCalendar({
   useEffect(() => {
     console.log("updatedTeam", updatedTeam);
   });
+
   function handleAddShift(day: string) {
     if (!checkedMember) return;
 
@@ -49,7 +50,19 @@ export default function ScheduleCalendar({
               onClick={() => handleAddShift(day)}
               className={`mx-auto flex h-8 w-8 items-center justify-center rounded-full bg-slate-200`}
             >
-              {day}
+              <span>
+                {day}
+                {updatedTeam &&
+                  updatedTeam.members.map(
+                    (member) =>
+                      member.schedule.includes(day) && (
+                        <div
+                          key={updatedTeam.id}
+                          className="w-1 h-1 rounded-full bg-sky-500"
+                        ></div>
+                      )
+                  )}
+              </span>
             </button>
           </div>
         ))}

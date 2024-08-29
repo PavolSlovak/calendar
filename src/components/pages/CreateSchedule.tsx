@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState as ReduxRootState } from "../../store";
-import { Team } from "../../store/teams-slice";
+import { Team } from "../../lib/types";
 import ScheduleHeader from "../ScheduleHeader";
 import ScheduleCalendar from "./ScheduleCalendar";
 import { SidebarProps } from "../../lib/types";

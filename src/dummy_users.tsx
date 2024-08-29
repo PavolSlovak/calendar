@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export type User = {
-  id: number;
+  id: string;
   username: string;
   email: string;
   profilePicture: string;
@@ -11,7 +11,7 @@ export type User = {
 
 const users: User[] = [
   {
-    id: 1,
+    id: "1",
     username: "John Doe",
     email: "johndoe@gmail.com",
     profilePicture: "https://randomuser.me",
@@ -19,7 +19,7 @@ const users: User[] = [
     hashedPassword: "eroijnberhbjernjvrnvijnvibihbvihvihvvr",
   },
   {
-    id: 2,
+    id: "2",
     username: "Pavol Slovak",
     email: "PavolSlovak@gmail.com",
     profilePicture: "https://randomuser.me",

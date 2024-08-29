@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { Team } from "../store/teams-slice";
 
 export const signUpSchema = z
   .object({
@@ -56,3 +55,21 @@ export type SidebarProps = {
   activeTeam: Team | null;
   onTeamSelect: (team: Team) => void;
 };
+// Define a Zod schema for user data
+export const UserSchema = z.object({
+  uid: z.string(),
+  email: z.string().email(), // Email can be null
+  displayName: z.string().nullable(), // DisplayName can be null
+  schedule: z.array(z.string()), // Schedule can be null
+  photoURL: z.string().nullable(), // PhotoURL can be null
+});
+export type User = z.infer<typeof UserSchema>;
+
+export const Team = z.object({
+  id: z.string(),
+  teamName: z.string().min(3, "Team name must be at least 3 characters!"),
+  invitations: z.array(z.string().email()),
+  members: z.array(UserSchema),
+  createdBy: UserSchema,
+});
+export type Team = z.infer<typeof Team>;
