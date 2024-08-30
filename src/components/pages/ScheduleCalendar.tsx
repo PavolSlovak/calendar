@@ -38,16 +38,14 @@ export default function ScheduleCalendar() {
             >
               <span>
                 {day}
-                {/*    {updatedTeam &&
-                    updatedTeam.members.map(
-                      (member) =>
-                        member.schedule.includes(day) && (
-                          <div
-                            key={updatedTeam.id}
-                            className="w-1 h-1 rounded-full bg-sky-500"
-                          ></div>
-                        )
-                    )} */}
+
+                {activeTeam &&
+                  checkedMember &&
+                  activeTeam?.weekSchedule
+                    .find((weekDay) => weekDay.day === day)
+                    ?.shifts.includes(checkedMember?.uid) && (
+                    <div className="w-1 h-1 rounded-full bg-sky-500"></div>
+                  )}
               </span>
             </button>
           </div>

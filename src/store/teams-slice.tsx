@@ -34,17 +34,18 @@ export const teamSlice = createSlice({
         (team) => team.id === action.payload.teamId
       );
       if (!team) return;
-      const member = team.members.find(
-        (member) => member.uid === action.payload.memberId
-      );
-      if (!member) return;
-      if (member.schedule.includes(action.payload.day)) {
-        member.schedule = member.schedule.filter(
-          (day) => day !== action.payload.day
-        );
-      } else {
-        member.schedule.push(action.payload.day);
-      }
+
+      team.weekSchedule.map((weekDay) => {
+        if (weekDay.shifts.includes(action.payload.memberId)) {
+          weekDay.shifts = weekDay.shifts.filter(
+            (shift) => shift !== action.payload.memberId
+          );
+          return;
+        }
+        if (weekDay.day === action.payload.day) {
+          weekDay.shifts.push(action.payload.memberId);
+        }
+      });
     },
   },
 });
