@@ -4,27 +4,14 @@ import Button from "../../UI/Button";
 import RadioButtons from "../../UI/RadioButtons";
 import { teamSlice } from "../../../store/teams-slice";
 import { useDispatch } from "react-redux";
-import { z } from "zod";
 import FormS1 from "./FormS1";
 import FormS2 from "./FormS2";
 import { useAuth } from "../../../store/authContext";
-import { UserSchema } from "../../../lib/types";
+import { Team, User } from "../../../lib/types";
 
 type CreateTeamProps = {
   onDone: () => void;
 };
-
-export type User = z.infer<typeof UserSchema>;
-// Define the Zod schema for a Team
-const TeamSchema = z.object({
-  id: z.string(),
-  teamName: z.string().min(3, "Team name must be at least 3 characters!"),
-  invitations: z.array(z.string().email()),
-  members: z.array(UserSchema),
-  createdBy: UserSchema,
-});
-
-type Team = z.infer<typeof TeamSchema>;
 
 function CreateTeam({ onDone }: CreateTeamProps) {
   const modal = useRef<ModalHandle>(null);
@@ -33,21 +20,13 @@ function CreateTeam({ onDone }: CreateTeamProps) {
   const dispatch = useDispatch();
   const { currentUser } = useAuth();
 
-  // Extract necessary fields from FirebaseUser
-  const createdBy = {
-    uid: currentUser!.uid,
-    email: currentUser!.email!,
-    displayName: currentUser!.displayName!,
-    schedule: [],
-    photoURL: currentUser!.photoURL!,
-  };
-
   const [newTeam, setNewTeam] = useState<Team>({
-    id: Math.random().toString(),
+    id: Math.random().toString(36).substring(7),
     teamName: "",
     invitations: [],
     members: [],
-    createdBy: createdBy!,
+    createdBy: currentUser as User,
+    weekSchedule: [],
   });
 
   useEffect(() => {
@@ -69,7 +48,7 @@ function CreateTeam({ onDone }: CreateTeamProps) {
     // TODO - Add the new team to the database
     new Promise((resolve) => setTimeout(resolve, 1000));
     console.log("New team:", newTeam);
-    newTeam.members.push(createdBy);
+    newTeam.members.push(currentUser as User);
     dispatch(teamSlice.actions.addTeam(newTeam));
     setIsSubmitting(false);
     onDone(); // Close the modal

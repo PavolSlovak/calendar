@@ -50,19 +50,13 @@ export type TFirebaseConfig = {
   appId: string | undefined;
   measurementId: string | undefined;
 };
-export type SidebarProps = {
-  teams: Team[];
-  activeTeam: Team | null;
-  onTeamSelect: (team: Team) => void;
-};
+
 // Define a Zod schema for user data
 export const UserSchema = z.object({
   uid: z.string(),
-  email: z.string().email(), // Email can be null
-  displayName: z.string().nullable(), // DisplayName can be null
-  schedule: z.array(z.string()), // Schedule can be null
-  photoURL: z.string().nullable(), // PhotoURL can be null
-  colorStamp: z.string().nullable(), // ColorStamp can be null
+  email: z.string().email(),
+  displayName: z.string(),
+  photoURL: z.string(),
 });
 export type User = z.infer<typeof UserSchema>;
 
@@ -72,5 +66,11 @@ export const Team = z.object({
   invitations: z.array(z.string().email()),
   members: z.array(UserSchema),
   createdBy: UserSchema,
+  weekSchedule: z.array(
+    z.object({
+      day: z.string(),
+      shifts: z.array(z.string()), // Array of strings with user ids
+    })
+  ), // Array of objects with day and shifts
 });
 export type Team = z.infer<typeof Team>;

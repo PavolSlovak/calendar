@@ -1,31 +1,32 @@
+import { User as FirebaseUser } from "firebase/auth";
 import { z } from "zod";
 
-export type User = {
-  id: string;
-  username: string;
-  email: string;
-  profilePicture: string;
-  role: "Admin" | "Editor" | "Viewer";
-  hashedPassword: string;
-};
-
-const users: User[] = [
+const users: FirebaseUser[] = [
   {
-    id: "1",
-    username: "John Doe",
-    email: "johndoe@gmail.com",
-    profilePicture: "https://randomuser.me",
-    role: "Admin",
-    hashedPassword: "eroijnberhbjernjvrnvijnvibihbvihvihvvr",
-  },
-  {
-    id: "2",
-    username: "Pavol Slovak",
+    uid: "1",
     email: "PavolSlovak@gmail.com",
-    profilePicture: "https://randomuser.me",
-    role: "Editor",
-    hashedPassword: "eroijnberhbjernjvrnvijnvibihbvihvihvvr",
+    displayName: "Pavol Slovak",
+    photoURL: "https://randomuser.me",
   },
+  {
+    uid: "2",
+    email: "johndoe@gmail.com",
+    displayName: "John Doe",
+    photoURL: "https://randomuser.me",
+  },
+  {
+    uid: "3",
+    email: "peterparker@gmail.com",
+    displayName: "Peter Parker",
+    photoURL: "https://randomuser.me",
+  },
+  {
+    uid: "4",
+    email: "jane@gmail.com",
+    displayName: "Jane Peterson",
+    photoURL: "https://randomuser.me",
+  },
+
   // ... other users
 ];
 export default users;

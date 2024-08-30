@@ -1,36 +1,33 @@
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState as ReduxRootState } from "../../store";
-import { Team } from "../../lib/types";
-import ScheduleHeader from "../ScheduleHeader";
 import ScheduleCalendar from "./ScheduleCalendar";
-import { SidebarProps } from "../../lib/types";
+import { teamSlice } from "../../store/teams-slice";
+import { CalendarIcon } from "@heroicons/react/outline";
 
 export default function CreateSchedule() {
   const teams = useSelector((state: ReduxRootState) => state.teams.teams);
-  const [activeTeam, setActiveTeam] = useState<Team>(teams[0]);
+  /* const [activeTeam, setActiveTeam] = useState<Team>(teams[0]); */
+  const dispatch = useDispatch();
+  const { setActiveTeam } = teamSlice.actions;
   useEffect(() => {
     if (teams.length > 0) {
-      setActiveTeam(teams[0]);
+      dispatch(setActiveTeam(teams[0]));
     }
   }, [teams]);
-  const handleTeamSelect = (team: Team) => {
-    setActiveTeam((prev) => (prev?.id === team.id ? teams[0] : team));
-  };
 
   return (
     <div className="flex h-full">
-      <Sidebar
-        teams={teams}
-        activeTeam={activeTeam}
-        onTeamSelect={handleTeamSelect}
-      />
-      <MainContent activeTeam={activeTeam} />
+      <Sidebar />
+      <MainContent />
     </div>
   );
 }
 // Sidebar component
-function Sidebar({ teams, onTeamSelect }: SidebarProps) {
+function Sidebar() {
+  const dispatch = useDispatch();
+  const { setActiveTeam } = teamSlice.actions;
+  const teams = useSelector((state: ReduxRootState) => state.teams.teams);
   return (
     <div className="w-1/4 bg-gray-200">
       <h2 className="text-lg font-semibold mb-4">Teams</h2>
@@ -39,7 +36,7 @@ function Sidebar({ teams, onTeamSelect }: SidebarProps) {
           <li key={team.id}>
             <button
               className="text-left text-sm"
-              onClick={() => onTeamSelect(team)}
+              onClick={() => dispatch(setActiveTeam(team))}
             >
               {team.teamName}
             </button>
@@ -52,12 +49,18 @@ function Sidebar({ teams, onTeamSelect }: SidebarProps) {
 }
 
 // Main Content component
-function MainContent({ activeTeam }: { activeTeam: Team }) {
+function MainContent() {
+  const activeTeam = useSelector(
+    (state: ReduxRootState) => state.teams.activeTeam
+  );
   return (
     <div className="w-3/4 p-4">
-      <ScheduleHeader teamName={activeTeam?.teamName} />
-
-      <ScheduleCalendar activeTeam={activeTeam} />
+      <div className="flex justify-between items-center">
+        <h2 className="flex text-lg font-semibold mb-4 justify-center items-center">
+          <CalendarIcon className="h-6 w-6" /> {activeTeam?.teamName}
+        </h2>
+      </div>
+      <ScheduleCalendar />
       <div className="flex justify-between items-center">
         <button className="btn-primary">New Event</button>
       </div>

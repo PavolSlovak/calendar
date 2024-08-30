@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSelector } from "react-redux";
 import { RootState as ReduxRootState } from "../../../store";
-import { Team } from "../../../store/teams-slice";
+import { Team } from "../../../lib/types";
 
 const createTeamS1 = z.object({
   teamName: z.string().min(3, "Team name must be at least 3 characters!"),
