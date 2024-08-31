@@ -26,7 +26,15 @@ function CreateTeam({ onDone }: CreateTeamProps) {
     invitations: [],
     members: [],
     createdBy: currentUser!,
-    weekSchedule: [],
+    weekSchedule: [
+      { day: "Sun", shifts: [] },
+      { day: "Mon", shifts: [] },
+      { day: "Tue", shifts: [] },
+      { day: "Wed", shifts: [] },
+      { day: "Thu", shifts: [] },
+      { day: "Fri", shifts: [] },
+      { day: "Sat", shifts: [] },
+    ],
   });
 
   useEffect(() => {

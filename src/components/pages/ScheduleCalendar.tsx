@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { User } from "../../lib/types";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,8 +14,15 @@ export default function ScheduleCalendar() {
     (state: ReduxRootState) => state.teams.checkedMember
   );
   const days: string[] = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  useEffect(() => {
+    if (activeTeam) {
+      console.log("activeTeam", activeTeam);
+    }
+  }, [activeTeam]);
   function handleAddShift(day: string) {
     if (!checkedMember || !activeTeam) return;
+    console.log("add shift", day);
     dispatch(
       updateTeamSchedule({
         teamId: activeTeam.id,

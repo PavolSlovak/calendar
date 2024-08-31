@@ -34,6 +34,7 @@ export const teamSlice = createSlice({
         (team) => team.id === action.payload.teamId
       );
       if (!team) return;
+      console.log("team", team);
 
       team.weekSchedule.map((weekDay) => {
         if (weekDay.shifts.includes(action.payload.memberId)) {
