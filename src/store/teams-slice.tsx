@@ -37,14 +37,15 @@ export const teamSlice = createSlice({
       console.log("team", team);
 
       team.weekSchedule.map((weekDay) => {
-        if (weekDay.shifts.includes(action.payload.memberId)) {
-          weekDay.shifts = weekDay.shifts.filter(
-            (shift) => shift !== action.payload.memberId
-          );
-          return;
-        }
-        if (weekDay.day === action.payload.day) {
-          weekDay.shifts.push(action.payload.memberId);
+        const { day, shifts } = weekDay;
+        if (day === action.payload.day) {
+          if (shifts.includes(action.payload.memberId)) {
+            weekDay.shifts = shifts.filter(
+              (shift) => shift !== action.payload.memberId
+            );
+          } else {
+            weekDay.shifts.push(action.payload.memberId);
+          }
         }
       });
     },
