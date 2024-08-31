@@ -25,7 +25,7 @@ function CreateTeam({ onDone }: CreateTeamProps) {
     teamName: "",
     invitations: [],
     members: [],
-    createdBy: currentUser as User,
+    createdBy: currentUser!,
     weekSchedule: [],
   });
 
@@ -48,7 +48,16 @@ function CreateTeam({ onDone }: CreateTeamProps) {
     // TODO - Add the new team to the database
     new Promise((resolve) => setTimeout(resolve, 1000));
     console.log("New team:", newTeam);
-    newTeam.members.push(currentUser as User);
+
+    // Extract necessary fields from the currentUser object
+    const userToAdd: User = {
+      uid: currentUser?.uid || "",
+      email: currentUser?.email || "",
+      displayName: currentUser?.displayName || "",
+      photoURL: currentUser?.photoURL || "",
+    };
+    // Add the serialized user to the members array
+    newTeam.members.push(userToAdd);
     dispatch(teamSlice.actions.addTeam(newTeam));
     setIsSubmitting(false);
     onDone(); // Close the modal

@@ -1,7 +1,6 @@
-import { User as FirebaseUser } from "firebase/auth";
-import { z } from "zod";
+import { User } from "./lib/types";
 
-const users: FirebaseUser[] = [
+const users: User[] = [
   {
     uid: "1",
     email: "PavolSlovak@gmail.com",

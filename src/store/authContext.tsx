@@ -6,9 +6,10 @@ import {
   useState,
 } from "react";
 import { auth } from "../firebase";
-import { User as FirebaseUser } from "firebase/auth";
+import { User } from "../lib/types";
+import { serializeUser } from "../utils/serializeUser";
 type AuthState = {
-  currentUser: FirebaseUser | null;
+  currentUser: User | null;
 };
 type AuthContextType = AuthState & {
   signup: (email: string, password: string) => void;
@@ -30,13 +31,14 @@ export function useAuth() {
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
-  const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // firebase auth state change listener to update the current user
     const unsubscribe = auth.onAuthStateChanged((user) => {
-      setCurrentUser(user as FirebaseUser);
+      const serializedUser = serializeUser(user as User); // firebase User object has additional properties that we don't need in our app (would cause issues when serializing errors)
+      setCurrentUser(serializedUser);
       setLoading(false);
     });
     return unsubscribe;
