@@ -40,7 +40,7 @@ export default function ScheduleCalendar() {
             <button
               type="button"
               onClick={() => handleAddShift(day)}
-              className={`mx-auto flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:text-gray-100`}
+              className={`mx-auto flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:text-gray-100 p-8`}
               disabled={!checkedMember}
             >
               <span>

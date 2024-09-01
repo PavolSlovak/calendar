@@ -3,8 +3,8 @@ import ErrorBlock from "../../UI/ErrorBlock";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import InvitationTable from "../InvitationTable";
-import { Team } from "../../../store/teams-slice";
 import users from "../../../dummy_users";
+import { Team } from "../../../lib/types";
 
 const createTeamS2 = z.object({
   email: z.string().email(),
