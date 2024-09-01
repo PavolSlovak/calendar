@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Team, User } from "../lib/types";
+import { MemberSchema, Team, User } from "../lib/types";
 
 type InitialState = {
   teams: Team[];
   activeTeam: Team | null;
-  checkedMember: User | null;
+  checkedMember: MemberSchema | null;
 };
 
 const initialState: InitialState = {
@@ -20,15 +20,14 @@ export const teamSlice = createSlice({
     setCheckedMember: (state, action: PayloadAction<User | null>) => {
       state.checkedMember = action.payload;
     },
-    updateMemberColor: (
-      state,
-      action: PayloadAction<{ memberId: string; color: string }>
-    ) => {
+    updateMemberColor: (state, action: PayloadAction<string>) => {
       const member = state.activeTeam?.members.find(
-        (member) => member.uid === action.payload.memberId
+        (member) => member.uid === state.checkedMember?.uid
       );
-      if (!member) return;
-      member.color = action.payload.color;
+
+      if (!member || !state.checkedMember) return;
+      member.color = action.payload;
+      state.checkedMember.color = action.payload;
     },
     setActiveTeam: (state, action: PayloadAction<Team>) => {
       state.activeTeam = action.payload;

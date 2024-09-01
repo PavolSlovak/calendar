@@ -50,7 +50,10 @@ export default function ScheduleCalendar() {
                   activeTeam?.weekSchedule
                     .find((weekDay) => weekDay.day === day)
                     ?.shifts.includes(checkedMember?.uid) && (
-                    <div className="w-1 h-1 rounded-full bg-sky-500"></div>
+                    <div
+                      className="w-1 h-1 rounded-full"
+                      style={{ background: checkedMember.color }}
+                    ></div>
                   )}
               </span>
             </button>
@@ -95,13 +98,8 @@ function MembersAccordion() {
       ? dispatch(setCheckedMember(null))
       : dispatch(setCheckedMember(member));
   }
-  function handleChangeColor(member: User, color: string) {
-    dispatch(
-      updateMemberColor({
-        memberId: member.uid,
-        color,
-      })
-    );
+  function handleChangeColor(color: string) {
+    dispatch(updateMemberColor(color));
   }
   return (
     <>
@@ -129,9 +127,7 @@ function MembersAccordion() {
                     <input
                       type="color"
                       value={member.color || "#000000"}
-                      onChange={(e) =>
-                        handleChangeColor(member, e.target.value)
-                      }
+                      onChange={(e) => handleChangeColor(e.target.value)}
                     />
                   )}
                 </li>

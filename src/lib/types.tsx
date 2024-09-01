@@ -60,6 +60,10 @@ export const UserSchema = z.object({
 });
 export type User = z.infer<typeof UserSchema>;
 
+const MemberSchema = UserSchema.extend({ color: z.string().optional() });
+
+export type MemberSchema = z.infer<typeof MemberSchema>;
+
 export const Team = z.object({
   id: z.string(),
   teamName: z.string().min(3, "Team name must be at least 3 characters!"),
