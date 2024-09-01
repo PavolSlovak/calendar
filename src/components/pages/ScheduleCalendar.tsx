@@ -45,7 +45,6 @@ export default function ScheduleCalendar() {
             >
               <span>
                 {day}
-
                 {activeTeam &&
                   checkedMember &&
                   activeTeam?.weekSchedule
@@ -85,7 +84,8 @@ function MembersAccordion() {
     (state: ReduxRootState) => state.teams.checkedMember
   );
   const dispatch = useDispatch();
-  const { setCheckedMember } = teamSlice.actions;
+  const { updateMemberColor, setCheckedMember } = teamSlice.actions;
+
   const accordeonVariants = {
     open: { opacity: 1, height: "auto" },
     closed: { opacity: 0, height: 0 },
@@ -95,8 +95,14 @@ function MembersAccordion() {
       ? dispatch(setCheckedMember(null))
       : dispatch(setCheckedMember(member));
   }
-  function handleChangeColor(member: User) {}
-
+  function handleChangeColor(member: User, color: string) {
+    dispatch(
+      updateMemberColor({
+        memberId: member.uid,
+        color,
+      })
+    );
+  }
   return (
     <>
       <button onClick={() => setAccordionOpen(!accordionOpen)}>Members </button>
@@ -119,6 +125,15 @@ function MembersAccordion() {
                     checked={checkedMember?.uid === member.uid}
                     onChange={() => handleCheckMember(member)}
                   />
+                  {checkedMember && (
+                    <input
+                      type="color"
+                      value={member.color || "#000000"}
+                      onChange={(e) =>
+                        handleChangeColor(member, e.target.value)
+                      }
+                    />
+                  )}
                 </li>
               ))}
             </ul>

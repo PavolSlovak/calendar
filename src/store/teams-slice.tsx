@@ -20,6 +20,16 @@ export const teamSlice = createSlice({
     setCheckedMember: (state, action: PayloadAction<User | null>) => {
       state.checkedMember = action.payload;
     },
+    updateMemberColor: (
+      state,
+      action: PayloadAction<{ memberId: string; color: string }>
+    ) => {
+      const member = state.activeTeam?.members.find(
+        (member) => member.uid === action.payload.memberId
+      );
+      if (!member) return;
+      member.color = action.payload.color;
+    },
     setActiveTeam: (state, action: PayloadAction<Team>) => {
       state.activeTeam = action.payload;
     },
@@ -51,4 +61,10 @@ export const teamSlice = createSlice({
     },
   },
 });
-export const { addTeam } = teamSlice.actions;
+export const {
+  addTeam,
+  setActiveTeam,
+  updateTeamSchedule,
+  updateMemberColor,
+  setCheckedMember,
+} = teamSlice.actions;

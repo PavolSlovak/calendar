@@ -64,7 +64,7 @@ export const Team = z.object({
   id: z.string(),
   teamName: z.string().min(3, "Team name must be at least 3 characters!"),
   invitations: z.array(z.string().email()),
-  members: z.array(UserSchema),
+  members: z.array(UserSchema.extend({ color: z.string().optional() })),
   createdBy: UserSchema,
   weekSchedule: z.array(
     z.object({
