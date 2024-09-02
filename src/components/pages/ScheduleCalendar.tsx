@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { User } from "../../lib/types";
+import { MemberSchema, User } from "../../lib/types";
 import { useDispatch, useSelector } from "react-redux";
 import { teamSlice } from "../../store/teams-slice";
 import { RootState as ReduxRootState } from "../../store";
+import { ChevronLeftIcon } from "@heroicons/react/outline";
 export default function ScheduleCalendar() {
   const activeTeam = useSelector(
     (state: ReduxRootState) => state.teams.activeTeam
@@ -41,22 +42,35 @@ export default function ScheduleCalendar() {
               type="button"
               onClick={() => handleAddShift(day)}
               className={`mx-auto flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:text-gray-100 p-8`}
-              disabled={!checkedMember}
-            >
-              <span>
-                {day}
-                {activeTeam &&
-                  checkedMember &&
+              style={
+                (checkedMember &&
                   activeTeam?.weekSchedule
                     .find((weekDay) => weekDay.day === day)
-                    ?.shifts.includes(checkedMember?.uid) && (
-                    <div
-                      className="w-1 h-1 rounded-full"
-                      style={{ background: checkedMember.color }}
-                    ></div>
-                  )}
-              </span>
+                    ?.shifts.includes(checkedMember?.uid) && {
+                    border: `2px solid ${checkedMember?.color}`,
+                  }) ||
+                {}
+              }
+              disabled={!checkedMember}
+            >
+              <span>{day}</span>
             </button>
+            <span>
+              {activeTeam?.members.map(
+                (member) =>
+                  activeTeam?.weekSchedule
+                    .find((weekDay) => weekDay.day === day)
+                    ?.shifts.includes(member.uid) && (
+                    <span
+                      key={member.uid}
+                      className="block"
+                      style={{ color: member.color }}
+                    >
+                      {member.email}
+                    </span>
+                  )
+              )}
+            </span>
           </div>
         ))}
       </div>
@@ -93,7 +107,7 @@ function MembersAccordion() {
     open: { opacity: 1, height: "auto" },
     closed: { opacity: 0, height: 0 },
   };
-  function handleCheckMember(member: User) {
+  function handleCheckMember(member: MemberSchema) {
     checkedMember?.uid === member.uid
       ? dispatch(setCheckedMember(null))
       : dispatch(setCheckedMember(member));
@@ -103,7 +117,16 @@ function MembersAccordion() {
   }
   return (
     <>
-      <button onClick={() => setAccordionOpen(!accordionOpen)}>Members </button>
+      <button
+        className="flex items-center"
+        onClick={() => setAccordionOpen(!accordionOpen)}
+      >
+        Members
+        <span>
+          <ChevronLeftIcon className="w-4 h-4 " />
+        </span>
+      </button>
+
       <AnimatePresence>
         {accordionOpen && (
           <motion.div
@@ -115,18 +138,25 @@ function MembersAccordion() {
           >
             <ul>
               {team?.members.map((member) => (
-                <li key={member.uid} className="flex justify-between p-2">
-                  {member.email}
+                <li
+                  key={member.uid}
+                  className="flex justify-between items-center mx-4"
+                >
+                  <div className="flex justify-center p-4">
+                    <input
+                      className="mr-2"
+                      type="checkbox"
+                      checked={checkedMember?.uid === member.uid}
+                      onChange={() => handleCheckMember(member)}
+                    />
+                    {member.email}
+                  </div>
 
-                  <input
-                    type="checkbox"
-                    checked={checkedMember?.uid === member.uid}
-                    onChange={() => handleCheckMember(member)}
-                  />
                   {checkedMember && (
                     <input
+                      className="w-8"
                       type="color"
-                      value={member.color || "#000000"}
+                      value={member.color}
                       onChange={(e) => handleChangeColor(e.target.value)}
                     />
                   )}

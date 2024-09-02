@@ -60,7 +60,7 @@ export const UserSchema = z.object({
 });
 export type User = z.infer<typeof UserSchema>;
 
-const MemberSchema = UserSchema.extend({ color: z.string().optional() });
+const MemberSchema = UserSchema.extend({ color: z.string() });
 
 export type MemberSchema = z.infer<typeof MemberSchema>;
 
@@ -68,7 +68,7 @@ export const Team = z.object({
   id: z.string(),
   teamName: z.string().min(3, "Team name must be at least 3 characters!"),
   invitations: z.array(z.string().email()),
-  members: z.array(UserSchema.extend({ color: z.string().optional() })),
+  members: z.array(UserSchema.extend({ color: z.string() })),
   createdBy: UserSchema,
   weekSchedule: z.array(
     z.object({

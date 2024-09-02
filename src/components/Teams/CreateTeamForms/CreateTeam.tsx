@@ -7,7 +7,8 @@ import { useDispatch } from "react-redux";
 import FormS1 from "./FormS1";
 import FormS2 from "./FormS2";
 import { useAuth } from "../../../store/authContext";
-import { Team, User } from "../../../lib/types";
+import { MemberSchema, Team, User } from "../../../lib/types";
+import users from "../../../dummy_users";
 
 type CreateTeamProps = {
   onDone: () => void;
@@ -50,6 +51,9 @@ function CreateTeam({ onDone }: CreateTeamProps) {
   function handlePrev() {
     setCurrentSlide((prev) => Math.max(prev - 1, 1));
   }
+  function generateRandomColor() {
+    return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+  }
 
   function handleSubmit() {
     setIsSubmitting(true);
@@ -58,14 +62,22 @@ function CreateTeam({ onDone }: CreateTeamProps) {
     console.log("New team:", newTeam);
 
     // Extract necessary fields from the currentUser object
-    const userToAdd: User = {
+    const userToAdd: MemberSchema = {
       uid: currentUser?.uid || "",
       email: currentUser?.email || "",
       displayName: currentUser?.displayName || "",
       photoURL: currentUser?.photoURL || "",
+      color: generateRandomColor(),
+    };
+    const userToAdd2 = {
+      uid: users[1].uid,
+      email: users[1].email,
+      displayName: users[1].displayName,
+      photoURL: users[1].photoURL,
+      color: generateRandomColor(),
     };
     // Add the serialized user to the members array
-    newTeam.members.push(userToAdd);
+    newTeam.members.push(userToAdd, userToAdd2);
     dispatch(teamSlice.actions.addTeam(newTeam));
     setIsSubmitting(false);
     onDone(); // Close the modal

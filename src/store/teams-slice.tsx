@@ -17,7 +17,7 @@ export const teamSlice = createSlice({
   name: "teams",
   initialState,
   reducers: {
-    setCheckedMember: (state, action: PayloadAction<User | null>) => {
+    setCheckedMember: (state, action: PayloadAction<MemberSchema | null>) => {
       state.checkedMember = action.payload;
     },
     updateMemberColor: (state, action: PayloadAction<string>) => {
