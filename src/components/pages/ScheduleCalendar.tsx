@@ -77,26 +77,11 @@ export default function ScheduleCalendar() {
     </>
   );
 }
-/* type ColorPickerProps = {
-  color: string | number | readonly string[] | undefined;
-  setColor: React.Dispatch<React.SetStateAction<string>>;
-};
-function ColorPicker({ color, setColor }: ColorPickerProps) {
-  return (
-    <div className="flex items-center">
-      <label className="mr-2">Color:</label>
-      <input
-        type="color"
-        value={color}
-        onChange={(e) => setColor(e.target.value)}
-      />
-    </div>
-  );
-} */
 
 function MembersAccordion() {
   const [accordionOpen, setAccordionOpen] = useState<boolean>(false);
   const team = useSelector((state: ReduxRootState) => state.teams.activeTeam);
+
   const checkedMember = useSelector(
     (state: ReduxRootState) => state.teams.checkedMember
   );
@@ -107,14 +92,23 @@ function MembersAccordion() {
     open: { opacity: 1, height: "auto" },
     closed: { opacity: 0, height: 0 },
   };
-  function handleCheckMember(member: MemberSchema) {
-    checkedMember?.uid === member.uid
-      ? dispatch(setCheckedMember(null))
-      : dispatch(setCheckedMember(member));
+
+  function handleColorChange(
+    e: React.ChangeEvent<HTMLInputElement>,
+    member: MemberSchema
+  ) {
+    dispatch(
+      updateMemberColor({ memberId: member.uid, color: e.target.value })
+    );
   }
-  function handleChangeColor(color: string) {
-    dispatch(updateMemberColor(color));
+  function handleCheckedMember(member: MemberSchema) {
+    if (checkedMember?.uid === member.uid) {
+      dispatch(setCheckedMember(null));
+    } else {
+      dispatch(setCheckedMember(member));
+    }
   }
+
   return (
     <>
       <button
@@ -147,7 +141,7 @@ function MembersAccordion() {
                       className="mr-2"
                       type="checkbox"
                       checked={checkedMember?.uid === member.uid}
-                      onChange={() => handleCheckMember(member)}
+                      onChange={() => handleCheckedMember(member)}
                     />
                     {member.email}
                   </div>
@@ -157,7 +151,7 @@ function MembersAccordion() {
                       className="w-8"
                       type="color"
                       value={member.color}
-                      onChange={(e) => handleChangeColor(e.target.value)}
+                      onChange={(e) => handleColorChange(e, member)}
                     />
                   )}
                 </li>
