@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MemberSchema, User } from "../../lib/types";
 import { useDispatch, useSelector } from "react-redux";
-import { teamSlice } from "../../store/teams-slice";
+import { setCheckedMember, teamSlice } from "../../store/teams-slice";
 import { RootState as ReduxRootState } from "../../store";
 import { ChevronLeftIcon } from "@heroicons/react/outline";
 export default function ScheduleCalendar() {
@@ -16,11 +16,6 @@ export default function ScheduleCalendar() {
   );
   const days: string[] = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-  useEffect(() => {
-    if (activeTeam) {
-      console.log("activeTeam", activeTeam);
-    }
-  }, [activeTeam]);
   function handleAddShift(day: string) {
     if (!checkedMember || !activeTeam) return;
     console.log("add shift", day);
@@ -32,6 +27,7 @@ export default function ScheduleCalendar() {
       })
     );
   }
+  useEffect(() => {}, [activeTeam]);
   return (
     <>
       <MembersAccordion />
@@ -100,6 +96,10 @@ function MembersAccordion() {
     dispatch(
       updateMemberColor({ memberId: member.uid, color: e.target.value })
     );
+    // Update the checkedMember if the changed member is the currently checked one
+    if (checkedMember?.uid === member.uid) {
+      dispatch(setCheckedMember({ ...checkedMember, color: e.target.value }));
+    }
   }
   function handleCheckedMember(member: MemberSchema) {
     if (checkedMember?.uid === member.uid) {
@@ -146,7 +146,7 @@ function MembersAccordion() {
                     {member.email}
                   </div>
 
-                  {checkedMember && (
+                  {checkedMember?.uid === member.uid && (
                     <input
                       className="w-8"
                       type="color"
