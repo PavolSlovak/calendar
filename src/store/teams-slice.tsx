@@ -3,14 +3,10 @@ import { MemberSchema, Team, User } from "../lib/types";
 
 type InitialState = {
   teams: Team[];
-  activeTeam: Team | null;
-  checkedMember: MemberSchema | null;
 };
 
 const initialState: InitialState = {
   teams: [],
-  activeTeam: null,
-  checkedMember: null,
 };
 
 export const teamSlice = createSlice({
@@ -21,9 +17,7 @@ export const teamSlice = createSlice({
       const team = state.teams.find((team) => team.id === action.payload.id);
       if (!team) return;
     },
-    setActiveTeam: (state, action: PayloadAction<Team>) => {
-      state.activeTeam = action.payload;
-    },
+
     addTeam: (state, action: PayloadAction<Team>) => {
       state.teams.push(action.payload);
     },
@@ -52,4 +46,4 @@ export const teamSlice = createSlice({
     },
   },
 });
-export const { addTeam, setActiveTeam, updateTeamSchedule } = teamSlice.actions;
+export const { addTeam, updateTeamSchedule } = teamSlice.actions;

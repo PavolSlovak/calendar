@@ -11,14 +11,14 @@ export default function CreateSchedule() {
   const teams = useSelector((state: ReduxRootState) => state.teams.teams);
   /* const [activeTeam, setActiveTeam] = useState<Team>(teams[0]); */
   const dispatch = useDispatch();
-  const { setActiveTeam } = teamSlice.actions;
+  const { setActiveTeam } = scheduleSlice.actions;
   useEffect(() => {
     if (teams.length > 0) {
       dispatch(setActiveTeam(teams[0]));
     }
   }, [teams]);
   const activeTeam = useSelector(
-    (state: ReduxRootState) => state.teams.activeTeam
+    (state: ReduxRootState) => state.schedule.activeTeam
   );
   return (
     <div className="flex h-full">
@@ -37,7 +37,7 @@ export default function CreateSchedule() {
 // Sidebar component
 function Sidebar() {
   const dispatch = useDispatch();
-  const { setActiveTeam } = teamSlice.actions;
+  const { setActiveTeam } = scheduleSlice.actions;
   const teams = useSelector((state: ReduxRootState) => state.teams.teams);
   return (
     <div className="w-1/4 bg-gray-200">
@@ -80,10 +80,10 @@ function Schedule() {
 
 function Day({ day, dayIdx }: { day: string; dayIdx: number }) {
   const activeTeam = useSelector(
-    (state: ReduxRootState) => state.teams.activeTeam
+    (state: ReduxRootState) => state.schedule.activeTeam
   );
   const checkedMember = useSelector(
-    (state: ReduxRootState) => state.teams.checkedMember
+    (state: ReduxRootState) => state.schedule.checkedMember
   );
   const dispatch = useDispatch();
   const { updateTeamSchedule } = teamSlice.actions;
@@ -162,10 +162,12 @@ function Day({ day, dayIdx }: { day: string; dayIdx: number }) {
 
 function MembersAccordion() {
   const [accordionOpen, setAccordionOpen] = useState<boolean>(false);
-  const team = useSelector((state: ReduxRootState) => state.teams.activeTeam);
+  const team = useSelector(
+    (state: ReduxRootState) => state.schedule.activeTeam
+  );
 
   const checkedMember = useSelector(
-    (state: ReduxRootState) => state.teams.checkedMember
+    (state: ReduxRootState) => state.schedule.checkedMember
   );
   const dispatch = useDispatch();
   const { updateMemberColor, setCheckedMember } = scheduleSlice.actions;

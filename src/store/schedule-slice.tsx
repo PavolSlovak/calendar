@@ -16,6 +16,9 @@ export const scheduleSlice = createSlice({
   name: "schedule",
   initialState,
   reducers: {
+    setActiveTeam: (state, action: PayloadAction<Team>) => {
+      state.activeTeam = action.payload;
+    },
     setCheckedMember: (state, action: PayloadAction<MemberSchema | null>) => {
       state.checkedMember = action.payload;
     },
