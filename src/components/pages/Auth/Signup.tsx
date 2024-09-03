@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { signUpSchema, TSignUpSchema } from "../../../lib/types";
 import { useAuth } from "../../../store/authContext";
 import { useState } from "react";
-import ErrorBlock from "../../UI/ErrorBlock";
+import InfoBox from "../../UI/InfoBox";
 import { Link, useNavigate } from "react-router-dom";
 
 function Signup() {
@@ -42,9 +42,9 @@ function Signup() {
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
       <h1 className="p-2 w-full text-center">Sign Up</h1>
       {signupError && (
-        <ErrorBlock mode="warning" severity="medium">
+        <InfoBox mode="warning" severity="medium">
           {signupError}
-        </ErrorBlock>
+        </InfoBox>
       )}
       <input
         {...register("email")}

@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, signUpSchema, TLoginSchema } from "../../../lib/types";
 import { useAuth } from "../../../store/authContext";
 import { useEffect, useState } from "react";
-import ErrorBlock from "../../UI/ErrorBlock";
+import InfoBox from "../../UI/InfoBox";
 import { Link, useNavigate } from "react-router-dom";
 
 function Login() {
@@ -49,9 +49,9 @@ function Login() {
     >
       <h1 className="p-2 w-full text-center">Log In</h1>
       {loginupError && (
-        <ErrorBlock mode="warning" severity="medium">
+        <InfoBox mode="warning" severity="medium">
           {loginupError}
-        </ErrorBlock>
+        </InfoBox>
       )}
       <input
         {...register("email")}

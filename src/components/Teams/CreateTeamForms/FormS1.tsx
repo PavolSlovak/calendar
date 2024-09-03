@@ -1,5 +1,5 @@
 import { z } from "zod";
-import ErrorBlock from "../../UI/ErrorBlock";
+import InfoBox from "../../UI/InfoBox";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSelector } from "react-redux";
@@ -47,15 +47,15 @@ function FormS1({ setNewTeam }: FormS1Props) {
 
   if (errors.teamName) {
     infobox = (
-      <ErrorBlock mode="warning" severity="medium">
+      <InfoBox mode="warning" severity="medium">
         {errors.teamName?.message}
-      </ErrorBlock>
+      </InfoBox>
     );
   } else {
     infobox = (
-      <ErrorBlock mode="hint">
+      <InfoBox mode="hint">
         Please enter the team name and click on the "Create" button.
-      </ErrorBlock>
+      </InfoBox>
     );
   }
   return (

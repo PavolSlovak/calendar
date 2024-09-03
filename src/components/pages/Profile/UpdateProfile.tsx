@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { TUpdateProfileSchema, updateProfileSchema } from "../../../lib/types";
 import { useAuth } from "../../../store/authContext";
 import { useEffect, useState } from "react";
-import ErrorBlock from "../../UI/ErrorBlock";
+import InfoBox from "../../UI/InfoBox";
 import { Link, useNavigate } from "react-router-dom";
 import Card from "../../UI/Card";
 
@@ -51,9 +51,9 @@ function UpdateProfile() {
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
         <h1 className="p-2 w-full text-center">Update Profile</h1>
         {updateError && (
-          <ErrorBlock mode="warning" severity="medium">
+          <InfoBox mode="warning" severity="medium">
             {updateError}
-          </ErrorBlock>
+          </InfoBox>
         )}
 
         <input

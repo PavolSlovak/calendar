@@ -1,5 +1,5 @@
 import { z } from "zod";
-import ErrorBlock from "../../UI/ErrorBlock";
+import InfoBox from "../../UI/InfoBox";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import InvitationTable from "../InvitationTable";
@@ -78,15 +78,15 @@ function FormS2({ setNewTeam, newTeam }: FormS2Props) {
   if (errors.email) {
     console.log(errors.email?.message);
     infobox = (
-      <ErrorBlock mode="warning" severity="medium">
+      <InfoBox mode="warning" severity="medium">
         {errors.email?.message}
-      </ErrorBlock>
+      </InfoBox>
     );
   } else {
     infobox = (
-      <ErrorBlock mode="hint">
+      <InfoBox mode="hint">
         Please enter the email of the user you want to invite.
-      </ErrorBlock>
+      </InfoBox>
     );
   }
 

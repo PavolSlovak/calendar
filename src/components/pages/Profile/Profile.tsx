@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../../../store/authContext";
 import Card from "../../UI/Card";
-import ErrorBlock from "../../UI/ErrorBlock";
+import InfoBox from "../../UI/InfoBox";
 import { Link, useNavigate } from "react-router-dom";
 
 function Profile() {
@@ -23,9 +23,9 @@ function Profile() {
     <Card>
       <h1>Profile</h1>
       {error && (
-        <ErrorBlock mode="warning" severity="medium">
+        <InfoBox mode="warning" severity="medium">
           {error}
-        </ErrorBlock>
+        </InfoBox>
       )}
       {currentUser?.email}
       <Link to="/update-profile" className="btn-blue">

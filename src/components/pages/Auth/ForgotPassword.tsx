@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { resetPasswordSchema, TResetPasswordSchema } from "../../../lib/types";
 import { useAuth } from "../../../store/authContext";
 import { useEffect, useState } from "react";
-import ErrorBlock from "../../UI/ErrorBlock";
+import InfoBox from "../../UI/InfoBox";
 import { Link } from "react-router-dom";
 
 function ForgorPassword() {
@@ -50,11 +50,11 @@ function ForgorPassword() {
     >
       <h1 className="p-2 w-full text-center">Password Reset</h1>
       {errors.email && (
-        <ErrorBlock mode="warning" severity="medium">
+        <InfoBox mode="warning" severity="medium">
           {errors.email.message}
-        </ErrorBlock>
+        </InfoBox>
       )}
-      {message && <ErrorBlock mode="success">{message}</ErrorBlock>}
+      {message && <InfoBox mode="success">{message}</InfoBox>}
       <input
         {...register("email")}
         type="email"
