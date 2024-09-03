@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { MemberSchema, User } from "../../lib/types";
+import { useState } from "react";
+import { motion, AnimatePresence, animate } from "framer-motion";
+import { MemberSchema } from "../../lib/types";
 import { useDispatch, useSelector } from "react-redux";
-import { setCheckedMember, teamSlice } from "../../store/teams-slice";
+import { teamSlice } from "../../store/teams-slice";
 import { RootState as ReduxRootState } from "../../store";
 import { ChevronLeftIcon } from "@heroicons/react/outline";
+import { de } from "date-fns/locale";
 export default function ScheduleCalendar() {
   const activeTeam = useSelector(
     (state: ReduxRootState) => state.teams.activeTeam
@@ -27,17 +28,41 @@ export default function ScheduleCalendar() {
       })
     );
   }
-  useEffect(() => {}, [activeTeam]);
+  const fadeInAnimationVariants = {
+    initial: {
+      opacity: 0,
+      y: 100,
+    },
+    animate: (index: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: index * 0.2,
+        type: "spring",
+        stiffness: 200, // Higher value = stiffer spring, more bounce      damping: 10, // Lower value = less damping, more bounce
+      },
+    }),
+  };
+
   return (
     <>
       <MembersAccordion />
       <div className="grid grid-cols-7 mt-2 text-sm">
         {days.map((day, dayIdx) => (
-          <div key={dayIdx} className={"py-1.5"}>
+          <motion.div
+            key={dayIdx}
+            className={"py-1.5"}
+            initial={"initial"}
+            animate={"animate"}
+            variants={fadeInAnimationVariants}
+            whileInView={"animate"}
+            viewport={{ once: true }}
+            custom={dayIdx}
+          >
             <button
               type="button"
               onClick={() => handleAddShift(day)}
-              className={`mx-auto flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:text-gray-100 p-8`}
+              className={`mx-auto flex h-8 w-8 sm:p-8 p-4 items-center justify-center rounded-full bg-slate-200 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:text-gray-100`}
               style={
                 (checkedMember &&
                   activeTeam?.weekSchedule
@@ -51,23 +76,22 @@ export default function ScheduleCalendar() {
             >
               <span>{day}</span>
             </button>
-            <span>
-              {activeTeam?.members.map(
-                (member) =>
-                  activeTeam?.weekSchedule
-                    .find((weekDay) => weekDay.day === day)
-                    ?.shifts.includes(member.uid) && (
-                    <span
-                      key={member.uid}
-                      className="block"
-                      style={{ color: member.color }}
-                    >
-                      {member.email}
-                    </span>
-                  )
-              )}
-            </span>
-          </div>
+            <div className="flex justify-center">
+              {activeTeam?.weekSchedule
+                .find((weekDay) => weekDay.day === day)
+                ?.shifts.map((shift) => (
+                  <span
+                    key={shift}
+                    className="flex w-3 h-3 rounded-full"
+                    style={{
+                      backgroundColor: activeTeam?.members.find(
+                        (member) => member.uid === shift
+                      )?.color,
+                    }}
+                  ></span>
+                ))}
+            </div>
+          </motion.div>
         ))}
       </div>
     </>
@@ -96,10 +120,9 @@ function MembersAccordion() {
     dispatch(
       updateMemberColor({ memberId: member.uid, color: e.target.value })
     );
-    // Update the checkedMember if the changed member is the currently checked one
-    if (checkedMember?.uid === member.uid) {
+
+    checkedMember &&
       dispatch(setCheckedMember({ ...checkedMember, color: e.target.value }));
-    }
   }
   function handleCheckedMember(member: MemberSchema) {
     if (checkedMember?.uid === member.uid) {
