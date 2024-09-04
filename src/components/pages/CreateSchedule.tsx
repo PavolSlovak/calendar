@@ -4,8 +4,8 @@ import { RootState as ReduxRootState } from "../../store";
 import { teamSlice } from "../../store/teams-slice";
 import { CalendarIcon, ChevronLeftIcon } from "@heroicons/react/outline";
 import { AnimatePresence, motion } from "framer-motion";
-import { MemberSchema } from "../../lib/types";
-import { scheduleSlice } from "../../store/schedule-slice";
+import { MemberSchema, Team } from "../../lib/types";
+import { scheduleSlice, setActiveTeam } from "../../store/schedule-slice";
 
 export default function CreateSchedule() {
   const teams = useSelector((state: ReduxRootState) => state.teams.teams);
@@ -147,7 +147,7 @@ function Day({ day, dayIdx }: { day: string; dayIdx: number }) {
           ?.shifts.map((shift) => (
             <span
               key={shift}
-              className="flex w-3 h-3 rounded-full"
+              className="flex w-2 h-2 sm:w-3 sm:h-3 rounded-full"
               style={{
                 backgroundColor: activeTeam?.members.find(
                   (member) => member.uid === shift
@@ -170,24 +170,13 @@ function MembersAccordion() {
     (state: ReduxRootState) => state.schedule.checkedMember
   );
   const dispatch = useDispatch();
-  const { updateMemberColor, setCheckedMember } = scheduleSlice.actions;
+  const { setCheckedMember } = scheduleSlice.actions;
 
   const accordeonVariants = {
     open: { opacity: 1, height: "auto" },
     closed: { opacity: 0, height: 0 },
   };
 
-  function handleColorChange(
-    e: React.ChangeEvent<HTMLInputElement>,
-    member: MemberSchema
-  ) {
-    dispatch(
-      updateMemberColor({ memberId: member.uid, color: e.target.value })
-    );
-
-    checkedMember &&
-      dispatch(setCheckedMember({ ...checkedMember, color: e.target.value }));
-  }
   function handleCheckedMember(member: MemberSchema) {
     if (checkedMember?.uid === member.uid) {
       dispatch(setCheckedMember(null));
@@ -235,19 +224,6 @@ function MembersAccordion() {
                       className="w-3 h-3 rounded-full ml-2"
                       style={{ backgroundColor: member.color }}
                     ></span>
-                  </div>
-                  <div className="flex">
-                    {checkedMember?.uid === member.uid && (
-                      <>
-                        <p className="mr-4">Edit color</p>{" "}
-                        <input
-                          className="w-8"
-                          type="color"
-                          value={member.color}
-                          onChange={(e) => handleColorChange(e, member)}
-                        />
-                      </>
-                    )}
                   </div>
                 </li>
               ))}

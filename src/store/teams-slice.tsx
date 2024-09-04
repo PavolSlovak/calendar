@@ -29,20 +29,25 @@ export const teamSlice = createSlice({
         (team) => team.id === action.payload.teamId
       );
       if (!team) return;
-      console.log("team", team);
 
-      team.weekSchedule.map((weekDay) => {
-        const { day, shifts } = weekDay;
-        if (day === action.payload.day) {
-          if (shifts.includes(action.payload.memberId)) {
-            weekDay.shifts = shifts.filter(
-              (shift) => shift !== action.payload.memberId
-            );
-          } else {
-            weekDay.shifts.push(action.payload.memberId);
-          }
+      const updatedWeekSchedule = team.weekSchedule.map((weekDay) => {
+        if (weekDay.day === action.payload.day) {
+          const isMemberScheduled = weekDay.shifts.includes(
+            action.payload.memberId
+          );
+          return {
+            ...weekDay,
+            shifts: isMemberScheduled
+              ? weekDay.shifts.filter(
+                  (shift) => shift !== action.payload.memberId
+                )
+              : [...weekDay.shifts, action.payload.memberId],
+          };
         }
+        return weekDay;
       });
+
+      team.weekSchedule = updatedWeekSchedule;
     },
   },
 });

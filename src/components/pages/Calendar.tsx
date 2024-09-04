@@ -1,5 +1,8 @@
 import { Menu, Transition } from "@headlessui/react";
-import { DotsVerticalIcon } from "@heroicons/react/outline";
+import {
+  ChevronDoubleDownIcon,
+  DotsVerticalIcon,
+} from "@heroicons/react/outline";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/solid";
 import {
   add,
@@ -16,6 +19,12 @@ import {
   startOfToday,
 } from "date-fns";
 import { Fragment, useState } from "react";
+import { RootState as ReduxRootState } from "../../store";
+import { useDispatch, useSelector } from "react-redux";
+import { motion, AnimatePresence } from "framer-motion";
+import DropdownList from "../UI/DropdownList";
+import { Team } from "../../lib/types";
+import { calendarSlice } from "../../store/calendar-slice";
 
 const meetings = [
   {
@@ -91,8 +100,31 @@ export default function Example() {
     isSameDay(parseISO(meeting.startDatetime), selectedDay)
   );
 
+  const teams: Team[] = useSelector(
+    (state: ReduxRootState) => state.teams.teams
+  );
+  const [selectedValue, setSelectedValue] = useState("");
+  const dispatch = useDispatch();
+  const { setActiveTeam } = calendarSlice.actions;
+  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedValue(event.target.value);
+    dispatch(setActiveTeam(event.target.value));
+  };
   return (
-    <div className="pt-16">
+    <div className="pt-5">
+      <div className="flex flex-col items-center">
+        <p>
+          To view team, please pick a team:
+          <select value={selectedValue} onChange={handleChange}>
+            {teams.map((team) => (
+              <option key={team.id} value={team.id}>
+                {team.teamName}
+              </option>
+            ))}
+          </select>
+        </p>
+      </div>
+
       <div className="max-w-md px-4 mx-auto sm:px-7 md:max-w-4xl md:px-6">
         <div className="md:grid md:grid-cols-2 md:divide-x md:divide-gray-200">
           <div className="md:pr-14">
@@ -117,7 +149,7 @@ export default function Example() {
                 <ChevronRightIcon className="w-5 h-5" aria-hidden="true" />
               </button>
             </div>
-            <div className="grid grid-cols-7 mt-10 text-xs leading-6 text-center text-gray-500">
+            <div className="grid grid-cols-7 mt-5 text-xs leading-6 text-center text-gray-500">
               <div>S</div>
               <div>M</div>
               <div>T</div>
@@ -184,7 +216,7 @@ export default function Example() {
           </div>
           <section className="mt-12 md:mt-0 md:pl-14">
             <h2 className="font-semibold text-gray-900">
-              Schedule for{" "}
+              Schedule for
               <time dateTime={format(selectedDay, "yyyy-MM-dd")}>
                 {format(selectedDay, "MMM dd, yyy")}
               </time>
