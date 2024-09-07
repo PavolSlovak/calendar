@@ -40,24 +40,27 @@ function Root() {
   }, [path]);
 
   return (
-    <Provider store={store}>
-      <Header
-        handleToggle={handleMobileMenu}
-        openModal={openModal}
-        path={currentPath}
-      />
-      <AnimatePresence>
-        {openMobileMenu && (
-          <MenuColumn handleToggle={handleMobileMenu} path={currentPath} />
-        )}
-      </AnimatePresence>
-      <AnimatePresence>
-        {isCreateTeamOpen && <CreateTeam onDone={closeModal} />}
-      </AnimatePresence>
-
-      <Outlet />
+    <div id="page-container" className="relative min-h-screen ">
+      <div id="content-wrap" className="pb-36">
+        <Provider store={store}>
+          <Header
+            handleToggle={handleMobileMenu}
+            openModal={openModal}
+            path={currentPath}
+          />
+          <AnimatePresence>
+            {openMobileMenu && (
+              <MenuColumn handleToggle={handleMobileMenu} path={currentPath} />
+            )}
+          </AnimatePresence>
+          <AnimatePresence>
+            {isCreateTeamOpen && <CreateTeam onDone={closeModal} />}
+          </AnimatePresence>
+          <Outlet />
+        </Provider>
+      </div>
       <Footer />
-    </Provider>
+    </div>
   );
 }
 

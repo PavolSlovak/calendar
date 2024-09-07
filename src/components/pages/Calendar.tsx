@@ -109,10 +109,6 @@ export default function Example() {
 
   const tSchedule = activeTeam?.weekSchedule;
 
-  useEffect(() => {
-    console.log("activeTeam", activeTeam?.weekSchedule);
-  });
-
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedTeam: Team | undefined = teams.find(
       (team) => team.id === event.target.value
@@ -175,6 +171,12 @@ export default function Example() {
                   (schedule) => schedule.day === dayString
                 );
                 const shiftsForDay = dayObject?.shifts;
+                const colorStamps = shiftsForDay?.map((shift) => {
+                  const member = activeTeam?.members.find(
+                    (member) => member.uid === shift
+                  );
+                  return member?.color;
+                });
                 console.log("shiftsForDay", shiftsForDay, dayString);
                 return (
                   <div
@@ -220,12 +222,20 @@ export default function Example() {
                       </time>
                     </button>
 
-                    <div className="w-1 h-1 mx-auto mt-1">
-                      {meetings.some((meeting) =>
+                    <div className="flex justify-center">
+                      {/*   {meetings.some((meeting) =>
                         isSameDay(parseISO(meeting.startDatetime), day)
                       ) && (
                         <div className="w-1 h-1 rounded-full bg-sky-500"></div>
-                      )}
+                      )} */}
+
+                      {colorStamps?.map((color, idx) => (
+                        <div
+                          key={idx}
+                          className="w-1 h-1 ml-[1px] rounded-full"
+                          style={{ backgroundColor: color }}
+                        ></div>
+                      ))}
                     </div>
                   </div>
                 );
