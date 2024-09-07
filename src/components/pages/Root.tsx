@@ -40,8 +40,8 @@ function Root() {
   }, [path]);
 
   return (
-    <div id="page-container" className="relative min-h-screen flex flex-co ">
-      <div id="content-wrap" className="flex flex-col pb-36">
+    <div id="page-container" className=" min-h-screen flex flex-col  ">
+      <div id="content-wrap" className="flex flex-col grow">
         <Provider store={store}>
           <Header
             handleToggle={handleMobileMenu}
