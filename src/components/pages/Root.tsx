@@ -40,8 +40,8 @@ function Root() {
   }, [path]);
 
   return (
-    <div id="page-container" className="relative min-h-screen ">
-      <div id="content-wrap" className="pb-36">
+    <div id="page-container" className="relative min-h-screen flex ">
+      <div id="content-wrap" className="flex flex-col">
         <Provider store={store}>
           <Header
             handleToggle={handleMobileMenu}
@@ -56,7 +56,9 @@ function Root() {
           <AnimatePresence>
             {isCreateTeamOpen && <CreateTeam onDone={closeModal} />}
           </AnimatePresence>
-          <Outlet />
+          <div className="grow">
+            <Outlet />
+          </div>
         </Provider>
       </div>
       <Footer />
