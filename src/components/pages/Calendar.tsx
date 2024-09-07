@@ -18,11 +18,9 @@ import {
   parseISO,
   startOfToday,
 } from "date-fns";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { RootState as ReduxRootState } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
-import { motion, AnimatePresence } from "framer-motion";
-import DropdownList from "../UI/DropdownList";
 import { Team } from "../../lib/types";
 import { calendarSlice } from "../../store/calendar-slice";
 
@@ -99,23 +97,35 @@ export default function Example() {
   let selectedDayMeetings = meetings.filter((meeting) =>
     isSameDay(parseISO(meeting.startDatetime), selectedDay)
   );
-
+  // ...................................
   const teams: Team[] = useSelector(
     (state: ReduxRootState) => state.teams.teams
   );
-  const [selectedValue, setSelectedValue] = useState("");
   const dispatch = useDispatch();
   const { setActiveTeam } = calendarSlice.actions;
+  const activeTeam = useSelector(
+    (state: ReduxRootState) => state.calendar.activeTeam
+  );
+
+  const tSchedule = activeTeam?.weekSchedule;
+
+  useEffect(() => {
+    console.log("activeTeam", activeTeam?.weekSchedule);
+  });
+
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedValue(event.target.value);
-    dispatch(setActiveTeam(event.target.value));
+    const selectedTeam: Team | undefined = teams.find(
+      (team) => team.id === event.target.value
+    );
+    selectedTeam && dispatch(setActiveTeam(selectedTeam));
   };
+
   return (
     <div className="pt-5">
       <div className="flex flex-col items-center">
         <p>
           To view team, please pick a team:
-          <select value={selectedValue} onChange={handleChange}>
+          <select onChange={handleChange}>
             {teams.map((team) => (
               <option key={team.id} value={team.id}>
                 {team.teamName}
@@ -159,59 +169,67 @@ export default function Example() {
               <div>S</div>
             </div>
             <div className="grid grid-cols-7 mt-2 text-sm">
-              {days.map((day, dayIdx) => (
-                <div
-                  key={day.toString()}
-                  className={classNames(
-                    dayIdx === 0 ? colStartClasses[getDay(day)] : "",
-                    "py-1.5"
-                  )}
-                >
-                  <button
-                    type="button"
-                    onClick={() => setSelectedDay(day)}
+              {days.map((day, dayIdx) => {
+                const dayString = format(day, "eee");
+                const dayObject = tSchedule?.find(
+                  (schedule) => schedule.day === dayString
+                );
+                const shiftsForDay = dayObject?.shifts;
+                console.log("shiftsForDay", shiftsForDay, dayString);
+                return (
+                  <div
+                    key={day.toString()}
                     className={classNames(
-                      isEqual(day, selectedDay) ? "text-white" : "",
-                      !isEqual(day, selectedDay) && isToday(day)
-                        ? "text-red-500"
-                        : "",
-                      !isEqual(day, selectedDay) &&
-                        !isToday(day) &&
-                        isSameMonth(day, firstDayCurrentMonth)
-                        ? "text-gray-900"
-                        : "",
-                      !isEqual(day, selectedDay) &&
-                        !isToday(day) &&
-                        !isSameMonth(day, firstDayCurrentMonth)
-                        ? "text-gray-400"
-                        : "",
-                      isEqual(day, selectedDay) && isToday(day)
-                        ? "bg-red-500"
-                        : "",
-                      isEqual(day, selectedDay) && !isToday(day)
-                        ? "bg-gray-900"
-                        : "",
-                      !isEqual(day, selectedDay) ? "hover:bg-gray-200" : "",
-                      isEqual(day, selectedDay) || isToday(day)
-                        ? "font-semibold"
-                        : "",
-                      "mx-auto flex h-8 w-8 items-center justify-center rounded-full"
+                      dayIdx === 0 ? colStartClasses[getDay(day)] : "", // add shft based on day index
+                      "py-1.5"
                     )}
                   >
-                    <time dateTime={format(day, "yyyy-MM-dd")}>
-                      {format(day, "d")}
-                    </time>
-                  </button>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedDay(day)}
+                      className={classNames(
+                        isEqual(day, selectedDay) ? "text-white" : "",
+                        !isEqual(day, selectedDay) && isToday(day)
+                          ? "text-red-500"
+                          : "",
+                        !isEqual(day, selectedDay) &&
+                          !isToday(day) &&
+                          isSameMonth(day, firstDayCurrentMonth)
+                          ? "text-gray-900"
+                          : "",
+                        !isEqual(day, selectedDay) &&
+                          !isToday(day) &&
+                          !isSameMonth(day, firstDayCurrentMonth)
+                          ? "text-gray-400"
+                          : "",
+                        isEqual(day, selectedDay) && isToday(day)
+                          ? "bg-red-500"
+                          : "",
+                        isEqual(day, selectedDay) && !isToday(day)
+                          ? "bg-gray-900"
+                          : "",
+                        !isEqual(day, selectedDay) ? "hover:bg-gray-200" : "",
+                        isEqual(day, selectedDay) || isToday(day)
+                          ? "font-semibold"
+                          : "",
+                        "mx-auto flex h-8 w-8 items-center justify-center rounded-full"
+                      )}
+                    >
+                      <time dateTime={format(day, "yyyy-MM-dd")}>
+                        {format(day, "d")}
+                      </time>
+                    </button>
 
-                  <div className="w-1 h-1 mx-auto mt-1">
-                    {meetings.some((meeting) =>
-                      isSameDay(parseISO(meeting.startDatetime), day)
-                    ) && (
-                      <div className="w-1 h-1 rounded-full bg-sky-500"></div>
-                    )}
+                    <div className="w-1 h-1 mx-auto mt-1">
+                      {meetings.some((meeting) =>
+                        isSameDay(parseISO(meeting.startDatetime), day)
+                      ) && (
+                        <div className="w-1 h-1 rounded-full bg-sky-500"></div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
           <section className="mt-12 md:mt-0 md:pl-14">
