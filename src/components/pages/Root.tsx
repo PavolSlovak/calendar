@@ -40,27 +40,25 @@ function Root() {
   }, [path]);
 
   return (
-    <div id="page-container" className=" min-h-screen flex flex-col  ">
-      <div id="content-wrap" className="flex flex-col grow">
-        <Provider store={store}>
-          <Header
-            handleToggle={handleMobileMenu}
-            openModal={openModal}
-            path={currentPath}
-          />
-          <AnimatePresence>
-            {openMobileMenu && (
-              <MenuColumn handleToggle={handleMobileMenu} path={currentPath} />
-            )}
-          </AnimatePresence>
-          <AnimatePresence>
-            {isCreateTeamOpen && <CreateTeam onDone={closeModal} />}
-          </AnimatePresence>
-          <div className="grow">
-            <Outlet />
-          </div>
-        </Provider>
-      </div>
+    <div id="page-container" className="flex flex-col min-h-screen">
+      <Provider store={store}>
+        <Header
+          handleToggle={handleMobileMenu}
+          openModal={openModal}
+          path={currentPath}
+        />
+        <AnimatePresence>
+          {openMobileMenu && (
+            <MenuColumn handleToggle={handleMobileMenu} path={currentPath} />
+          )}
+        </AnimatePresence>
+        <AnimatePresence>
+          {isCreateTeamOpen && <CreateTeam onDone={closeModal} />}
+        </AnimatePresence>
+        <div className="flex grow">
+          <Outlet />
+        </div>
+      </Provider>
       <Footer />
     </div>
   );

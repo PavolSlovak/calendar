@@ -4,8 +4,8 @@ import { RootState as ReduxRootState } from "../../store";
 import { teamSlice } from "../../store/teams-slice";
 import { CalendarIcon, ChevronLeftIcon } from "@heroicons/react/outline";
 import { AnimatePresence, motion } from "framer-motion";
-import { MemberSchema, Team } from "../../lib/types";
-import { scheduleSlice, setActiveTeam } from "../../store/schedule-slice";
+import { MemberSchema } from "../../lib/types";
+import { scheduleSlice } from "../../store/schedule-slice";
 
 export default function CreateSchedule() {
   const teams = useSelector((state: ReduxRootState) => state.teams.teams);
@@ -21,9 +21,9 @@ export default function CreateSchedule() {
     (state: ReduxRootState) => state.schedule.activeTeam
   );
   return (
-    <div className="flex h-full">
+    <>
       <Sidebar />
-      <div className="w-3/4 p-4">
+      <div className="w-3/4 p-4 h-full">
         <div className="flex justify-between items-center">
           <h2 className="flex text-lg font-semibold mb-4 justify-center items-center">
             <CalendarIcon className="h-6 w-6" /> {activeTeam?.teamName}
@@ -31,7 +31,7 @@ export default function CreateSchedule() {
         </div>
         <Schedule />
       </div>
-    </div>
+    </>
   );
 }
 // Sidebar component
@@ -40,7 +40,7 @@ function Sidebar() {
   const { setActiveTeam } = scheduleSlice.actions;
   const teams = useSelector((state: ReduxRootState) => state.teams.teams);
   return (
-    <div className="w-1/4 bg-gray-200">
+    <div className="w-1/4 bg-gray-200 ">
       <h2 className="text-lg font-semibold mb-4">Teams</h2>
       <ul>
         {teams.map((team) => (
