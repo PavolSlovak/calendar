@@ -79,6 +79,9 @@ function Schedule() {
 }
 
 function Day({ day, dayIdx }: { day: string; dayIdx: number }) {
+  const [startTime, setStartTime] = useState<string>("09:00");
+  const [endTime, setEndTime] = useState<string>("17:00");
+
   const activeTeam = useSelector(
     (state: ReduxRootState) => state.schedule.activeTeam
   );
@@ -86,7 +89,7 @@ function Day({ day, dayIdx }: { day: string; dayIdx: number }) {
     (state: ReduxRootState) => state.schedule.checkedMember
   );
   const dispatch = useDispatch();
-  const { updateTeamSchedule } = teamSlice.actions;
+  const { addToSchedule, updateSchedule } = teamSlice.actions;
   const fadeInAnimationVariants = {
     initial: {
       opacity: 0,
@@ -105,11 +108,20 @@ function Day({ day, dayIdx }: { day: string; dayIdx: number }) {
   function handleAddShift(day: string) {
     if (!checkedMember || !activeTeam) return;
     console.log("add shift", day);
-    dispatch(
-      updateTeamSchedule({
+    /*   dispatch(
+      updateSchedule({
         teamId: activeTeam.id,
         memberId: checkedMember.uid,
         day,
+      })
+    ); */
+    dispatch(
+      addToSchedule({
+        teamId: activeTeam.id,
+        memberId: checkedMember.uid,
+        day,
+        startTime,
+        endTime,
       })
     );
   }
@@ -155,6 +167,18 @@ function Day({ day, dayIdx }: { day: string; dayIdx: number }) {
               }}
             ></span>
           ))}
+      </div>
+      <div>
+        <input
+          type="time"
+          value={startTime}
+          onChange={(e) => setStartTime(e.target.value)}
+        />
+        <input
+          type="time"
+          value={endTime}
+          onChange={(e) => setEndTime(e.target.value)}
+        />
       </div>
     </motion.div>
   );
