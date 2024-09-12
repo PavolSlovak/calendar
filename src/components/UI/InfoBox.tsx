@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 // discriminated union
 type InfoBoxProps = {
   mode: "hint" | "warning" | "success";
-  severity?: "low" | "medium" | "high";
+  severity: "low" | "medium" | "high";
   children: ReactNode;
 };
 

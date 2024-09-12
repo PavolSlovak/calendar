@@ -1,12 +1,33 @@
 import { useAuth } from "../../store/authContext";
 import Article from "../UI/Article";
 import MainBanner from "../UI/MainBanner";
+import { useNavigate } from "react-router-dom";
+import InfoBox from "../UI/InfoBox";
+import { useState } from "react";
 
 function Home() {
   const { logout } = useAuth();
+  const navigate = useNavigate();
+  const [logoutError, setLogoutError] = useState<string | null>(null);
+  function handleLogout() {
+    console.log("jebe");
+    try {
+      logout();
+      navigate("/auth?login");
+    } catch (error) {
+      console.error(error);
+      setLogoutError("Failed to log out");
+    }
+  }
+
   return (
     <main>
       <MainBanner>
+        {logoutError && (
+          <InfoBox mode="warning" severity="high">
+            {logoutError}
+          </InfoBox>
+        )}
         <article className="px-20">
           <h1 className="font-bold">Hello, Create Your Calendar!</h1>
           <p>
@@ -19,7 +40,7 @@ function Home() {
             delectus earum vero ut nihil maiores accusamus inventore amet.
           </p>
         </article>
-        <button onClick={logout} className="btn-blue">
+        <button onClick={handleLogout} className="btn-blue">
           Log Out
         </button>
       </MainBanner>

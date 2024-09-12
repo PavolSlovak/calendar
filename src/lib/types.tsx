@@ -73,7 +73,11 @@ export const Team = z.object({
   weekSchedule: z.array(
     z.object({
       day: z.string(),
-      shifts: z.array(z.string()), // Array of strings with user ids
+      shifts: z.array({
+        uid: z.string(),
+        startTime: z.string(),
+        endTime: z.string(),
+      }),
     })
   ), // Array of objects with day and shifts
 });
