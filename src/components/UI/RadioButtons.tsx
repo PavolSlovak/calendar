@@ -7,6 +7,7 @@ function RadioButtons({ currentSlide }: { currentSlide: number }) {
           className="appearance-none w-4 h-4 border-2 border-white rounded-full checked:bg-white"
           checked={currentSlide < 1}
           readOnly
+          onFocus={(e) => e.preventDefault()}
         />
       </label>
 
@@ -16,14 +17,16 @@ function RadioButtons({ currentSlide }: { currentSlide: number }) {
           className="appearance-none w-4 h-4 border-2 border-white rounded-full checked:bg-white"
           checked={currentSlide < 2}
           readOnly
+          onFocus={(e) => e.preventDefault()}
         />
       </label>
       <label className="relative">
         <input
           type="radio"
-          className="appearance-none w-4 h-4 border-2 border-white rounded-full checked:bg-white"
+          className="appearance-none w-4 h-4 border-2 border-white rounded-full checked:bg-white "
           checked={currentSlide < 3}
           readOnly
+          onFocus={(e) => e.preventDefault()} // Prevents the radio button from being focused
         />
       </label>
     </div>

@@ -21,9 +21,9 @@ import {
 import { Fragment, useEffect, useState } from "react";
 import { RootState as ReduxRootState } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
-import { Team } from "../../lib/types";
+import { Shifts, Team } from "../../lib/types";
 import { calendarSlice } from "../../store/calendar-slice";
-
+/* 
 const meetings = [
   {
     id: 1,
@@ -65,7 +65,7 @@ const meetings = [
     startDatetime: "2022-05-13T14:00",
     endDatetime: "2022-05-13T14:30",
   },
-];
+]; */
 
 type ClassNamesProps = (string | undefined)[];
 
@@ -94,9 +94,10 @@ export default function Example() {
     setCurrentMonth(format(firstDayNextMonth, "MMM-yyyy"));
   }
 
-  let selectedDayMeetings = meetings.filter((meeting) =>
+  /* let selectedDayShifts = meetings.filter((meeting) =>
     isSameDay(parseISO(meeting.startDatetime), selectedDay)
-  );
+  ); */
+
   // ...................................
   const teams: Team[] = useSelector(
     (state: ReduxRootState) => state.teams.teams
@@ -107,7 +108,12 @@ export default function Example() {
     (state: ReduxRootState) => state.calendar.activeTeam
   );
 
-  const tSchedule = activeTeam?.weekSchedule;
+  const wSchedule = activeTeam?.weekSchedule;
+
+  let selectedDayShifts: Shifts | undefined = activeTeam?.weekSchedule?.find(
+    (schedule) => schedule.day === format(selectedDay, "eee")
+  )?.shifts;
+  console.log("selectedDayShifts", selectedDayShifts);
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedTeam: Team | undefined = teams.find(
@@ -115,6 +121,9 @@ export default function Example() {
     );
     selectedTeam && dispatch(setActiveTeam(selectedTeam));
   };
+  useEffect(() => {
+    console.log("activeDay", selectedDay);
+  });
 
   return (
     <div className="pt-5">
@@ -167,13 +176,13 @@ export default function Example() {
             <div className="grid grid-cols-7 mt-2 text-sm">
               {days.map((day, dayIdx) => {
                 const dayString = format(day, "eee");
-                const dayObject = tSchedule?.find(
+                const dayObject = wSchedule?.find(
                   (schedule) => schedule.day === dayString
                 );
                 const shiftsForDay = dayObject?.shifts;
                 const colorStamps = shiftsForDay?.map((shift) => {
                   const member = activeTeam?.members.find(
-                    (member) => member.uid === shift
+                    (member) => member.uid === shift.memberId
                   );
                   return member?.color;
                 });
@@ -250,12 +259,41 @@ export default function Example() {
               </time>
             </h2>
             <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
-              {selectedDayMeetings.length > 0 ? (
+              {/*   {selectedDayMeetings.length > 0 ? (
                 selectedDayMeetings.map((meeting) => (
                   <Meeting meeting={meeting} key={meeting.id} />
                 ))
               ) : (
                 <p>No meetings for today.</p>
+              )} */}
+              {selectedDayShifts ? (
+                selectedDayShifts.map((shift) => (
+                  <li
+                    key={shift.memberId}
+                    className="flex items-center px-4 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100"
+                  >
+                    <div className="flex-auto">
+                      <p className="text-gray-900">{shift.memberId}</p>
+                      <p className="mt-0.5">
+                        <time dateTime={shift.startTime}>
+                          {format(
+                            parse(shift.startTime, "H:mm", new Date()),
+                            "h:mm a"
+                          )}
+                        </time>
+                        -
+                        <time dateTime={shift.endTime}>
+                          {format(
+                            parse(shift.endTime, "H:mm", new Date()),
+                            "h:mm a"
+                          )}
+                        </time>
+                      </p>
+                    </div>
+                  </li>
+                ))
+              ) : (
+                <p>No shifts for today.</p>
               )}
             </ol>
           </section>
