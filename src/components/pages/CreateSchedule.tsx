@@ -90,6 +90,7 @@ function Day({ day, dayIdx }: { day: string; dayIdx: number }) {
   );
   const dispatch = useDispatch();
   const { addToSchedule, updateSchedule } = teamSlice.actions;
+
   const fadeInAnimationVariants = {
     initial: {
       opacity: 0,
@@ -101,51 +102,59 @@ function Day({ day, dayIdx }: { day: string; dayIdx: number }) {
       transition: {
         delay: index * 0.1,
         type: "spring",
-        stiffness: 200, // Higher value = stiffer spring, more bounce      damping: 10, // Lower value = less damping, more bounce
+        stiffness: 200, // Higher value = stiffer spring, more bounce
+        damping: 10, // Lower value = less damping, more bounce
       },
     }),
   };
+
   function handleAddShift(day: string) {
     if (!checkedMember || !activeTeam) return;
-    console.log("add shift", day);
-    /*   dispatch(
-      updateSchedule({
-        teamId: activeTeam.id,
-        memberId: checkedMember.uid,
-        day,
-      })
-    ); */
     dispatch(
       addToSchedule({
         teamId: activeTeam.id,
         memberId: checkedMember.uid,
         day,
-        startTime,
-        endTime,
+        startTime: startTime,
+        endTime: endTime,
       })
     );
   }
+  useEffect(() => {
+    if (!checkedMember || !activeTeam) return;
+    dispatch(
+      updateSchedule({
+        teamId: activeTeam.id,
+        memberId: checkedMember.uid,
+        day,
+        startTime: startTime,
+        endTime: endTime,
+      })
+    );
+  }, [startTime, endTime]);
   return (
     <motion.div
       key={dayIdx}
-      className={"py-1.5"}
-      initial={"initial"}
-      animate={"animate"}
+      className="py-1.5"
+      initial="initial"
+      animate="animate"
       variants={fadeInAnimationVariants}
-      whileInView={"animate"}
+      whileInView="animate"
       viewport={{ once: true }}
       custom={dayIdx}
     >
       <button
         type="button"
         onClick={() => handleAddShift(day)}
-        className={`mx-auto flex h-8 w-8 sm:p-8 p-4 items-center justify-center rounded-full bg-slate-200 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:text-gray-100`}
+        className="mx-auto flex h-8 w-8 sm:p-8 p-4 items-center justify-center rounded-full bg-slate-200 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:text-gray-100"
         style={
           (checkedMember &&
             activeTeam?.weekSchedule
               .find((weekDay) => weekDay.day === day)
-              ?.shifts.includes(checkedMember?.uid) && {
-              border: `2px solid ${checkedMember?.color}`,
+              ?.shifts.some(
+                (shift) => shift.memberId === checkedMember.uid
+              ) && {
+              border: `2px solid ${checkedMember.color}`,
             }) ||
           {}
         }
@@ -156,17 +165,20 @@ function Day({ day, dayIdx }: { day: string; dayIdx: number }) {
       <div className="flex justify-center">
         {activeTeam?.weekSchedule
           .find((weekDay) => weekDay.day === day)
-          ?.shifts.map((shift) => (
-            <span
-              key={shift}
-              className="flex w-2 h-2 sm:w-3 sm:h-3 rounded-full"
-              style={{
-                backgroundColor: activeTeam?.members.find(
-                  (member) => member.uid === shift
-                )?.color,
-              }}
-            ></span>
-          ))}
+          ?.shifts.map((shift) => {
+            const member = activeTeam?.members.find(
+              (member) => member.uid === shift.memberId
+            );
+            return (
+              <span
+                key={shift.memberId}
+                className="flex w-2 h-2 sm:w-3 sm:h-3 rounded-full"
+                style={{
+                  backgroundColor: member?.color, // Correctly apply the member's color
+                }}
+              ></span>
+            );
+          })}
       </div>
       <div>
         <input

@@ -1,3 +1,4 @@
+import { da } from "date-fns/locale";
 import { z } from "zod";
 
 export const signUpSchema = z
@@ -64,21 +65,31 @@ const MemberSchema = UserSchema.extend({ color: z.string() });
 
 export type MemberSchema = z.infer<typeof MemberSchema>;
 
+const ShiftsArraySchema = z.array(
+  z.object({
+    memberId: z.string(),
+    startTime: z.string(),
+    endTime: z.string(),
+  })
+);
+
+export type Shifts = z.infer<typeof ShiftsArraySchema>;
+
+const wScheduleSchema = z.array(
+  z.object({
+    day: z.string(),
+    shifts: ShiftsArraySchema,
+  })
+);
+
+export type WeekSchema = z.infer<typeof wScheduleSchema>;
+
 export const Team = z.object({
   id: z.string(),
   teamName: z.string().min(3, "Team name must be at least 3 characters!"),
   invitations: z.array(z.string().email()),
   members: z.array(UserSchema.extend({ color: z.string() })),
   createdBy: UserSchema,
-  weekSchedule: z.array(
-    z.object({
-      day: z.string(),
-      shifts: z.array({
-        uid: z.string(),
-        startTime: z.string(),
-        endTime: z.string(),
-      }),
-    })
-  ), // Array of objects with day and shifts
+  weekSchedule: wScheduleSchema, // Array of objects with day and shifts
 });
 export type Team = z.infer<typeof Team>;
