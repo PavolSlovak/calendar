@@ -21,16 +21,18 @@ import {
 import { Fragment, useEffect, useState } from "react";
 import { RootState as ReduxRootState } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
-import { Shifts, Team } from "../../lib/types";
+import { Shifts, Team, User } from "../../lib/types";
 import { calendarSlice } from "../../store/calendar-slice";
-/* 
-const meetings = [
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../../firebase";
+
+const comments = [
   {
     id: 1,
     name: "Leslie Alexander",
     imageUrl:
       "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    startDatetime: "2024-08-17T13:00",
+    startDatetime: "2024-09-16T13:00",
     endDatetime: "2024-08-17T14:30",
   },
   {
@@ -65,7 +67,7 @@ const meetings = [
     startDatetime: "2022-05-13T14:00",
     endDatetime: "2022-05-13T14:30",
   },
-]; */
+];
 
 type ClassNamesProps = (string | undefined)[];
 
@@ -110,23 +112,17 @@ export default function Example() {
 
   const wSchedule = activeTeam?.weekSchedule;
 
-  let selectedDayShifts: Shifts | undefined = activeTeam?.weekSchedule?.find(
-    (schedule) => schedule.day === format(selectedDay, "eee")
-  )?.shifts;
-  console.log("selectedDayShifts", selectedDayShifts);
-
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedTeam: Team | undefined = teams.find(
       (team) => team.id === event.target.value
     );
     selectedTeam && dispatch(setActiveTeam(selectedTeam));
   };
-  useEffect(() => {
-    console.log("activeDay", selectedDay);
-  });
 
   return (
     <div className="pt-5">
+      <CurrentShiftsOverview selectedDay={selectedDay} />
+
       <div className="flex flex-col items-center">
         <p>
           To view team, please pick a team:
@@ -186,7 +182,6 @@ export default function Example() {
                   );
                   return member?.color;
                 });
-                console.log("shiftsForDay", shiftsForDay, dayString);
                 return (
                   <div
                     key={day.toString()}
@@ -259,41 +254,18 @@ export default function Example() {
               </time>
             </h2>
             <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
-              {/*   {selectedDayMeetings.length > 0 ? (
-                selectedDayMeetings.map((meeting) => (
-                  <Meeting meeting={meeting} key={meeting.id} />
-                ))
+              {comments.length > 0 ? (
+                comments.map(
+                  (comment) =>
+                    format(parseISO(comment.startDatetime), "yyyy-MM-dd") ===
+                      format(selectedDay, "yyyy-MM-dd") && (
+                      <>
+                        <Meeting key={comment.id} meeting={comment} />
+                      </>
+                    )
+                )
               ) : (
                 <p>No meetings for today.</p>
-              )} */}
-              {selectedDayShifts ? (
-                selectedDayShifts.map((shift) => (
-                  <li
-                    key={shift.memberId}
-                    className="flex items-center px-4 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100"
-                  >
-                    <div className="flex-auto">
-                      <p className="text-gray-900">{shift.memberId}</p>
-                      <p className="mt-0.5">
-                        <time dateTime={shift.startTime}>
-                          {format(
-                            parse(shift.startTime, "H:mm", new Date()),
-                            "h:mm a"
-                          )}
-                        </time>
-                        -
-                        <time dateTime={shift.endTime}>
-                          {format(
-                            parse(shift.endTime, "H:mm", new Date()),
-                            "h:mm a"
-                          )}
-                        </time>
-                      </p>
-                    </div>
-                  </li>
-                ))
-              ) : (
-                <p>No shifts for today.</p>
               )}
             </ol>
           </section>
@@ -399,3 +371,67 @@ let colStartClasses = [
   "col-start-6",
   "col-start-7",
 ];
+
+function CurrentShiftsOverview({ selectedDay }: { selectedDay: Date }) {
+  const activeTeam = useSelector(
+    (state: ReduxRootState) => state.calendar.activeTeam
+  );
+  let selectedDayShifts: Shifts | undefined = activeTeam?.weekSchedule?.find(
+    (schedule) => schedule.day === format(selectedDay, "eee")
+  )?.shifts;
+  const [users, setUsers] = useState<User[]>([]);
+
+  /*   const todaysShifts = activeTeam?.weekSchedule?.find(
+    (schedule) => schedule.day === format(today, "eee")
+  )?.shifts; */
+  const todaysShifts =
+    activeTeam?.weekSchedule?.find(
+      (schedule) => schedule.day === format(startOfToday(), "eee")
+    )?.shifts || [];
+  const scheduledUsersIds = todaysShifts?.map((shift) => shift.memberId);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        if (scheduledUsersIds.length === 0) return console.log("No users");
+        /*  const usersRef = collection(db, "users");
+        const q = query(usersRef, where("uid", "in", scheduledUsersIds));
+        const querySnapshot = await getDocs(q);
+        const usersData = querySnapshot.docs.map((doc) => doc.data()); */
+        console.log("Jebe", scheduledUsersIds);
+      } catch (error) {
+        console.error("Error fetching users", error);
+      }
+    };
+    fetchUsers();
+  }, [scheduledUsersIds]);
+  let today = format(startOfToday(), "MMM dd, yyyy");
+
+  // TODO - get the user data from the store
+
+  return (
+    <div className="flex flex-col items-center">
+      <h2 className="font-semibold text-gray-900">Current Shifts {today}</h2>
+      {todaysShifts.map((shift) => (
+        <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
+          <li
+            key={shift.memberId}
+            className="flex items-center px-4 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100"
+          >
+            <>
+              {todaysShifts.map((shift) => (
+                <div key={shift.memberId}>
+                  <p>{shift.memberId}</p>
+                  <p>
+                    {shift.startTime} - {shift.endTime}
+                  </p>
+                </div>
+              ))}
+            </>
+          </li>
+        </ol>
+      ))}
+      {todaysShifts.length === 0 && <p>No shifts for today.</p>}
+    </div>
+  );
+}

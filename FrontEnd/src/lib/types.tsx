@@ -1,4 +1,3 @@
-import { da } from "date-fns/locale";
 import { z } from "zod";
 
 export const signUpSchema = z

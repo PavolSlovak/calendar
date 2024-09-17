@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
-import Footer from "../Footer";
-import Header from "../Navigation/Header";
-import MenuColumn from "../Navigation/MenuColumn";
+import Footer from "./Footer";
+import Header from "./Navigation/Header";
+import MenuColumn from "./Navigation/MenuColumn";
 import { AnimatePresence } from "framer-motion";
-import CreateTeam from "../Teams/CreateTeamForms/CreateTeam";
-import useScreenController from "../../store/hooks/useScreenController";
+import CreateTeam from "./Teams/CreateTeamForms/CreateTeam";
+import useScreenController from "../store/hooks/useScreenController";
 import { Outlet, useLocation } from "react-router-dom";
 import { Provider } from "react-redux";
-import { store } from "../../store";
+import { store } from "../store";
+import { ca } from "date-fns/locale";
 
 function Root() {
   const [isCreateTeamOpen, setIsCreateTeamOpen] = useState<boolean>(false);
@@ -19,6 +20,7 @@ function Root() {
   });
   isMobile(); // Custom hook to check if the screen is mobile
   closeMobileOnResize(); // Custom hook to close the mobile menu on sm screen
+  const apiUrl = "http://localhost:8080";
 
   function handleMobileMenu(): void {
     setOpenMobileMenu(!openMobileMenu);
@@ -37,7 +39,22 @@ function Root() {
 
   useEffect(() => {
     setCurrentPath(path);
+    console.log(apiUrl + "/teams");
   }, [path]);
+
+  useEffect(() => {
+    async function getTeams() {
+      try {
+        const response = await fetch(apiUrl + "/teams");
+        const data = await response.json();
+        console.log(data);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    }
+    const data = getTeams();
+    console.log(data);
+  }, []);
 
   return (
     <div id="page-container" className="flex flex-col min-h-screen">

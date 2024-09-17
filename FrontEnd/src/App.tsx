@@ -1,6 +1,6 @@
 import Calendar from "./components/pages/Calendar";
 import { Route, Routes } from "react-router-dom";
-import Root from "./components/pages/Root";
+import Root from "./components/Root";
 import Home from "./components/pages/Home";
 import Auth from "./components/pages/Auth/Auth";
 import Profile from "./components/pages/Profile/Profile";
