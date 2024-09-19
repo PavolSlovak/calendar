@@ -3,13 +3,13 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 const corsMiddleware = require("./middlewares/cors");
-const connectDB = require("./config/db");
+const connectToDB = require("./config/db");
 const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Connect to MongoDB
-connectDB();
+connectToDB();
 
 // Middlewares
 app.use(corsMiddleware);

@@ -54,7 +54,11 @@ function ForgorPassword() {
           {errors.email.message}
         </InfoBox>
       )}
-      {message && <InfoBox mode="success">{message}</InfoBox>}
+      {message && (
+        <InfoBox mode="success" severity="medium">
+          {message}
+        </InfoBox>
+      )}
       <input
         {...register("email")}
         type="email"

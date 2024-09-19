@@ -8,7 +8,6 @@ import useScreenController from "../store/hooks/useScreenController";
 import { Outlet, useLocation } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "../store";
-import { ca } from "date-fns/locale";
 
 function Root() {
   const [isCreateTeamOpen, setIsCreateTeamOpen] = useState<boolean>(false);
