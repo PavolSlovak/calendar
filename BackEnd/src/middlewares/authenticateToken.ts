@@ -31,4 +31,4 @@ const authenticateToken = async (
     return res.status(401).send("Unauthorized");
   }
 };
-module.exports = authenticateToken;
+export default authenticateToken;

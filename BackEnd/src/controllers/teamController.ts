@@ -6,13 +6,13 @@ interface CustomRequest extends Request {
   userId?: string;
 }
 
-const getTeams = async (req: CustomRequest, res: Response) => {
+export const getTeams = async (req: CustomRequest, res: Response) => {
   const { teamId } = req.params;
   const { userId } = req;
   try {
     const team = await Team.findById(teamId).populate("members", "createdBy");
     if (!team) {
-      return res.status(404).send("Team not found");
+      return res.status(404).json("Team not found");
     } else if (
       userId &&
       !team.members.includes(new mongoose.Types.ObjectId(userId))
@@ -23,6 +23,6 @@ const getTeams = async (req: CustomRequest, res: Response) => {
     }
   } catch (error) {
     console.error("Error fetching teams:", error);
-    return res.status(500).send("Error fetching teams");
+    return res.status(500).json("Internal server error");
   }
 };
