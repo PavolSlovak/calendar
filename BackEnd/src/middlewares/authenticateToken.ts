@@ -1,12 +1,13 @@
 import { Request, Response, NextFunction } from "express";
+import { User } from "@shared/schemas";
+import admin from "firebase-admin";
+import { DecodedIdToken } from "firebase-admin/auth";
 
-import { User } from "../../../shared/schemas";
-
-const admin = require("firebase-admin");
-
-type CustomRequest = Request & { user: User; userId: string };
-
-const authenticateToken = async (
+interface CustomRequest extends Request {
+  user?: User;
+  userId?: string;
+}
+export const authenticateToken = async (
   req: CustomRequest,
   res: Response,
   next: NextFunction
@@ -22,7 +23,7 @@ const authenticateToken = async (
     // Use Firebase Admin SDK to verify the token
     const decodedToken = await admin.auth().verifyIdToken(token);
     // Attach user info to the request object
-    req.user = decodedToken;
+    req.user = decodedToken as User & DecodedIdToken;
     req.userId = decodedToken.uid;
 
     next();
@@ -31,4 +32,3 @@ const authenticateToken = async (
     return res.status(401).send("Unauthorized");
   }
 };
-export default authenticateToken;
