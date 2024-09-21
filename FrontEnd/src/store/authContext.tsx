@@ -48,8 +48,25 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     return auth.createUserWithEmailAndPassword(email, password);
   }
 
-  function login(email: string, password: string) {
-    return auth.signInWithEmailAndPassword(email, password);
+  async function login(email: string, password: string) {
+    try {
+      const userCredential = await auth.signInWithEmailAndPassword(
+        email,
+        password
+      );
+      const user = userCredential.user;
+      if (!user) return;
+      // Get the ID token
+      const token = await user.getIdToken();
+      // Store the token in local storage
+      localStorage.setItem("token", token);
+      // Show or return the token
+      console.log("Token:", token);
+      return token;
+    } catch (error) {
+      console.error("Error logging in:", error);
+      throw error; // Rethrow or handle the error as needed
+    }
   }
   function logout() {
     return auth.signOut();
