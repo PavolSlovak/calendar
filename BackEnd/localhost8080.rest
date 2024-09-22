@@ -1,1 +1,44 @@
 GET http://localhost:8080/teams
+
+### Fetch all teams f
+
+GET http://localhost:8080/teams/N1PnDQYt4OdFEscmhg9feMIbHpI2
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImUwM2E2ODg3YWU3ZjNkMTAyNzNjNjRiMDU3ZTY1MzE1MWUyOTBiNzIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc3Rva2VtYW5hZ2VjYWxlbmRhci1kZXYiLCJhdWQiOiJzdG9rZW1hbmFnZWNhbGVuZGFyLWRldiIsImF1dGhfdGltZSI6MTcyNjk3NTU3NCwidXNlcl9pZCI6Ik4xUG5EUVl0NE9kRkVzY21oZzlmZU1JYkhwSTIiLCJzdWIiOiJOMVBuRFFZdDRPZEZFc2NtaGc5ZmVNSWJIcEkyIiwiaWF0IjoxNzI2OTc1NTc0LCJleHAiOjE3MjY5NzkxNzQsImVtYWlsIjoicGF2b2wuc2xvdmFrMTk5NUBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsicGF2b2wuc2xvdmFrMTk5NUBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.EDKjtRmLsbD6n4DWbN1SM-IHXab5uVBQAVSosg5wFCmHOOgoJitoag1tKHyaHo80DVW3a3_voUYEnIb8luZS__QEQ6zFb79kdb2VBIL9BX-b-doFf5rsigtbPeQCqz5o3l8BYZzUDKTuP37T_F1TT_GY3wNMcp6LcwfTcJmXBoExW99Qy15k8nrc9pLD4S0YZR4c0SqUPAeeYadX346mtCRggcolp2IOZFZ64fzjEaUo6scf4SX0Hnatj8HIchpHM72A1XVD9vxDE9Jou6PhGDnrYEQdLmu1ezX3ui-YBZR69LrXFP7-CFaVWBTJhCZA13eKCTV2QOMajnkowiELBQ
+{
+   "teamId": "N1PnDQYt4OdFEscmhg9feMIbHpI2"
+}
+### Create Team
+
+POST http://localhost:8080/teams/N1PnDQYt4OdFEscmhg9feMIbHpI2
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImUwM2E2ODg3YWU3ZjNkMTAyNzNjNjRiMDU3ZTY1MzE1MWUyOTBiNzIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc3Rva2VtYW5hZ2VjYWxlbmRhci1kZXYiLCJhdWQiOiJzdG9rZW1hbmFnZWNhbGVuZGFyLWRldiIsImF1dGhfdGltZSI6MTcyNjk3NTU3NCwidXNlcl9pZCI6Ik4xUG5EUVl0NE9kRkVzY21oZzlmZU1JYkhwSTIiLCJzdWIiOiJOMVBuRFFZdDRPZEZFc2NtaGc5ZmVNSWJIcEkyIiwiaWF0IjoxNzI2OTc1NTc0LCJleHAiOjE3MjY5NzkxNzQsImVtYWlsIjoicGF2b2wuc2xvdmFrMTk5NUBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsicGF2b2wuc2xvdmFrMTk5NUBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.EDKjtRmLsbD6n4DWbN1SM-IHXab5uVBQAVSosg5wFCmHOOgoJitoag1tKHyaHo80DVW3a3_voUYEnIb8luZS__QEQ6zFb79kdb2VBIL9BX-b-doFf5rsigtbPeQCqz5o3l8BYZzUDKTuP37T_F1TT_GY3wNMcp6LcwfTcJmXBoExW99Qy15k8nrc9pLD4S0YZR4c0SqUPAeeYadX346mtCRggcolp2IOZFZ64fzjEaUo6scf4SX0Hnatj8HIchpHM72A1XVD9vxDE9Jou6PhGDnrYEQdLmu1ezX3ui-YBZR69LrXFP7-CFaVWBTJhCZA13eKCTV2QOMajnkowiELBQ
+Content-Type: application/json
+
+{
+   "teamName": "Team 1",
+   "invitations": ["pavol@pavol.com", "pavol.slovak@gmail.com"],
+   "members": [
+     { "id": "N1PnDQYt4OdFEscmhg9feMIbHpI2", "color": "#FF5733" }
+   ],
+   "weekSchedule": [
+        {
+            "day": "Monday",
+            "shifts": [
+                {
+                    "memberId": "N1PnDQYt4OdFEscmhg9feMIbHpI2",
+                    "startTime": "08:00",
+                    "endTime": "12:00"
+                },
+                {
+                    "memberId": "N1PnDQYt4OdFEscmhg9feMIbHpI2",
+                    "startTime": "12:00",
+                    "endTime": "16:00"
+                }
+            ]
+        }  
+    ],
+   "createdBy": { "id": "N1PnDQYt4OdFEscmhg9feMIbHpI2" },
+   "createdAt": "2021-07-22T15:00:00.000Z",
+   "updatedAt": "2021-07-22T15:00:00.000Z"
+}
+
+###

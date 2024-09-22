@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { User } from "@shared/schemas";
+import { User } from "../schemas/schemas.js";
 import admin from "firebase-admin";
 import { DecodedIdToken } from "firebase-admin/auth";
 
@@ -24,8 +24,7 @@ export const authenticateToken = async (
     const decodedToken = await admin.auth().verifyIdToken(token);
     // Attach user info to the request object
     req.user = decodedToken as User & DecodedIdToken;
-    req.userId = decodedToken.uid;
-
+    console.log("decodedToken", decodedToken);
     next();
   } catch (error) {
     console.error("Error verifying token:", error);
