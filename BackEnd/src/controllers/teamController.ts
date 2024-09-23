@@ -8,19 +8,22 @@ export const findUser = async (req: Request, res: Response) => {};
 
 export const createTeam = async (req: CRequest, res: Response) => {
   try {
-    const teamData = TeamSchema.parse(req.body);
+    const userData = req.user;
+    const teamData = req.body;
+    console.log("userData", userData);
 
+    console.log("teamData", teamData);
+    /* jebe */
     const team = new Team({
-      teamName: teamData.teamName,
-      members: [new mongoose.Types.ObjectId(teamData.id)],
-      invitations: teamData.invitations.map(
-        (email) => new mongoose.Types.ObjectId(email)
-      ),
-      createdBy: new mongoose.Types.ObjectId(teamData.id),
-      weekSchedule: req.body.weekSchedule,
+      /*  teamName: teamData.teamName,
+      members: [new mongoose.Types.ObjectId(userData.uid)],
+      invitations: [...teamData.invitations],
+      createdBy: new mongoose.Types.ObjectId(userData.uid),
+      weekSchedule: [...teamData.weekSchedule],
       createdAt: new Date(),
-      updatedAt: new Date(),
+      updatedAt: new Date(), */
     });
+    console.log("team", team);
     await team.save();
     res.status(201).send(team);
   } catch (error) {
