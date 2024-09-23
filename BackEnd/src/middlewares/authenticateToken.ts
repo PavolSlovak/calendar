@@ -16,7 +16,6 @@ export const authenticateToken = async (
     // Extract the authorization header
     const authHeader = req.headers.authorization;
     const token = authHeader && authHeader.split(" ")[1];
-    console.log(token);
     if (!token) {
       return res.status(401).send("Unauthorized");
     }
@@ -24,7 +23,10 @@ export const authenticateToken = async (
     const decodedToken = await admin.auth().verifyIdToken(token);
     // Attach user info to the request object
     req.user = decodedToken as User & DecodedIdToken;
-    console.log("decodedToken", decodedToken);
+    console.log(
+      "Successfully authenticated user, decoded token:",
+      decodedToken
+    );
     next();
   } catch (error) {
     console.error("Error verifying token:", error);
