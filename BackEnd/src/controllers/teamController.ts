@@ -2,7 +2,8 @@ import { Team } from "../models/team.js";
 import mongoose from "mongoose";
 import { Request, Response } from "express";
 import { Team as TeamSchema } from "../schemas/schemas.js";
-type CRequest = Request & { user: { id: string; color: string } };
+import { DecodedIdToken } from "firebase-admin/auth";
+type CRequest = Request & DecodedIdToken;
 
 export const createTeam = async (req: CRequest, res: Response) => {
   try {
@@ -13,9 +14,9 @@ export const createTeam = async (req: CRequest, res: Response) => {
     console.log("teamData", teamData);
     const team = new Team({
       teamName: teamData.teamName,
-      members: [new mongoose.Types.ObjectId(userData.id)],
+      members: [userData.uid],
       invitations: [...teamData.invitations],
-      createdBy: new mongoose.Types.ObjectId(userData.id),
+      createdBy: userData.uid,
       weekSchedule: [...teamData.weekSchedule],
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -27,5 +28,17 @@ export const createTeam = async (req: CRequest, res: Response) => {
   } catch (error) {
     console.error("Error creating team:", error);
     res.status(500).send("Error creating team");
+  }
+};
+
+export const fetchTeams = async (req: CRequest, res: Response) => {
+  try {
+    const userData = req.user;
+    const teams = await Team.find({ members: userData.uid });
+    console.log("Teams fetched successfully:", teams);
+    res.status(200).send(teams);
+  } catch (error) {
+    console.error("Error fetching teams:", error);
+    res.status(500).send("Error fetching teams");
   }
 };
