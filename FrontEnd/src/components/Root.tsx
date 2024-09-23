@@ -40,7 +40,7 @@ function Root() {
     setCurrentPath(path);
     console.log(apiUrl + "/teams");
   }, [path]);
-
+  /* 
   useEffect(() => {
     async function getTeams() {
       try {
@@ -53,7 +53,7 @@ function Root() {
     }
     const data = getTeams();
     console.log(data);
-  }, []);
+  }, []); */
 
   return (
     <div id="page-container" className="flex flex-col min-h-screen">

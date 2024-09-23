@@ -11,6 +11,7 @@ import { serializeUser } from "../utils/serializeUser";
 type AuthState = {
   currentUser: User | null;
 };
+
 type AuthContextType = AuthState & {
   signup: (email: string, password: string) => void;
   login: (email: string, password: string) => void;
@@ -41,7 +42,25 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       setCurrentUser(serializedUser);
       setLoading(false);
     });
-    return unsubscribe;
+
+    // firebase ID token listener to detect token expiration or changes
+    const unsubscribeFromIdToken = auth.onIdTokenChanged(async (user) => {
+      if (user) {
+        const token = await user.getIdToken();
+        localStorage.setItem("token", token); // Update token in local storage
+        console.log("Token refreshed or changed:", token);
+      } else {
+        // User is signed out or token expired, clear the token and handle logout
+        localStorage.removeItem("token");
+        setCurrentUser(null); // Optionally, you can log out the user here
+        console.log("Token expired or user logged out");
+      }
+    });
+
+    return () => {
+      unsubscribe();
+      unsubscribeFromIdToken();
+    };
   }, []);
 
   function signup(email: string, password: string) {

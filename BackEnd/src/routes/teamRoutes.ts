@@ -10,6 +10,6 @@ const router = express.Router();
 /* router.get("/", (req, res) => {
   res.send("GET request to the homepage");
 }); */
-router.post("/create", authenticateToken, createTeam);
+router.post("/", authenticateToken, createTeam);
 
 export { router };

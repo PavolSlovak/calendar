@@ -1,16 +1,17 @@
+import e from "express";
 import mongoose from "mongoose";
 
 const teamSchema = new mongoose.Schema({
   teamName: { type: String, required: true },
-  members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  invitations: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  members: [{ type: String }],
+  invitations: [{ type: String }],
+  createdBy: String,
   weekSchedule: [
     {
-      day: String,
+      day: { type: String, enum: ["Mon", "Tue", "Wed", "Thu", "Fri"] },
       shifts: [
         {
-          memberId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+          memberId: String,
           startTime: String,
           endTime: String,
         },
