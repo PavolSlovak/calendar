@@ -1,8 +1,5 @@
 import { Menu, Transition } from "@headlessui/react";
-import {
-  ChevronDoubleDownIcon,
-  DotsVerticalIcon,
-} from "@heroicons/react/outline";
+import { DotsVerticalIcon } from "@heroicons/react/outline";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/solid";
 import {
   add,
@@ -11,7 +8,6 @@ import {
   format,
   getDay,
   isEqual,
-  isSameDay,
   isSameMonth,
   isToday,
   parse,
@@ -23,8 +19,8 @@ import { RootState as ReduxRootState } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
 import { Shifts, Team, User } from "../../lib/types";
 import { calendarSlice } from "../../store/calendar-slice";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "../../firebase";
+import { fetchTeams } from "../../utils/http";
+import { useAuth } from "../../store/authContext";
 
 const comments = [
   {
@@ -118,6 +114,10 @@ export default function Example() {
     );
     selectedTeam && dispatch(setActiveTeam(selectedTeam));
   };
+  const { currentUser } = useAuth();
+  useEffect(() => {
+    if (currentUser) fetchTeams({ teamId: currentUser.uid });
+  }, []);
 
   return (
     <div className="pt-5">
