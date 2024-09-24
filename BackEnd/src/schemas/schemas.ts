@@ -83,7 +83,7 @@ const wScheduleSchema = z.array(
 
 export type WeekSchema = z.infer<typeof wScheduleSchema>;
 
-export const Team = z.object({
+const Team = z.object({
   id: z.string(),
   teamName: z.string().min(3, "Team name must be at least 3 characters!"),
   invitations: z.array(z.string().email()),

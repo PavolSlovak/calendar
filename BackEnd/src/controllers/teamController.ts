@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import { Request, Response } from "express";
 import { Team as TeamSchema } from "../schemas/schemas.js";
 import { DecodedIdToken } from "firebase-admin/auth";
+import admin from "../config/firebase.js";
 type CRequest = Request & DecodedIdToken;
 
 export const createTeam = async (req: CRequest, res: Response) => {
@@ -40,5 +41,23 @@ export const fetchTeams = async (req: CRequest, res: Response) => {
   } catch (error) {
     console.error("Error fetching teams:", error);
     res.status(500).send("Error fetching teams");
+  }
+};
+export const fetchMembers = async (req: Request, res: Response) => {
+  const teamId = req.params.teamId;
+  console.log("teamId", teamId);
+  try {
+    const team = await Team.findById(teamId);
+    const membersData = await Promise.all(
+      team.members.map(async (memberId) => {
+        const userData = await admin.auth().getUser(memberId);
+        return userData;
+      })
+    );
+
+    res.status(200).send(membersData);
+  } catch (error) {
+    console.error("Error fetching members:", error);
+    res.status(500).send("Error fetching members");
   }
 };
