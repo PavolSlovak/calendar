@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState as ReduxRootState } from "../../store";
-import { teamSlice } from "../../store/teams-slice";
+import { RootState as ReduxRootState } from "../store";
+import { teamSlice } from "../store/teams-slice";
 import { CalendarIcon, ChevronLeftIcon } from "@heroicons/react/outline";
 import { AnimatePresence, motion } from "framer-motion";
-import { MemberSchema } from "../../lib/types";
-import { scheduleSlice } from "../../store/schedule-slice";
+import { MemberSchema } from "../lib/types";
+import { scheduleSlice } from "../store/schedule-slice";
 
 export default function CreateSchedule() {
   const teams = useSelector((state: ReduxRootState) => state.teams.teams);

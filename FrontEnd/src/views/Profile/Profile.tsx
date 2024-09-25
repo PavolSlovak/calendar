@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useAuth } from "../../../store/authContext";
-import Card from "../../UI/Card";
-import InfoBox from "../../UI/InfoBox";
+import { useAuth } from "../../store/authContext";
+import Card from "../../components/UI/Card";
+import InfoBox from "../../components/UI/InfoBox";
 import { Link, useNavigate } from "react-router-dom";
 
 function Profile() {

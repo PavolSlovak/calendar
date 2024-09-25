@@ -19,6 +19,10 @@ export const teamSlice = createSlice({
   name: "teams",
   initialState,
   reducers: {
+    setTeams: (state, action: PayloadAction<Team[]>) => {
+      state.teams = action.payload;
+    },
+
     updateTeam: (state, action: PayloadAction<Team>) => {
       const team = state.teams.find((team) => team.id === action.payload.id);
       if (!team) return;
@@ -90,39 +94,7 @@ export const teamSlice = createSlice({
 
       team.weekSchedule = updatedWeekSchedule;
     },
-    /*     addToSchedule: (state, action: PayloadAction<UpdateScheduleProps>) => {
-      const team = state.teams.find(
-        (team) => team.id === action.payload.teamId
-      );
-      if (!team) return;
-
-      const updatedWeekSchedule = team.weekSchedule.map((weekDay) => {
-        if (weekDay.day === action.payload.day) {
-          const isMemberScheduled = weekDay.shifts.find(
-            (shift) => shift.memberId === action.payload.memberId
-          );
-          return {
-            ...weekDay,
-
-            shifts: isMemberScheduled
-              ? weekDay.shifts.filter(
-                  (shift) => shift.memberId !== action.payload.memberId
-                )
-              : [
-                  ...weekDay.shifts,
-                  {
-                    memberId: action.payload.memberId,
-                    startTime: action.payload.startTime,
-                    endTime: action.payload.endTime,
-                  },
-                ],
-          };
-        }
-        return weekDay;
-      });
-
-      team.weekSchedule = updatedWeekSchedule;
-    }, */
   },
 });
-export const { addTeam, addToSchedule, updateSchedule } = teamSlice.actions;
+export const { setTeams, addTeam, addToSchedule, updateSchedule } =
+  teamSlice.actions;

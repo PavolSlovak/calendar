@@ -15,10 +15,10 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
 // Routes
 import { router as teamRoutes } from "./routes/teamRoutes.js";
-app.use("/teams", teamRoutes);
+app.use("/api/teams", teamRoutes);
 
 import { router as userRoutes } from "./routes/userRoutes.js";
-app.use("/users", userRoutes);
+app.use("/api/users", userRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

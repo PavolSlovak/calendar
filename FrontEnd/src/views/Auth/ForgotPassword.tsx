@@ -1,9 +1,9 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { resetPasswordSchema, TResetPasswordSchema } from "../../../lib/types";
-import { useAuth } from "../../../store/authContext";
+import { resetPasswordSchema, TResetPasswordSchema } from "../../lib/types";
+import { useAuth } from "../../store/authContext";
 import { useEffect, useState } from "react";
-import InfoBox from "../../UI/InfoBox";
+import InfoBox from "../../components/UI/InfoBox";
 import { Link } from "react-router-dom";
 
 function ForgorPassword() {

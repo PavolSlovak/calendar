@@ -19,7 +19,6 @@ function Root() {
   });
   isMobile(); // Custom hook to check if the screen is mobile
   closeMobileOnResize(); // Custom hook to close the mobile menu on sm screen
-  const apiUrl = "http://localhost:8080";
 
   function handleMobileMenu(): void {
     setOpenMobileMenu(!openMobileMenu);
@@ -34,26 +33,6 @@ function Root() {
   const [currentPath, setCurrentPath] = useState<string | undefined>();
 
   const location = useLocation();
-  const path: string = location.pathname;
-
-  useEffect(() => {
-    setCurrentPath(path);
-    console.log(apiUrl + "/teams");
-  }, [path]);
-  /* 
-  useEffect(() => {
-    async function getTeams() {
-      try {
-        const response = await fetch(apiUrl + "/teams");
-        const data = await response.json();
-        console.log(data);
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    }
-    const data = getTeams();
-    console.log(data);
-  }, []); */
 
   return (
     <div id="page-container" className="flex flex-col min-h-screen">

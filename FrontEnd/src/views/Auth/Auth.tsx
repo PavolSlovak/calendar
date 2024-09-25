@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Signup from "./Signup";
 import Login from "./Login";
-import Card from "../../UI/Card";
+import Card from "../../components/UI/Card";
 import ForgotPassword from "./ForgotPassword";
 
 function Auth() {

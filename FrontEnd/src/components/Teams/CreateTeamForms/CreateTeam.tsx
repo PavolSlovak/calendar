@@ -62,8 +62,6 @@ function CreateTeam({ onDone }: CreateTeamProps) {
   function handleSubmit() {
     setIsSubmitting(true);
     // TODO - Add the new team to the database
-    new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log("New team:", newTeam);
 
     // Extract necessary fields from the currentUser object
     const userToAdd: MemberSchema = {

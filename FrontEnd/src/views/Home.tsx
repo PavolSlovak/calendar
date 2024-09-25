@@ -1,8 +1,8 @@
-import { useAuth } from "../../store/authContext";
-import Article from "../UI/Article";
-import MainBanner from "../UI/MainBanner";
+import { useAuth } from "../store/authContext";
+import Article from "../components/UI/Article";
+import MainBanner from "../components/UI/MainBanner";
 import { useNavigate } from "react-router-dom";
-import InfoBox from "../UI/InfoBox";
+import InfoBox from "../components/UI/InfoBox";
 import { useState } from "react";
 
 function Home() {

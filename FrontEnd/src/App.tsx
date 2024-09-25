@@ -1,12 +1,12 @@
-import Calendar from "./components/pages/Calendar";
+import Calendar from "./views/Calendar";
 import { Route, Routes } from "react-router-dom";
 import Root from "./components/Root";
-import Home from "./components/pages/Home";
-import Auth from "./components/pages/Auth/Auth";
-import Profile from "./components/pages/Profile/Profile";
+import Home from "./views/Home";
+import Auth from "./views/Auth/Auth";
+import Profile from "./views/Profile/Profile";
 import PrivateRoute from "./components/Navigation/PrivateRoute";
-import UpdateProfile from "./components/pages/Profile/UpdateProfile";
-import CreateSchedule from "./components/pages/CreateSchedule";
+import UpdateProfile from "./views/Profile/UpdateProfile";
+import CreateSchedule from "./views/CreateSchedule";
 
 function App() {
   return (

@@ -1,11 +1,11 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TUpdateProfileSchema, updateProfileSchema } from "../../../lib/types";
-import { useAuth } from "../../../store/authContext";
+import { TUpdateProfileSchema, updateProfileSchema } from "../../lib/types";
+import { useAuth } from "../../store/authContext";
 import { useEffect, useState } from "react";
-import InfoBox from "../../UI/InfoBox";
+import InfoBox from "../../components/UI/InfoBox";
 import { Link, useNavigate } from "react-router-dom";
-import Card from "../../UI/Card";
+import Card from "../../components/UI/Card";
 
 function UpdateProfile() {
   const {
