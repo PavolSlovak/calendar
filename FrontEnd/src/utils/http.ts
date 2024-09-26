@@ -38,12 +38,10 @@ type TAdditionaUserData = {
 
 export async function signupUser(additionalUserData: TAdditionaUserData) {
   // Save additional user data to MongoDB
-  const token = localStorage.getItem("token");
   const response = await fetch(VITE_API_URL + "users", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(additionalUserData),
   });
