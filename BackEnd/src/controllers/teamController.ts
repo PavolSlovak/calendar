@@ -35,9 +35,13 @@ export const createTeam = async (req: CRequest, res: Response) => {
 export const fetchTeams = async (req: CRequest, res: Response) => {
   try {
     const userData = req.user;
-    const teams = await Team.find({ members: userData.uid }).populate(
-      "members"
-    );
+    const teams = await Team.find({ members: userData.uid });
+
+    if (!teams) {
+      console.log("No teams found");
+      res.status(404).send("No teams found");
+      return;
+    }
 
     console.log("Teams fetched successfully:", teams);
     res.status(200).send(teams);

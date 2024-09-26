@@ -13,6 +13,7 @@ dist-ssr
 *.local
 .env.local
 .env
+*.json
 
 
 # Editor directories and files

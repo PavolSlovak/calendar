@@ -5,6 +5,8 @@ import { useAuth } from "../../store/authContext";
 import { useState } from "react";
 import InfoBox from "../../components/UI/InfoBox";
 import { Link, useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { signupUser } from "../../utils/http";
 
 function Signup() {
   const {
@@ -15,16 +17,30 @@ function Signup() {
   } = useForm<TSignUpSchema>({
     resolver: zodResolver(signUpSchema),
   });
+
   const navigate = useNavigate();
   const [signupError, setSignupError] = useState<string | null>(null);
   const { signup } = useAuth();
   const inputStyles = "px-4 p-2 mt-4 rounded border border-black";
+
   async function onSubmit(data: TSignUpSchema) {
     // useFormHook handleSubmit function already prevents default
     try {
       // TODO : submit to server
       setSignupError(null);
-      await signup(data.email, data.password);
+
+      const userCredentials: any = await signup(data.email, data.password);
+
+      const uid = userCredentials.user?.uid;
+      const additionalUserData = {
+        uid: uid,
+        role: "user",
+        isMember: [],
+        colorStamp: "#" + Math.floor(Math.random() * 16777215).toString(16),
+      };
+
+      await signupUser(additionalUserData); // Save additional user data to MongoDB
+
       navigate("/"); // Redirect to home page
     } catch (error) {
       console.error("Login error:", error);

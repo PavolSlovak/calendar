@@ -29,3 +29,32 @@ export async function fetchTeams() {
 
   return teams;
 }
+type TAdditionaUserData = {
+  uid: string;
+  role: string;
+  isMember: string[];
+  colorStamp: string;
+};
+
+export async function signupUser(additionalUserData: TAdditionaUserData) {
+  // Save additional user data to MongoDB
+  const token = localStorage.getItem("token");
+  const response = await fetch(VITE_API_URL + "users", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(additionalUserData),
+  });
+
+  if (!response.ok) {
+    const error = new Error("An error occurred while signing up the user");
+    (error as FetchError).code = response.status;
+    (error as FetchError).info = await response.text();
+    throw error;
+  }
+  console.log("Additional user data saved successfully", additionalUserData);
+  const user = await response.json();
+  return user;
+}
