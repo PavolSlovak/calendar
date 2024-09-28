@@ -33,7 +33,9 @@ function Root() {
   const [currentPath, setCurrentPath] = useState<string | undefined>();
 
   const location = useLocation();
-
+  useEffect(() => {
+    setCurrentPath(location.pathname);
+  }, [location]);
   return (
     <div id="page-container" className="flex flex-col min-h-screen">
       <Provider store={store}>

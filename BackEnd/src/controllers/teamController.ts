@@ -35,6 +35,7 @@ export const createTeam = async (req: CRequest, res: Response) => {
 export const fetchTeams = async (req: CRequest, res: Response) => {
   try {
     const userData = req.user;
+    console.log("userData", userData);
     const teams = await Team.find({ members: userData.uid });
 
     if (!teams) {

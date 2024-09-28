@@ -10,11 +10,11 @@ Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImUwM2E2ODg3YWU3ZjNkMTAyNzNjNj
 ### Create Team
 
 POST http://localhost:8080/api/teams
-Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImUwM2E2ODg3YWU3ZjNkMTAyNzNjNjRiMDU3ZTY1MzE1MWUyOTBiNzIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc3Rva2VtYW5hZ2VjYWxlbmRhci1kZXYiLCJhdWQiOiJzdG9rZW1hbmFnZWNhbGVuZGFyLWRldiIsImF1dGhfdGltZSI6MTcyNjU0MzA2NywidXNlcl9pZCI6Ik4xUG5EUVl0NE9kRkVzY21oZzlmZU1JYkhwSTIiLCJzdWIiOiJOMVBuRFFZdDRPZEZFc2NtaGc5ZmVNSWJIcEkyIiwiaWF0IjoxNzI3MDU5NzkzLCJleHAiOjE3MjcwNjMzOTMsImVtYWlsIjoicGF2b2wuc2xvdmFrMTk5NUBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsicGF2b2wuc2xvdmFrMTk5NUBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.RLlLq1ixjAnQOFAhEKyqjyvSMIsFj_KILz-qi8FUnKHK19O_iPk_nfKfgAAbXNkFr_Bfaq8MlnzVVTHUdjrj6-Ra1LFt8cf2FzA3jQJbWjaAWwEdjnYASgBoZjnOzatnlgAcvKdANUQc41TFajw3gVrQgNjP-qqIFgi0604v6BBpiJWWgUu4tRdLIxtnE4jO0kgd_JO2D65SF9mt9Sur3PwrekOjO5R8Pwd1k77xRJylbxrB85NJ5VjpxXFKX75rINWO7Mq2bw8VpqHxfp6rx5u8W9FB5_wLtK6EgNKJX1vnPEB2wBFkA8-dPMUXksEw1VnB4u1RMqisdLGW64Ol8A
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjZjYzNmY2I2NDAzMjc2MGVlYjljMjZmNzdkNDA3YTY5NGM1MmIwZTMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc3Rva2VtYW5hZ2VjYWxlbmRhci1kZXYiLCJhdWQiOiJzdG9rZW1hbmFnZWNhbGVuZGFyLWRldiIsImF1dGhfdGltZSI6MTcyNzUwMTc4NCwidXNlcl9pZCI6IkhJVTcwNjd4RFdaYVJkQUdHc1VLRmNYTUZFNzIiLCJzdWIiOiJISVU3MDY3eERXWmFSZEFHR3NVS0ZjWE1GRTcyIiwiaWF0IjoxNzI3NTE3NDQ2LCJleHAiOjE3Mjc1MjEwNDYsImVtYWlsIjoidHRAdHQuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInR0QHR0LmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.gRCeTpzXcpFtG_qR9xWMeP7CPaOS11J9AulmHS72SxDpGDKeFYKA2yn6TIgz-pAymd6sVZI95QyW-WohxvIQgpXGyrMKltg4e0AaXc0F_ahkZit54DI30dxtV-k4GLLz772iBJDrzRqhAXAZsw3bGws2Y7Dr0OH5Jc7Tc6qdX-SSey794NwJexqOSPPNeIF_E7Zxcu1pcNG7KGpbWIb18bVP6gMnttJDFJ4idLlhnn1QqwOUpw4RKHH4pJDVrLaFTi-g1vtdCF_R-DuceIrFqFtMe4xRvM2_S-4gqs4EEKCXROo2rmT7Ky-ohhshuL8lFLW6xXxZVdPGXuJJTJNxYw
 Content-Type: application/json
 
 {
-   "teamName": "Team 1",
+   "teamName": "Team 222",
    "invitations": ["pavol@pavol.com", "pavol.slovak@gmail.com"],
    "members": [
      { "id": "N1PnDQYt4OdFEscmhg9feMIbHpI2", "color": "#FF5733" }
@@ -24,26 +24,26 @@ Content-Type: application/json
             "day": "Mon",
             "shifts": [
                 {
-                    "memberId": "N1PnDQYt4OdFEscmhg9feMIbHpI2",
+                    "memberId": "HIU7067xDWZaRdAGGsUKFcXMFE72",
                     "startTime": "08:00",
                     "endTime": "12:00"
                 },
                 {
-                    "memberId": "N1PnDQYt4OdFEscmhg9feMIbHpI2",
+                    "memberId": "HIU7067xDWZaRdAGGsUKFcXMFE72",
                     "startTime": "12:00",
                     "endTime": "16:00"
                 }
             ]
         }  
     ],
-   "createdBy": { "id": "N1PnDQYt4OdFEscmhg9feMIbHpI2" },
+   "createdBy": { "id": "HIU7067xDWZaRdAGGsUKFcXMFE72" },
    "createdAt": "2021-07-22T15:00:00.000Z",
    "updatedAt": "2021-07-22T15:00:00.000Z"
 }
 
 ### Fetch teams where user is a member
 GET http://localhost:8080/api/teams
-Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImUwM2E2ODg3YWU3ZjNkMTAyNzNjNjRiMDU3ZTY1MzE1MWUyOTBiNzIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc3Rva2VtYW5hZ2VjYWxlbmRhci1kZXYiLCJhdWQiOiJzdG9rZW1hbmFnZWNhbGVuZGFyLWRldiIsImF1dGhfdGltZSI6MTcyNjU0MzA2NywidXNlcl9pZCI6Ik4xUG5EUVl0NE9kRkVzY21oZzlmZU1JYkhwSTIiLCJzdWIiOiJOMVBuRFFZdDRPZEZFc2NtaGc5ZmVNSWJIcEkyIiwiaWF0IjoxNzI3MDU5NzkzLCJleHAiOjE3MjcwNjMzOTMsImVtYWlsIjoicGF2b2wuc2xvdmFrMTk5NUBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsicGF2b2wuc2xvdmFrMTk5NUBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.RLlLq1ixjAnQOFAhEKyqjyvSMIsFj_KILz-qi8FUnKHK19O_iPk_nfKfgAAbXNkFr_Bfaq8MlnzVVTHUdjrj6-Ra1LFt8cf2FzA3jQJbWjaAWwEdjnYASgBoZjnOzatnlgAcvKdANUQc41TFajw3gVrQgNjP-qqIFgi0604v6BBpiJWWgUu4tRdLIxtnE4jO0kgd_JO2D65SF9mt9Sur3PwrekOjO5R8Pwd1k77xRJylbxrB85NJ5VjpxXFKX75rINWO7Mq2bw8VpqHxfp6rx5u8W9FB5_wLtK6EgNKJX1vnPEB2wBFkA8-dPMUXksEw1VnB4u1RMqisdLGW64Ol8A
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjZjYzNmY2I2NDAzMjc2MGVlYjljMjZmNzdkNDA3YTY5NGM1MmIwZTMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc3Rva2VtYW5hZ2VjYWxlbmRhci1kZXYiLCJhdWQiOiJzdG9rZW1hbmFnZWNhbGVuZGFyLWRldiIsImF1dGhfdGltZSI6MTcyNzUwMTc4NCwidXNlcl9pZCI6IkhJVTcwNjd4RFdaYVJkQUdHc1VLRmNYTUZFNzIiLCJzdWIiOiJISVU3MDY3eERXWmFSZEFHR3NVS0ZjWE1GRTcyIiwiaWF0IjoxNzI3NTE3NDQ2LCJleHAiOjE3Mjc1MjEwNDYsImVtYWlsIjoidHRAdHQuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInR0QHR0LmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.gRCeTpzXcpFtG_qR9xWMeP7CPaOS11J9AulmHS72SxDpGDKeFYKA2yn6TIgz-pAymd6sVZI95QyW-WohxvIQgpXGyrMKltg4e0AaXc0F_ahkZit54DI30dxtV-k4GLLz772iBJDrzRqhAXAZsw3bGws2Y7Dr0OH5Jc7Tc6qdX-SSey794NwJexqOSPPNeIF_E7Zxcu1pcNG7KGpbWIb18bVP6gMnttJDFJ4idLlhnn1QqwOUpw4RKHH4pJDVrLaFTi-g1vtdCF_R-DuceIrFqFtMe4xRvM2_S-4gqs4EEKCXROo2rmT7Ky-ohhshuL8lFLW6xXxZVdPGXuJJTJNxYw
 Content-Type: application/json
 
 ### Find User by ID:
@@ -53,6 +53,6 @@ Content-Type: application/json
 
 
 ### Fetch members of a team
-GET http://localhost:8080/api/teams
-Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImUwM2E2ODg3YWU3ZjNkMTAyNzNjNjRiMDU3ZTY1MzE1MWUyOTBiNzIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc3Rva2VtYW5hZ2VjYWxlbmRhci1kZXYiLCJhdWQiOiJzdG9rZW1hbmFnZWNhbGVuZGFyLWRldiIsImF1dGhfdGltZSI6MTcyNzEzNzQ5MSwidXNlcl9pZCI6Ik4xUG5EUVl0NE9kRkVzY21oZzlmZU1JYkhwSTIiLCJzdWIiOiJOMVBuRFFZdDRPZEZFc2NtaGc5ZmVNSWJIcEkyIiwiaWF0IjoxNzI3MzIzNzY3LCJleHAiOjE3MjczMjczNjcsImVtYWlsIjoicGF2b2wuc2xvdmFrMTk5NUBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsicGF2b2wuc2xvdmFrMTk5NUBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.Hw6i9mf79327ejkjnJw0cMRFT57lsGcm8A_S4sHuybUsjAShiW7I5TWtjxHerN7abtgydI2dPKbgz3Sm7qH_QsDJIoFEeHu6zsbbsslHO3EJvjebK9u6yvsV01n-Jm4fz7tOqDe7Xiwaqa2qqt52rljmVd2KSJ_hwzs1Sze_p9qqT7YbAwftemGEEXPqbh3jJHYF36barrjyJtFD9vljz8UbEU8EfFkIcLYLWI-ylCT5BxfhWm2QXIYjl_l5FtCU_SCJE3agx2x3Ts5GcA7Cn2znerzfA5GB-RfzGctXCbtC52OnEUtlygO794SKYsPmlQPQCJPSGNuwpzKoLaOjFA
+GET http://localhost:8080/api/teams/66f4dec0a9a67c0683a27125
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjZjYzNmY2I2NDAzMjc2MGVlYjljMjZmNzdkNDA3YTY5NGM1MmIwZTMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc3Rva2VtYW5hZ2VjYWxlbmRhci1kZXYiLCJhdWQiOiJzdG9rZW1hbmFnZWNhbGVuZGFyLWRldiIsImF1dGhfdGltZSI6MTcyNzUwMTc4NCwidXNlcl9pZCI6IkhJVTcwNjd4RFdaYVJkQUdHc1VLRmNYTUZFNzIiLCJzdWIiOiJISVU3MDY3eERXWmFSZEFHR3NVS0ZjWE1GRTcyIiwiaWF0IjoxNzI3NTE3NDQ2LCJleHAiOjE3Mjc1MjEwNDYsImVtYWlsIjoidHRAdHQuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInR0QHR0LmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.gRCeTpzXcpFtG_qR9xWMeP7CPaOS11J9AulmHS72SxDpGDKeFYKA2yn6TIgz-pAymd6sVZI95QyW-WohxvIQgpXGyrMKltg4e0AaXc0F_ahkZit54DI30dxtV-k4GLLz772iBJDrzRqhAXAZsw3bGws2Y7Dr0OH5Jc7Tc6qdX-SSey794NwJexqOSPPNeIF_E7Zxcu1pcNG7KGpbWIb18bVP6gMnttJDFJ4idLlhnn1QqwOUpw4RKHH4pJDVrLaFTi-g1vtdCF_R-DuceIrFqFtMe4xRvM2_S-4gqs4EEKCXROo2rmT7Ky-ohhshuL8lFLW6xXxZVdPGXuJJTJNxYw
 Content-Type: application/json
