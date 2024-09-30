@@ -8,7 +8,11 @@ import User from "../models/user.js";
 type CRequest = Request & DecodedIdToken;
 
 const generateColor = () => {
-  const color = "#" + Math.floor(Math.random() * 16777215).toString(16);
+  const letters = "0123456789ABCDEF";
+  let color = "#";
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
   return color;
 };
 
@@ -17,20 +21,17 @@ export const createTeam = async (req: CRequest, res: Response) => {
     const firebaseUserData = req.user;
     const teamData = req.body;
 
-    const mongoUserData = await User.findOne({ uid: firebaseUserData.uid });
-
-    console.log("teamData", teamData);
     const team = new Team({
       teamName: teamData.teamName,
       members: [
         {
-          id: mongoUserData._id,
+          uid: firebaseUserData.uid,
           color: generateColor(),
         },
       ],
 
       invitations: [...teamData.invitations],
-      createdBy: mongoUserData._id,
+      createdBy: firebaseUserData.uid,
       weekSchedule: [...teamData.weekSchedule],
       createdAt: new Date(),
       updatedAt: new Date(),
