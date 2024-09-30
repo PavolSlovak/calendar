@@ -30,10 +30,11 @@ export async function fetchTeams() {
   return teams;
 }
 type TAdditionaUserData = {
-  uid: string;
+  firebaseUID: string;
+  email: string;
+  displayName: string;
+  photoURL: string;
   role: string;
-  isMember: string[];
-  colorStamp: string;
 };
 
 export async function signupUser(additionalUserData: TAdditionaUserData) {

@@ -20,10 +20,11 @@ export const createUser = async (req: Request, res: Response) => {
 
     // Create a new user instance based on the incoming data
     const newUser = new User({
-      uid: userData.uid,
-      isMember: userData.isMember,
+      firebaseUID: userData.firebaseUID,
+      displayName: userData.displayName,
+      email: userData.email,
+      photoURL: userData.photoURL,
       role: userData.role,
-      colorStamp: userData.colorStamp,
     });
 
     // Save the new user to the database

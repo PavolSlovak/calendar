@@ -5,7 +5,6 @@ import { useAuth } from "../../store/authContext";
 import { useState } from "react";
 import InfoBox from "../../components/UI/InfoBox";
 import { Link, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
 import { signupUser } from "../../utils/http";
 
 function Signup() {
@@ -31,12 +30,12 @@ function Signup() {
 
       const userCredentials: any = await signup(data.email, data.password);
 
-      const uid = userCredentials.user?.uid;
       const additionalUserData = {
-        uid: uid,
+        firebaseUID: userCredentials.user.uid,
+        email: userCredentials.user.email,
+        displayName: userCredentials.user.displayName || "Anonymous",
+        photoURL: userCredentials.user?.photoURL || "default_photo_url",
         role: "user",
-        isMember: [],
-        colorStamp: "#" + Math.floor(Math.random() * 16777215).toString(16),
       };
 
       await signupUser(additionalUserData); // Save additional user data to MongoDB

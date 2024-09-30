@@ -18,23 +18,20 @@ const generateColor = () => {
 
 export const createTeam = async (req: CRequest, res: Response) => {
   try {
-    const firebaseUserData = req.user;
     const teamData = req.body;
 
     const team = new Team({
       teamName: teamData.teamName,
       members: [
         {
-          uid: firebaseUserData.uid,
+          firebaseUID: teamData.firebaseUID,
           color: generateColor(),
         },
       ],
 
       invitations: [...teamData.invitations],
-      createdBy: firebaseUserData.uid,
+      createdBy: teamData.firebaseUID,
       weekSchedule: [...teamData.weekSchedule],
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     await team.save();
@@ -76,7 +73,7 @@ export const fetchTeam = async (req: CRequest, res: Response) => {
   }
 
   const members = await User.find({
-    uid: { $in: teamData.members.map((member) => member.uid) },
+    uid: { $in: teamData.members.map((member) => member.firebaseUID) },
   });
   const createdById = await User.findOne({ uid: teamData.createdBy });
 
