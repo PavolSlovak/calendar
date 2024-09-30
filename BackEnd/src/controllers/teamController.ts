@@ -4,25 +4,28 @@ import { Request, Response } from "express";
 import { Team as TeamSchema } from "../schemas/schemas.js";
 import { DecodedIdToken } from "firebase-admin/auth";
 import admin from "../config/firebase.js";
+import User from "../models/user.js";
 type CRequest = Request & DecodedIdToken;
 
 export const createTeam = async (req: CRequest, res: Response) => {
   try {
-    const userData = req.user;
+    const firebaseUserData = req.user;
     const teamData = req.body;
+
+    const mongoUserData = await User.findOne({ uid: firebaseUserData.uid });
 
     console.log("teamData", teamData);
     const team = new Team({
       teamName: teamData.teamName,
       members: [
         {
-          uid: userData.uid,
+          id: mongoUserData._id,
           color: "#000000",
         },
       ],
 
       invitations: [...teamData.invitations],
-      createdBy: userData.uid,
+      createdBy: mongoUserData._id,
       weekSchedule: [...teamData.weekSchedule],
       createdAt: new Date(),
       updatedAt: new Date(),
