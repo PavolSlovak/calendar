@@ -7,6 +7,11 @@ import admin from "../config/firebase.js";
 import User from "../models/user.js";
 type CRequest = Request & DecodedIdToken;
 
+const generateColor = () => {
+  const color = "#" + Math.floor(Math.random() * 16777215).toString(16);
+  return color;
+};
+
 export const createTeam = async (req: CRequest, res: Response) => {
   try {
     const firebaseUserData = req.user;
@@ -20,7 +25,7 @@ export const createTeam = async (req: CRequest, res: Response) => {
       members: [
         {
           id: mongoUserData._id,
-          color: "#000000",
+          color: generateColor(),
         },
       ],
 

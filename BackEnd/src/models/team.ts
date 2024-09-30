@@ -4,7 +4,7 @@ const teamSchema = new mongoose.Schema({
   teamName: { type: String, required: true },
   members: [
     {
-      uid: { type: String, required: true },
+      id: { type: String, required: true },
       color: { type: String, required: true },
     },
   ],
