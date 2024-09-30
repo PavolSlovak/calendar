@@ -87,7 +87,12 @@ export const Team = z.object({
   id: z.string(),
   teamName: z.string().min(3, "Team name must be at least 3 characters!"),
   invitations: z.array(z.string().email()),
-  members: z.array(UserSchema.extend({ color: z.string() })),
+  members: z.array(
+    z.object({
+      uid: z.string(),
+      color: z.string(),
+    })
+  ),
   createdBy: UserSchema,
   weekSchedule: wScheduleSchema, // Array of objects with day and shifts
   createdAt: z.date(),

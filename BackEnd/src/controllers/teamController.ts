@@ -15,7 +15,13 @@ export const createTeam = async (req: CRequest, res: Response) => {
     console.log("teamData", teamData);
     const team = new Team({
       teamName: teamData.teamName,
-      members: [userData.uid],
+      members: [
+        {
+          uid: userData.uid,
+          color: "#000000",
+        },
+      ],
+
       invitations: [...teamData.invitations],
       createdBy: userData.uid,
       weekSchedule: [...teamData.weekSchedule],
@@ -49,23 +55,5 @@ export const fetchTeams = async (req: CRequest, res: Response) => {
   } catch (error) {
     console.error("Error fetching teams:", error);
     res.status(500).send("Error fetching teams");
-  }
-};
-export const fetchMembers = async (req: Request, res: Response) => {
-  const teamId = req.params.teamId;
-  console.log("teamId", teamId);
-  try {
-    const team = await Team.findById(teamId);
-    const membersData = await Promise.all(
-      team.members.map(async (memberId) => {
-        const userData = await admin.auth().getUser(memberId);
-        return userData;
-      })
-    );
-
-    res.status(200).send(membersData);
-  } catch (error) {
-    console.error("Error fetching members:", error);
-    res.status(500).send("Error fetching members");
   }
 };

@@ -2,7 +2,12 @@ import mongoose from "mongoose";
 
 const teamSchema = new mongoose.Schema({
   teamName: { type: String, required: true },
-  members: [{ type: String }],
+  members: [
+    {
+      uid: { type: String, required: true },
+      color: { type: String, required: true },
+    },
+  ],
   invitations: [{ type: String }],
   createdBy: String,
   weekSchedule: [
@@ -10,7 +15,7 @@ const teamSchema = new mongoose.Schema({
       day: { type: String, enum: ["Mon", "Tue", "Wed", "Thu", "Fri"] },
       shifts: [
         {
-          memberId: String,
+          memberId: { type: String, required: true },
           startTime: String,
           endTime: String,
         },

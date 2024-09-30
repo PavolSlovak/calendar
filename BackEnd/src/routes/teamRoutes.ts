@@ -1,11 +1,7 @@
 console.log("Importing teamRoutes.ts");
 import express from "express";
 import { authenticateToken } from "../middlewares/authenticateToken.js";
-import {
-  createTeam,
-  fetchMembers,
-  fetchTeams,
-} from "../controllers/teamController.js";
+import { createTeam, fetchTeams } from "../controllers/teamController.js";
 
 const router = express.Router();
 
@@ -17,7 +13,5 @@ const router = express.Router();
 router.post("/", authenticateToken, createTeam);
 
 router.get("/", authenticateToken, fetchTeams);
-
-router.get("/:teamId", authenticateToken, fetchMembers);
 
 export { router };

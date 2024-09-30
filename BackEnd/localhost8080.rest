@@ -10,33 +10,33 @@ Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImUwM2E2ODg3YWU3ZjNkMTAyNzNjNj
 ### Create Team
 
 POST http://localhost:8080/api/teams
-Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjZjYzNmY2I2NDAzMjc2MGVlYjljMjZmNzdkNDA3YTY5NGM1MmIwZTMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc3Rva2VtYW5hZ2VjYWxlbmRhci1kZXYiLCJhdWQiOiJzdG9rZW1hbmFnZWNhbGVuZGFyLWRldiIsImF1dGhfdGltZSI6MTcyNzUwMTc4NCwidXNlcl9pZCI6IkhJVTcwNjd4RFdaYVJkQUdHc1VLRmNYTUZFNzIiLCJzdWIiOiJISVU3MDY3eERXWmFSZEFHR3NVS0ZjWE1GRTcyIiwiaWF0IjoxNzI3NTE3NDQ2LCJleHAiOjE3Mjc1MjEwNDYsImVtYWlsIjoidHRAdHQuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInR0QHR0LmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.gRCeTpzXcpFtG_qR9xWMeP7CPaOS11J9AulmHS72SxDpGDKeFYKA2yn6TIgz-pAymd6sVZI95QyW-WohxvIQgpXGyrMKltg4e0AaXc0F_ahkZit54DI30dxtV-k4GLLz772iBJDrzRqhAXAZsw3bGws2Y7Dr0OH5Jc7Tc6qdX-SSey794NwJexqOSPPNeIF_E7Zxcu1pcNG7KGpbWIb18bVP6gMnttJDFJ4idLlhnn1QqwOUpw4RKHH4pJDVrLaFTi-g1vtdCF_R-DuceIrFqFtMe4xRvM2_S-4gqs4EEKCXROo2rmT7Ky-ohhshuL8lFLW6xXxZVdPGXuJJTJNxYw
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjZjYzNmY2I2NDAzMjc2MGVlYjljMjZmNzdkNDA3YTY5NGM1MmIwZTMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc3Rva2VtYW5hZ2VjYWxlbmRhci1kZXYiLCJhdWQiOiJzdG9rZW1hbmFnZWNhbGVuZGFyLWRldiIsImF1dGhfdGltZSI6MTcyNzUwMTc4NCwidXNlcl9pZCI6IkhJVTcwNjd4RFdaYVJkQUdHc1VLRmNYTUZFNzIiLCJzdWIiOiJISVU3MDY3eERXWmFSZEFHR3NVS0ZjWE1GRTcyIiwiaWF0IjoxNzI3NjU3Njk5LCJleHAiOjE3Mjc2NjEyOTksImVtYWlsIjoidHRAdHQuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInR0QHR0LmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.mEg3B9GZMcrN5a0y4PiVO9gSCmoX3Bf27I2TNpUvAgLJbeV-7iaA8vR9CrB_qAcPH55qzQXiLB33PUsX1XFhHtMViTJGOIvEdR0axzAOdP8msRb0ZTXvhyBgTPLFn8HjtcKOxgyhW4vThslWuHXWvLTLcWOEuSbIdXq7h7GCPhJ0f0uKCRZHGiPUa4CM6E6Fcg1_OWWWVkZ7T4zaYRsTOrodHITTM0hnpJvJpAGXRRFMTVh002mQnKR-SaQPIzsEIFtR78zrJ_FWVRClqcGNlg80x9cdzCdzb--vE55QdQdAThvZd_jbhGVkLeV4UXii6kl3cyLrAxZq9juY1O1xEQ
 Content-Type: application/json
 
 {
    "teamName": "Team 222",
    "invitations": ["pavol@pavol.com", "pavol.slovak@gmail.com"],
    "members": [
-     { "id": "N1PnDQYt4OdFEscmhg9feMIbHpI2", "color": "#FF5733" }
+     { "uid": "0EMsWpFph1T7sBxZwSZCHjCyhRx2", "color": "#FF5733" }
    ],
    "weekSchedule": [
         {
             "day": "Mon",
             "shifts": [
                 {
-                    "memberId": "HIU7067xDWZaRdAGGsUKFcXMFE72",
+                    "memberId": "0EMsWpFph1T7sBxZwSZCHjCyhRx2",
                     "startTime": "08:00",
                     "endTime": "12:00"
                 },
                 {
-                    "memberId": "HIU7067xDWZaRdAGGsUKFcXMFE72",
+                    "memberId": "0EMsWpFph1T7sBxZwSZCHjCyhRx2",
                     "startTime": "12:00",
                     "endTime": "16:00"
                 }
             ]
         }  
     ],
-   "createdBy": { "id": "HIU7067xDWZaRdAGGsUKFcXMFE72" },
+   "createdBy": { "id": "0EMsWpFph1T7sBxZwSZCHjCyhRx2" },
    "createdAt": "2021-07-22T15:00:00.000Z",
    "updatedAt": "2021-07-22T15:00:00.000Z"
 }
