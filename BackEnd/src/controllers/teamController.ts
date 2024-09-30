@@ -18,13 +18,17 @@ const generateColor = () => {
 
 export const createTeam = async (req: CRequest, res: Response) => {
   try {
+    const decodedToken = req.user;
     const teamData = req.body;
-
+    const authorMongoUserId = await User.findOne({
+      firebaseUID: decodedToken.uid,
+    });
+    console.log("authorMongoUserId", authorMongoUserId);
     const team = new Team({
       teamName: teamData.teamName,
       members: [
         {
-          firebaseUID: teamData.firebaseUID,
+          memberID: authorMongoUserId?._id,
           color: generateColor(),
         },
       ],
@@ -73,7 +77,7 @@ export const fetchTeam = async (req: CRequest, res: Response) => {
   }
 
   const members = await User.find({
-    uid: { $in: teamData.members.map((member) => member.firebaseUID) },
+    uid: { $in: teamData.members.map((member) => member.memberID) },
   });
   const createdById = await User.findOne({ uid: teamData.createdBy });
 

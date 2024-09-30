@@ -10,18 +10,19 @@ Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImUwM2E2ODg3YWU3ZjNkMTAyNzNjNj
 ### Create Team
 
 POST http://localhost:8080/api/teams
-Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjZjYzNmY2I2NDAzMjc2MGVlYjljMjZmNzdkNDA3YTY5NGM1MmIwZTMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc3Rva2VtYW5hZ2VjYWxlbmRhci1kZXYiLCJhdWQiOiJzdG9rZW1hbmFnZWNhbGVuZGFyLWRldiIsImF1dGhfdGltZSI6MTcyNzY2MDM3NSwidXNlcl9pZCI6IjBFTXNXcEZwaDFUN3NCeFp3U1pDSGpDeWhSeDIiLCJzdWIiOiIwRU1zV3BGcGgxVDdzQnhad1NaQ0hqQ3loUngyIiwiaWF0IjoxNzI3NjY0NzQxLCJleHAiOjE3Mjc2NjgzNDEsImVtYWlsIjoiYWFhQGFhYS5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiYWFhQGFhYS5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.i3tOrDbfYo4KH_H5Pe4xuD4qqXKlsW0MWiNVUto5zXR-gyZ_GRRoEkJwQFpgjSwqIDfynt1O6s3SKDog_3NIDlftqHJV65YmQ96piRlOAun9ilLKtXn41ZJZ29qx5a3Z7da-aXh9eO1abk4Po9h8O6HwH4fa5Z67ZLV3leNHV5mcL72cNNvMLOwDbc6jrx_Ww6sBknX0xTYaK6h1gXlLRXd1wWH0M21wiO0gIvyEck3bj2kDn7saCVqVUy7ujPunTj_RXwqNbftENxu9WUl_6SBIB_oZJCtYun74vGlvbgpZewJHKCszeQxS10PToWfs6if1LYv4qKl8JdwlfyVymQ
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjZjYzNmY2I2NDAzMjc2MGVlYjljMjZmNzdkNDA3YTY5NGM1MmIwZTMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc3Rva2VtYW5hZ2VjYWxlbmRhci1kZXYiLCJhdWQiOiJzdG9rZW1hbmFnZWNhbGVuZGFyLWRldiIsImF1dGhfdGltZSI6MTcyNzY4NzYxMSwidXNlcl9pZCI6ImdHSzcxY0g1SzFNWXZhd21raDNrU3RjTjIyRDIiLCJzdWIiOiJnR0s3MWNINUsxTVl2YXdta2gza1N0Y04yMkQyIiwiaWF0IjoxNzI3NzAxOTY5LCJleHAiOjE3Mjc3MDU1NjksImVtYWlsIjoiZWVlQGVlZS5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiZWVlQGVlZS5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.fbjcYkn9aUWFAqDbMNRFPY1s1s7UYF8NHTa3bFFSSmbomPsohznZJRIqwcmOaA4SiqAqQ9YWgUkzius-lLARH3o95005r9U3FKu2s_Wrt3b_9oUUI24l5QM_h5fxalqKkApdwSToLFlnYrwaEaZ5nRb2DneXvpogIbsnxDy075Yyobw64gWFVvhkFF2nRz5SAvMygglixGGZt7T9aOEmEwxw1iWPMNTKNxoJVP43vpHGlBoxm1iiYUi8YjOfs_51xGxJdt8OWZk1g1b-jJbcCEkm2yx_jUO5hi3vnrrHpgxQSjGY2K4iFBJqESvs5YqHnL2agY4-vU3REn2oHTB1wg
 Content-Type: application/json
 
 {
-  "teamName": "Development Team1",
+  "teamName": "Development Team100",
   "invitations": ["user1@example.com", "user2@example.com"],
+ 
   "weekSchedule": [
     {
       "day": "Mon",
       "shifts": [
         { "memberId": "member1_id", "shift": "9:00-17:00" },
-        { "memberId": "member2_id", "shift": "9:00-17:00" }
+        { "memberId": "member1_id", "shift": "9:00-17:00" }
       ]
     },
     {

@@ -64,7 +64,7 @@ function CreateTeam({ onDone }: CreateTeamProps) {
     // TODO - Add the new team to the database
 
     // Extract necessary fields from the currentUser object
-    const userToAdd: MemberSchema = {
+    /* const userToAdd: MemberSchema = {
       uid: currentUser?.uid || "",
       email: currentUser?.email || "",
       displayName: currentUser?.displayName || "",
@@ -78,8 +78,7 @@ function CreateTeam({ onDone }: CreateTeamProps) {
       photoURL: users[1].photoURL,
       color: generateRandomColor(),
     };
-    // Add the serialized user to the members array
-    newTeam.members.push(userToAdd, userToAdd2);
+    newTeam.members.push(userToAdd, userToAdd2); */
     dispatch(teamSlice.actions.addTeam(newTeam));
     setIsSubmitting(false);
     onDone(); // Close the modal

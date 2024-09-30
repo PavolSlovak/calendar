@@ -90,7 +90,7 @@ export const Team = z.object({
   invitations: z.array(z.string().email()),
   members: z.array(
     z.object({
-      uid: z.string(),
+      memberID: z.string(),
       color: z.string(),
     })
   ),

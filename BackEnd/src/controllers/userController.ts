@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import admin from "../config/firebase.js";
+import User from "../models/user.js"; // Import the User model
 
 export const fetchUser = async (req: Request, res: Response) => {
   try {
@@ -11,7 +12,6 @@ export const fetchUser = async (req: Request, res: Response) => {
     res.status(500).send("Error fetching user");
   }
 };
-import User from "../models/user.js"; // Import the User model
 
 export const createUser = async (req: Request, res: Response) => {
   try {
