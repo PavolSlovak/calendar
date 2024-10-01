@@ -90,7 +90,10 @@ const Team = z.object({
       color: z.string(),
     })
   ),
-  createdBy: z.string(),
+  createdBy: z.object({
+    memberID: z.string(),
+    firebaseUID: z.string(),
+  }),
   weekSchedule: wScheduleSchema, // Array of objects with day and shifts
   createdAt: z.date(),
   updatedAt: z.date(),

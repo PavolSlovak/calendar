@@ -15,7 +15,14 @@ const teamSchema = new mongoose.Schema({
     },
   ],
   invitations: [{ type: String }],
-  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  createdBy: {
+    memberID: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    firebaseUID: { type: String, required: true },
+  },
   weekSchedule: [
     {
       day: { type: String, enum: ["Mon", "Tue", "Wed", "Thu", "Fri"] },
