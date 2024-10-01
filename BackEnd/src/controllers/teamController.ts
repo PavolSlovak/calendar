@@ -1,9 +1,6 @@
 import { Team } from "../models/team.js";
-import mongoose from "mongoose";
 import { Request, Response } from "express";
-import { Team as TeamSchema } from "../schemas/schemas.js";
 import { DecodedIdToken } from "firebase-admin/auth";
-import admin from "../config/firebase.js";
 import User from "../models/user.js";
 type CRequest = Request & DecodedIdToken;
 

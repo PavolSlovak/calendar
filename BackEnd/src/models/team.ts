@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { generateColor } from "../controllers/teamController.js";
 
 const teamSchema = new mongoose.Schema({
-  teamName: { type: String, required: true },
+  teamName: { type: String, required: true, unique: true },
   members: [
     {
       memberID: {

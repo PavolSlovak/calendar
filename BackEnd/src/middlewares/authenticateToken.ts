@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { User } from "../schemas/schemas.js";
+import { User } from "@shared/schemas.js"; // Import the User interface from the index file"
 import admin from "firebase-admin";
 import { DecodedIdToken } from "firebase-admin/auth";
 

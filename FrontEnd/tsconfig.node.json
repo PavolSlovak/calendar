@@ -10,5 +10,5 @@
     "noEmit": true,
     "esModuleInterop": true
   },
-  "include": ["vite.config.ts", "../shared/types.ts"]
+  "include": ["vite.config.ts", "../shared/**/*"]
 }
