@@ -31,7 +31,9 @@ export const fetchTeams = async (req: CRequest, res: Response) => {
   try {
     const userData = req.user;
     console.log("userData", userData);
-    const teams = await Team.find({ "members.firebaseUID": userData.uid });
+    const teams = await Team.find({ "members.firebaseID": userData.uid });
+    console.log("teams", teams);
+    console.log("userData.uid", userData.uid);
     if (!teams) {
       console.error("No teams found");
       return res.status(404).send("No teams found");

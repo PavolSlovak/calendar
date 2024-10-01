@@ -9,29 +9,29 @@ Content-Type: application/json
 ### Create Team
 
 POST http://localhost:8080/api/teams
-Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjZjYzNmY2I2NDAzMjc2MGVlYjljMjZmNzdkNDA3YTY5NGM1MmIwZTMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc3Rva2VtYW5hZ2VjYWxlbmRhci1kZXYiLCJhdWQiOiJzdG9rZW1hbmFnZWNhbGVuZGFyLWRldiIsImF1dGhfdGltZSI6MTcyNzc1MDA4MywidXNlcl9pZCI6IkQ5Z0hlUzkyMW5ncVFRREQzUTRtbUFXb2tHZzEiLCJzdWIiOiJEOWdIZVM5MjFuZ3FRUUREM1E0bW1BV29rR2cxIiwiaWF0IjoxNzI3NzUwMDgzLCJleHAiOjE3Mjc3NTM2ODMsImVtYWlsIjoieEB4LmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJ4QHguY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.BHOL5wIvTjExBuoUNzLyQrkIL8qQAJEfkyjUZCbyM9Ng9QQW8v1f4qbCrVtyTpWCMSw8n5tyZSbDyBVH5aXI3LVH8Hwuz-e8VQk-5iCKHTMAMRiTYkvgoJTmH27lWCTBKAwEtRf21CPe0boOaZ-YyNyiKaMsGG3ZT7ihdajxiCyKuQeiovBrKYFR7RO-HfRiann-yckHTOvwwW_rTW-4FoABte8tmLNWsPk9cZ35ZF49gXLUxRlcvOQ3hDfDLgVmA7nZej3TVRqPHpn0YZnZreZDUDKeZz9Ia22bXQ-ZqhbfnBvtwBkn7MBiXsHsl9iLZbcMK50iz8YMSn5YQGlmzw
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjZjYzNmY2I2NDAzMjc2MGVlYjljMjZmNzdkNDA3YTY5NGM1MmIwZTMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc3Rva2VtYW5hZ2VjYWxlbmRhci1kZXYiLCJhdWQiOiJzdG9rZW1hbmFnZWNhbGVuZGFyLWRldiIsImF1dGhfdGltZSI6MTcyNzc1NDE0MCwidXNlcl9pZCI6IjdBV3JJVmFjbm9YRFZsM1JkTHgwQ2F1aHJ5UzIiLCJzdWIiOiI3QVdySVZhY25vWERWbDNSZEx4MENhdWhyeVMyIiwiaWF0IjoxNzI3NzU0MTQwLCJleHAiOjE3Mjc3NTc3NDAsImVtYWlsIjoibkBuLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJuQG4uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.BJ5GCrjkfhEgEZkeoBqeiGqcpnczsl3ABOdWjjMoZlXkhXmjC4G5VSSc8mluT7wpuGG9Po3puSnIekEHMSb2G2I3pak6yb0IAcsmBQnXBPPsJT9f_PdHMpFw9IjhaU4b4mI14vzKTTnZYcatNdk6iwTCCjyec3-q1tyXDTwWt5xyke1qd-RX5PdQtm4Kmu1emYTXhuqw7gXMCPDe2azKTUBmyvm7VW-vuUB4W3bsq1pYBcuUJ90AjlqADAITYBz-GmMUqQ-2yfC3NNAkPUMiCJrkcHUiTVycPU2SftBHtRuaOpTqHMDas1keHlHCuuAPA-jpaVfnOByQkmwhEabK_w
 Content-Type: application/json
 
 {
   "teamName": "Development Team4",
   "members": [
     { 
-      "memberID": "66fb510f47bbdbbfa45fc3b4",
-      "firebaseID": "kRVdgyL8ibMevuppXyfAkjeWZ5g2"
+      "memberID": "66fb6f9d9c92ceb934b4975b",
+      "firebaseID": "7AWrIVacnoXDVl3RdLx0CauhryS2"
     }
   ],
   "invitations": ["invite1@example.com", "invite2@example.com"],
   "createdBy": {
-    "memberID": "66fb510f47bbdbbfa45fc3b4",
-    "firebaseUID": "kRVdgyL8ibMevuppXyfAkjeWZ5g2"
+    "memberID": "66fb6f9d9c92ceb934b4975b",
+    "firebaseUID": "7AWrIVacnoXDVl3RdLx0CauhryS2"
   },
   "weekSchedule": [
     {
       "day": "Mon",
       "shifts": [
-        { "memberId": "66fb510f47bbdbbfa45fc3b4", "startTime": "08:00", "endTime": "12:00" },
-        { "memberId": "66fb510f47bbdbbfa45fc3b4", "startTime": "13:00", "endTime": "17:00" },
-        { "memberId": "66fb510f47bbdbbfa45fc3b4", "startTime": "08:00", "endTime": "16:00" }
+        { "memberId": "66fb6f9d9c92ceb934b4975b", "startTime": "08:00", "endTime": "12:00" },
+        { "memberId": "66fb6f9d9c92ceb934b4975b", "startTime": "13:00", "endTime": "17:00" },
+        { "memberId": "66fb6f9d9c92ceb934b4975b", "startTime": "08:00", "endTime": "16:00" }
       ]
     },
     {
@@ -44,7 +44,7 @@ Content-Type: application/json
 }
 ### Fetch teams where user is a member
 GET http://localhost:8080/api/teams
-Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjZjYzNmY2I2NDAzMjc2MGVlYjljMjZmNzdkNDA3YTY5NGM1MmIwZTMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc3Rva2VtYW5hZ2VjYWxlbmRhci1kZXYiLCJhdWQiOiJzdG9rZW1hbmFnZWNhbGVuZGFyLWRldiIsImF1dGhfdGltZSI6MTcyNzY4NzYxMSwidXNlcl9pZCI6ImdHSzcxY0g1SzFNWXZhd21raDNrU3RjTjIyRDIiLCJzdWIiOiJnR0s3MWNINUsxTVl2YXdta2gza1N0Y04yMkQyIiwiaWF0IjoxNzI3NzQyOTI4LCJleHAiOjE3Mjc3NDY1MjgsImVtYWlsIjoiZWVlQGVlZS5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiZWVlQGVlZS5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.PSz_VrPpSfVvQYFpT2kR9bgVXwy6H0JBzrSNyn6FA2VGx_429EkZYnrWgKgOtJEZ-9LfweHh0Hq1EFy8-HnoSzMMKjARXtoQtLNv9oIVpEhL7PfiOEk7wo56fr93dyhImYXdoobLxcl8qeRRtYue7AT0bHH-OUj_lz6MfN1wSM8476-OPP7qFvCn4GQzOGqmEzmCTckRquQkIXXvGRl-QkV2w-f92GgU2LPsHTtAXkAEZzcDxc-OSbj29w4xvrV3P7blAYEs_E0trkDxxMDbBNvKepB5wezYfBsTeO9xNj3kGmTRt4W-2O4mwpkDjco9X_nB7k5fVl78x5PgpMGQQA
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjZjYzNmY2I2NDAzMjc2MGVlYjljMjZmNzdkNDA3YTY5NGM1MmIwZTMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc3Rva2VtYW5hZ2VjYWxlbmRhci1kZXYiLCJhdWQiOiJzdG9rZW1hbmFnZWNhbGVuZGFyLWRldiIsImF1dGhfdGltZSI6MTcyNzc1NDE0MCwidXNlcl9pZCI6IjdBV3JJVmFjbm9YRFZsM1JkTHgwQ2F1aHJ5UzIiLCJzdWIiOiI3QVdySVZhY25vWERWbDNSZEx4MENhdWhyeVMyIiwiaWF0IjoxNzI3NzU0MTQwLCJleHAiOjE3Mjc3NTc3NDAsImVtYWlsIjoibkBuLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJuQG4uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.BJ5GCrjkfhEgEZkeoBqeiGqcpnczsl3ABOdWjjMoZlXkhXmjC4G5VSSc8mluT7wpuGG9Po3puSnIekEHMSb2G2I3pak6yb0IAcsmBQnXBPPsJT9f_PdHMpFw9IjhaU4b4mI14vzKTTnZYcatNdk6iwTCCjyec3-q1tyXDTwWt5xyke1qd-RX5PdQtm4Kmu1emYTXhuqw7gXMCPDe2azKTUBmyvm7VW-vuUB4W3bsq1pYBcuUJ90AjlqADAITYBz-GmMUqQ-2yfC3NNAkPUMiCJrkcHUiTVycPU2SftBHtRuaOpTqHMDas1keHlHCuuAPA-jpaVfnOByQkmwhEabK_w
 Content-Type: application/json
 
 ###
