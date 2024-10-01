@@ -91,10 +91,11 @@ export const Team = z.object({
   members: z.array(
     z.object({
       memberID: z.string(),
+      firebaseUID: z.string(),
       color: z.string(),
     })
   ),
-  createdBy: UserSchema,
+  createdBy: z.string(),
   weekSchedule: wScheduleSchema, // Array of objects with day and shifts
   createdAt: z.date(),
   updatedAt: z.date(),

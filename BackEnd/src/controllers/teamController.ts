@@ -7,7 +7,7 @@ import admin from "../config/firebase.js";
 import User from "../models/user.js";
 type CRequest = Request & DecodedIdToken;
 
-const generateColor = () => {
+export const generateColor = () => {
   const letters = "0123456789ABCDEF";
   let color = "#";
   for (let i = 0; i < 6; i++) {
@@ -18,25 +18,8 @@ const generateColor = () => {
 
 export const createTeam = async (req: CRequest, res: Response) => {
   try {
-    const decodedToken = req.user;
-    const teamData = req.body;
-    const authorMongoUserId = await User.findOne({
-      firebaseUID: decodedToken.uid,
-    });
-    console.log("authorMongoUserId", authorMongoUserId);
-    const team = new Team({
-      teamName: teamData.teamName,
-      members: [
-        {
-          memberID: authorMongoUserId?._id,
-          color: generateColor(),
-        },
-      ],
-
-      invitations: [...teamData.invitations],
-      createdBy: teamData.firebaseUID,
-      weekSchedule: [...teamData.weekSchedule],
-    });
+    console.log("Received team body:", req.body);
+    const team = new Team(req.body);
 
     await team.save();
     console.log("Team created successfully:", team);
@@ -51,7 +34,12 @@ export const fetchTeams = async (req: CRequest, res: Response) => {
   try {
     const userData = req.user;
     console.log("userData", userData);
-    const teams = await Team.find({ "members.uid": userData.uid });
+    const teams = await Team.find({ "members.firebaseUID": userData.uid });
+    if (!teams) {
+      console.error("No teams found");
+      return res.status(404).send("No teams found");
+    }
+    // Check if the authorMongoUserId was found
 
     if (!teams) {
       console.log("No teams found");

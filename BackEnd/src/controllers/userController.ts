@@ -16,7 +16,8 @@ export const fetchUser = async (req: Request, res: Response) => {
 export const createUser = async (req: Request, res: Response) => {
   try {
     const userData = req.body;
-    console.log("Received body:", req.body); // Log the incoming request body
+
+    console.log("Received user body:", req.body); // Log the incoming request body
 
     // Create a new user instance based on the incoming data
     const newUser = new User({

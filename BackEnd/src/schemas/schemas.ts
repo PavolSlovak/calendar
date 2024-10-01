@@ -86,6 +86,7 @@ const Team = z.object({
   members: z.array(
     z.object({
       memberID: z.string(),
+      firebaseID: z.string(),
       color: z.string(),
     })
   ),
