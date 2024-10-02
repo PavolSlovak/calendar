@@ -30,7 +30,7 @@ export const createTeam = async (req: CRequest, res: Response) => {
 export const fetchTeam = async (req: CRequest, res: Response) => {
   const teamId = req.params.teamId;
   const teamData = await Team.findById(teamId).populate(
-    "members.memberID createdBy.memberID shifts.memberID shifts.comments "
+    "createdBy.memberID members.memberID shifts.memberID"
   );
 
   if (!teamData) {

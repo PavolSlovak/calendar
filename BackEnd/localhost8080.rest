@@ -1,10 +1,18 @@
-GET http://localhost:8080/teams
 
 ### Fetch all teams 
 
 GET http://localhost:8080/api/teams
 Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjZjYzNmY2I2NDAzMjc2MGVlYjljMjZmNzdkNDA3YTY5NGM1MmIwZTMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc3Rva2VtYW5hZ2VjYWxlbmRhci1kZXYiLCJhdWQiOiJzdG9rZW1hbmFnZWNhbGVuZGFyLWRldiIsImF1dGhfdGltZSI6MTcyNzc0OTg3NSwidXNlcl9pZCI6ImtSVmRneUw4aWJNZXZ1cHBYeWZBa2plV1o1ZzIiLCJzdWIiOiJrUlZkZ3lMOGliTWV2dXBwWHlmQWtqZVdaNWcyIiwiaWF0IjoxNzI3NzQ5ODc1LCJleHAiOjE3Mjc3NTM0NzUsImVtYWlsIjoibUBtLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJtQG0uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.G6cJ3sFA9M1Gu9WUZpUDG8j4Vu-MIFkaLZf6m5BwBZz6d04NTIZwvCsObVBlUoB6XVQdznZl6uHuJ_dIjSyN9Kgxxrx2QGtPHTP3FgrA7-IaZqEiF-XE38AtIB0z3IM-trWo-2tEX_GgMdDqPIoN-fXhmUNggZtZBJ9oBnfPTQ8yNe31T68fRvSXQ07y4n400MNXsnIJ-LA7vMnrU1sKzMxrT6oSpSaLSONJE-3g4HjRK1OGTs6M_lHBN3PSMO8vPLxLhZSMsxNRtvL0XQVLJ2OfTC-tq-XZ0JnSWN3AKzAr8P9Rg_p-jSk-JRAGTZ79puddy2TkQ6AJgYvaabWsHw
 Content-Type: application/json
+
+
+### Fetch team by teamID
+
+GET http://localhost:8080/api/teams/66fccd84f2fb2b33ebef04a7
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjZjYzNmY2I2NDAzMjc2MGVlYjljMjZmNzdkNDA3YTY5NGM1MmIwZTMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc3Rva2VtYW5hZ2VjYWxlbmRhci1kZXYiLCJhdWQiOiJzdG9rZW1hbmFnZWNhbGVuZGFyLWRldiIsImF1dGhfdGltZSI6MTcyNzgzNDM2NywidXNlcl9pZCI6InNOMDFwWUs1ampobUVGYnFJTkFGTm5pRVFJaTEiLCJzdWIiOiJzTjAxcFlLNWpqaG1FRmJxSU5BRk5uaUVRSWkxIiwiaWF0IjoxNzI3ODQyNTcwLCJleHAiOjE3Mjc4NDYxNzAsImVtYWlsIjoicUBxLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJxQHEuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Z1m4kPB_5qEbkjyVZoOfE3bCyj0-JLtr2mJ8vrTxs0CX1ry1EwssSNF1pXchruGiHcotjjG-T5XqDS-nZsL1DxL0A-0mtFab1TlLLMZPsz8qO9uu2Q8Xqym-RTJjgeyMFXo1hbVKgGEuB3ScBUURizpvMk13mutTyKRSBjeFp55MdGTyEnmcFaHy-HKAqW-9e44eYyNJE_CTW6cXsIq3RDFGY-4zFwV4kxsN3HQXtetIabRoJQ68F3hmoJ9XuJK7S2Jmzt5434tU3kQZwAvleJy2bi0CP-MHqxX2CNq2VRIQti-NpBNnrWqQ4GUst2k0HseOWr7bLEzSkwsuksbFcQ
+Content-Type: application/json
+
+
 
 ### Create Team
 
@@ -13,11 +21,11 @@ Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjZjYzNmY2I2NDAzMjc2MGVlYjljMj
 Content-Type: application/json
 
 {
-  "teamName": "Development Team",
+  "teamName": "Development Team2",
   "members": [
     {
-      "memberID": "66fb6f9d9c92ceb934b4975b",
-      "firebaseID": "7AWrIVacnoXDVl3RdLx0CauhryS2",
+      "memberID": "66fca900839aad176d9773cf",
+      "firebaseID": "sN01pYK5jjhmEFbqINAFNniEQIi1",
       "color": "#FF5733"
     }
    
@@ -27,8 +35,8 @@ Content-Type: application/json
     "user2@example.com"
   ],
   "createdBy": {
-    "memberID": "66fb6f9d9c92ceb934b4975b",
-    "firebaseID": "7AWrIVacnoXDVl3RdLx0CauhryS2",
+    "memberID": "66fca900839aad176d9773cf",
+    "firebaseID": "sN01pYK5jjhmEFbqINAFNniEQIi1",
     "color": "#33FF57"
   },
   "shifts": []
