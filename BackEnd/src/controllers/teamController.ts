@@ -47,18 +47,10 @@ export const fetchTeams = async (req: CRequest, res: Response) => {
     const userData = req.user;
     console.log("userData", userData);
     const teams = await Team.find({ "members.firebaseID": userData.uid });
-    console.log("teams", teams);
-    console.log("userData.uid", userData.uid);
+
     if (!teams) {
       console.error("No teams found");
       return res.status(404).send("No teams found");
-    }
-    // Check if the authorMongoUserId was found
-
-    if (!teams) {
-      console.log("No teams found");
-      res.status(404).send("No teams found");
-      return;
     }
 
     console.log("Teams fetched successfully:", teams);
