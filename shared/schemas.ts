@@ -59,48 +59,65 @@ export const UserSchema = z.object({
   photoURL: z.string().url(),
   role: z.string(),
 });
-export type User = z.infer<typeof UserSchema>;
 
-const MemberSchema = UserSchema.extend({ color: z.string() });
-
-export type MemberSchema = z.infer<typeof MemberSchema>;
-
-const ShiftsArraySchema = z.array(
-  z.object({
-    memberId: z.string(),
-    startTime: z.string(),
-    endTime: z.string(),
-  })
-);
-
-export type Shifts = z.infer<typeof ShiftsArraySchema>;
-
-const wScheduleSchema = z.array(
-  z.object({
-    day: z.string(),
-    shifts: ShiftsArraySchema,
-  })
-);
-
-export type WeekSchema = z.infer<typeof wScheduleSchema>;
-
-export const Team = z.object({
-  id: z.string(),
-  teamName: z.string().min(3, "Team name must be at least 3 characters!"),
-  invitations: z.array(z.string().email()),
-  members: z.array(
-    z.object({
-      memberID: z.string(),
-      firebaseUID: z.string(),
-      color: z.string(),
-    })
-  ),
-  createdBy: z.object({
-    memberID: z.string(),
-    firebaseUID: z.string(),
-  }),
-  weekSchedule: wScheduleSchema, // Array of objects with day and shifts
-  createdAt: z.date(),
-  updatedAt: z.date(),
+// Define the exception schema
+const exceptionSchema = z.object({
+  date: z.date(),
+  newStartTime: z.string().optional(),
+  newEndTime: z.string().optional(),
+  skip: z.boolean().optional(),
 });
-export type Team = z.infer<typeof Team>;
+
+// Define the recurrence schema
+const recurrenceSchema = z.object({
+  frequency: z.enum(["weekly", "monthly"]),
+  days: z
+    .array(z.enum(["sun", "mon", "tue", "wed", "thu", "fri", "sat"]))
+    .default([]),
+  monthDays: z.array(z.number()).default([]),
+  exceptions: z.array(exceptionSchema).default([]),
+});
+
+// Define the comment schema
+const commentSchema = z.object({
+  memberID: z.string(), // Change to z.string() as ObjectId is a string in TypeScript
+  comment: z.string(),
+  date: z.date().default(() => new Date()),
+});
+
+// Define the member schema
+const memberSchema = z.object({
+  memberID: z.string(), // Change to z.string() as ObjectId is a string in TypeScript
+  firebaseID: z.string(),
+  color: z.string(),
+});
+
+// Define the shift schema
+const shiftSchema = z.object({
+  memberID: z.string(), // Change to z.string() as ObjectId is a string in TypeScript
+  startTime: z.string(),
+  endTime: z.string(),
+  date: z.date().nullable().optional(),
+  recurrence: recurrenceSchema.nullable().optional(),
+  status: z.enum(["pending", "approved", "rejected"]).default("pending"),
+  comments: z.array(z.string()).optional(), // Use string array for comment IDs
+});
+
+// Define the team schema
+const teamSchema = z.object({
+  teamName: z.string().min(1).max(100), // Adjust min/max according to your needs
+  members: z.array(memberSchema),
+  invitations: z.array(z.string()).default([]),
+  createdBy: memberSchema,
+  shifts: z.array(shiftSchema).optional(),
+  createdAt: z.date().default(() => new Date()),
+  updatedAt: z.date().default(() => new Date()),
+});
+
+export type User = z.infer<typeof UserSchema>;
+export type Exception = z.infer<typeof exceptionSchema>;
+export type Recurrence = z.infer<typeof recurrenceSchema>;
+export type Comment = z.infer<typeof commentSchema>;
+export type Member = z.infer<typeof memberSchema>;
+export type Shift = z.infer<typeof shiftSchema>;
+export type Team = z.infer<typeof teamSchema>;

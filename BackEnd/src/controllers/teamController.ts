@@ -27,6 +27,21 @@ export const createTeam = async (req: CRequest, res: Response) => {
   }
 };
 
+export const fetchTeam = async (req: CRequest, res: Response) => {
+  const teamId = req.params.teamId;
+  const teamData = await Team.findById(teamId).populate(
+    "members.memberID createdBy.memberID shifts.memberID shifts.comments "
+  );
+
+  if (!teamData) {
+    console.log("No team found");
+    res.status(404).send("No team found");
+    return;
+  }
+
+  console.log("Team fetched successfully:", teamData);
+  res.status(200).send(teamData);
+};
 export const fetchTeams = async (req: CRequest, res: Response) => {
   try {
     const userData = req.user;
@@ -52,32 +67,4 @@ export const fetchTeams = async (req: CRequest, res: Response) => {
     console.error("Error fetching teams:", error);
     res.status(500).send("Error fetching teams");
   }
-};
-export const fetchTeam = async (req: CRequest, res: Response) => {
-  const teamId = req.params.teamId;
-  const teamData = await Team.findById(teamId);
-
-  if (!teamData) {
-    console.log("No team found");
-    res.status(404).send("No team found");
-    return;
-  }
-
-  const members = await User.find({
-    uid: { $in: teamData.members.map((member) => member.memberID) },
-  });
-  const createdById = await User.findOne({ uid: teamData.createdBy });
-
-  const teamDataPopulated = {
-    teamName: teamData.teamName,
-    members: members,
-    invitations: teamData.invitations,
-    createdBy: createdById,
-    weekSchedule: teamData.weekSchedule,
-    createdAt: teamData.createdAt,
-    updatedAt: teamData.updatedAt,
-  };
-
-  console.log("Team fetched successfully:", teamData);
-  res.status(200).send(teamDataPopulated);
 };

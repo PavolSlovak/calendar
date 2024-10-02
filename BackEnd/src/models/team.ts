@@ -1,40 +1,24 @@
 import mongoose from "mongoose";
 import { generateColor } from "../controllers/teamController.js";
+import "./user.js";
+import "./shift.js";
+
+const memberSchema = new mongoose.Schema({
+  memberID: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  firebaseID: { type: String, required: true },
+  color: { type: String },
+});
 
 const teamSchema = new mongoose.Schema({
   teamName: { type: String, required: true, unique: true },
-  members: [
-    {
-      memberID: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
-      },
-      firebaseID: { type: String, required: true },
-      color: { type: String },
-    },
-  ],
+  members: [memberSchema],
   invitations: [{ type: String }],
-  createdBy: {
-    memberID: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-    firebaseUID: { type: String, required: true },
-  },
-  weekSchedule: [
-    {
-      day: { type: String, enum: ["Mon", "Tue", "Wed", "Thu", "Fri"] },
-      shifts: [
-        {
-          memberId: { type: String, required: true },
-          startTime: { type: String, required: true },
-          endTime: { type: String, required: true },
-        },
-      ],
-    },
-  ],
+  createdBy: memberSchema,
+  shifts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Shift" }],
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });
