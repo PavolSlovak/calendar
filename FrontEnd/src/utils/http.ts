@@ -57,3 +57,22 @@ export async function signupUser(additionalUserData: TAdditionaUserData) {
   const user = await response.json();
   return user;
 }
+export async function sendFcmTokenToBackend(fcmToken: string) {
+  // Send the FCM token to the backend
+  const response = await fetch("http://localhost:8080/api/store-fcm-token", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ fcmToken }),
+  });
+  if (!response.ok) {
+    const error = new Error("An error occurred while sending the FCM token");
+    (error as FetchError).code = response.status;
+    (error as FetchError).info = await response.text();
+    throw error;
+  }
+  console.log("FCM token sent successfully", fcmToken);
+  return fcmToken;
+}

@@ -5,9 +5,10 @@ import {
   useEffect,
   useState,
 } from "react";
-import { auth } from "../firebase";
+import { auth, listenForMessages, requestFCMToken } from "../firebase";
 import { User } from "../lib/types";
 import { serializeUser } from "../utils/serializeUser";
+import { sendFcmTokenToBackend } from "../utils/http";
 type AuthState = {
   currentUser: User | null;
 };
@@ -81,6 +82,20 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem("token", token);
       // Show or return the token
       console.log("Token:", token);
+
+      const fcmToken = await requestFCMToken();
+      if (fcmToken) {
+        // Send this token to your backend for storing or processing
+        console.log("FCM Token:", fcmToken);
+        try {
+          await sendFcmTokenToBackend(fcmToken);
+        } catch (error) {
+          console.error("Error sending FCM token to backend:", error);
+          throw error; // Handle or rethrow the error as needed
+        }
+      }
+      listenForMessages(); // Start listening for messages
+
       return token;
     } catch (error) {
       console.error("Error logging in:", error);

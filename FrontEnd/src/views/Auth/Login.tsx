@@ -25,7 +25,6 @@ function Login() {
     try {
       // TODO : submit to server
       setLoginError(null);
-      console.log("jebo");
       await login(data.email, data.password);
       navigate("/"); // Redirect to home page
     } catch (error) {
@@ -33,15 +32,11 @@ function Login() {
       setLoginError("Failed to login!");
     }
 
-    // TODO : submit to server
-
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    /* await new Promise((resolve) => setTimeout(resolve, 1000));
     console.log(data);
-    reset();
+    reset(); */
   }
-  useEffect(() => {
-    console.log(errors);
-  });
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
