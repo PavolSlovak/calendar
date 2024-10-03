@@ -1,4 +1,5 @@
 import { QueryClient } from "@tanstack/react-query";
+import { MessagePayload } from "firebase/messaging";
 export const queryClient = new QueryClient();
 
 type FetchError = {
@@ -59,7 +60,7 @@ export async function signupUser(additionalUserData: TAdditionaUserData) {
 }
 export async function sendFcmTokenToBackend(fcmToken: string) {
   // Send the FCM token to the backend
-  const response = await fetch("http://localhost:8080/api/store-fcm-token", {
+  const response = await fetch(VITE_API_URL + "store-fcm-token", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,

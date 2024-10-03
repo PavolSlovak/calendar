@@ -5,10 +5,16 @@ import {
   useEffect,
   useState,
 } from "react";
-import { auth, listenForMessages, requestFCMToken } from "../firebase";
+import {
+  auth,
+  listenForMessages,
+  messaging,
+  requestFCMToken,
+} from "../firebase";
 import { User } from "../lib/types";
 import { serializeUser } from "../utils/serializeUser";
 import { sendFcmTokenToBackend } from "../utils/http";
+import { onMessage } from "firebase/messaging";
 type AuthState = {
   currentUser: User | null;
 };
@@ -76,27 +82,18 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       );
       const user = userCredential.user;
       if (!user) return;
-      // Get the ID token
       const token = await user.getIdToken();
-      // Store the token in local storage
       localStorage.setItem("token", token);
-      // Show or return the token
       console.log("Token:", token);
 
-      const fcmToken = await requestFCMToken();
-      if (fcmToken) {
-        // Send this token to your backend for storing or processing
-        console.log("FCM Token:", fcmToken);
-        try {
-          await sendFcmTokenToBackend(fcmToken);
-        } catch (error) {
-          console.error("Error sending FCM token to backend:", error);
-          throw error; // Handle or rethrow the error as needed
-        }
-      }
-      listenForMessages(); // Start listening for messages
+      await requestFCMToken(); //
 
-      return token;
+      onMessage(messaging, (payload) => {
+        // Handle incoming messages when the app is in the foreground
+        console.log("Message received.", payload);
+      });
+
+      return token; // Return the token or user object as needed
     } catch (error) {
       console.error("Error logging in:", error);
       throw error; // Rethrow or handle the error as needed

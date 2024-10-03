@@ -1,8 +1,8 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema, signUpSchema, TLoginSchema } from "../../lib/types";
+import { loginSchema, TLoginSchema } from "../../lib/types";
 import { useAuth } from "../../store/authContext";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import InfoBox from "../../components/UI/InfoBox";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -11,7 +11,6 @@ function Login() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    reset,
   } = useForm<TLoginSchema>({
     resolver: zodResolver(loginSchema),
   });
@@ -31,10 +30,6 @@ function Login() {
       console.error("Login error:", error);
       setLoginError("Failed to login!");
     }
-
-    /* await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log(data);
-    reset(); */
   }
 
   return (

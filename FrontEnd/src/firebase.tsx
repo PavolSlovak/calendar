@@ -4,7 +4,14 @@ import "firebase/compat/auth";
 import "firebase/compat/firestore";
 import "firebase/auth";
 import { TFirebaseConfig } from "./lib/types";
-import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import {
+  getMessaging,
+  getToken,
+  MessagePayload as FirebaseMessagePayload,
+  onMessage,
+} from "firebase/messaging";
+
+import { sendFcmTokenToBackend } from "./utils/http";
 
 // Firebase configuration
 const firebaseConfig: TFirebaseConfig = {
@@ -31,26 +38,30 @@ export default app;
 // Function to request FCM token
 export const requestFCMToken = async () => {
   try {
-    const currentToken = await getToken(messaging, {
-      vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
-    });
-    if (currentToken) {
-      console.log("FCM Token:", currentToken);
+    const permissionGranted = await Notification.requestPermission();
+    if (permissionGranted === "granted") {
+      console.log("Notification permission granted.");
+      const FRMtoken = await getToken(messaging, {
+        vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
+      });
+      console.log("FCM Token:", FRMtoken);
       // Send this token to your backend for future notifications
-      return currentToken;
+
+      await sendFcmTokenToBackend(FRMtoken);
+      localStorage.setItem("fcmToken", FRMtoken);
+    } else if (permissionGranted === "denied") {
+      console.log("Notification permission denied.");
+      alert("You have denied the notification permission.");
     } else {
-      console.log(
-        "No registration token available. Request permission to generate one."
-      );
+      console.log("Unable to get permission to notify.");
+      return null;
     }
   } catch (error) {
     console.error("An error occurred while retrieving token:", error);
   }
   return null;
 };
+
 export function listenForMessages() {
-  onMessage(messaging, (payload) => {
-    console.log("Message received. ", payload);
-    // Customize your notification handling here (show UI, etc.)
-  });
+  // Firebase Cloud Messaging (FCM) message listener for foreground messages
 }
