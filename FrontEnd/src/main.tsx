@@ -8,6 +8,30 @@ import { queryClient } from "./utils/http.ts";
 
 import "./firebase/firebase.tsx";
 
+// Dynamicly import environment variables from .env file and pass them to the service worker
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker
+    .register("/firebase-messaging-sw.js")
+    .then((registration) => {
+      if (registration.active) {
+        registration.active.postMessage({
+          firebaseConfig: {
+            apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+            authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+            projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+            storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+            messagingSenderId: import.meta.env
+              .VITE_FIREBASE_MESSAGING_SENDER_ID,
+            appId: import.meta.env.VITE_FIREBASE_APP_ID,
+            measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+          },
+        });
+      }
+    })
+    .catch((error) => {
+      console.error("Service Worker registration failed:", error);
+    });
+}
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <QueryClientProvider client={queryClient}>
     <Router>
