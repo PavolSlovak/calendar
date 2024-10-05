@@ -6,6 +6,8 @@ import AuthProvider from "./store/authContext.tsx";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./utils/http.ts";
 
+import "./firebase/firebase.tsx";
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <QueryClientProvider client={queryClient}>
     <Router>

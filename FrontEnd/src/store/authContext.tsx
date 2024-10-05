@@ -5,16 +5,18 @@ import {
   useEffect,
   useState,
 } from "react";
-import {
-  auth,
-  listenForMessages,
-  messaging,
-  requestFCMToken,
-} from "../firebase";
+
+import { auth, messaging } from "../firebase/firebase";
 import { User } from "../lib/types";
 import { serializeUser } from "../utils/serializeUser";
-import { sendFcmTokenToBackend } from "../utils/http";
 import { onMessage } from "firebase/messaging";
+import {
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import firebase from "firebase/compat/app";
+import { saveMessagingDeviceToken } from "../firebase/messaging";
 type AuthState = {
   currentUser: User | null;
 };
@@ -70,13 +72,21 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  function signup(email: string, password: string) {
-    return auth.createUserWithEmailAndPassword(email, password);
+  async function signup(email: string, password: string) {
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    const uid = userCredential.user.uid;
+    // If sign-up is successful, save the messaging device token
+    await saveMessagingDeviceToken(uid);
   }
 
   async function login(email: string, password: string) {
     try {
-      const userCredential = await auth.signInWithEmailAndPassword(
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
         email,
         password
       );
@@ -84,14 +94,8 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       if (!user) return;
       const token = await user.getIdToken();
       localStorage.setItem("token", token);
-      console.log("Token:", token);
 
-      await requestFCMToken(); //
-
-      onMessage(messaging, (payload) => {
-        // Handle incoming messages when the app is in the foreground
-        console.log("Message received.", payload);
-      });
+      saveMessagingDeviceToken(user.uid); // Save the FCM token to the user document in Firestore
 
       return token; // Return the token or user object as needed
     } catch (error) {
@@ -100,18 +104,22 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
   function logout() {
-    return auth.signOut();
+    auth.signOut();
+    setCurrentUser(null); // Clear the user state
+    localStorage.removeItem("token"); // Clear the token from local storage
+    console.log("User logged out");
+    return;
   }
   function resetPassword(email: string) {
-    return auth.sendPasswordResetEmail(email);
+    return sendPasswordResetEmail(auth, email);
   }
   function updateEmail(email: string) {
     console.log("updateEmail", email);
-    return auth.currentUser?.updateEmail(email);
+    return (auth.currentUser as firebase.User)?.updateEmail(email);
   }
 
   function updatePassword(password: string) {
-    return auth.currentUser?.updatePassword(password);
+    return (auth.currentUser as firebase.User)?.updatePassword(password);
   }
 
   const ctxValue: AuthContextType = {
