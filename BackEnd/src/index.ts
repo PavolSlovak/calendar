@@ -27,9 +27,6 @@ app.use("/api/teams", teamRoutes);
 import { router as userRoutes } from "./routes/userRoutes.js";
 app.use("/api/users", userRoutes);
 
-import { router as notificationRoutes } from "./routes/notificationRoutes.js";
-app.use("/api/notifications", notificationRoutes);
-
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

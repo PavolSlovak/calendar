@@ -8,11 +8,12 @@ import { queryClient } from "./utils/http.ts";
 
 import "./firebase/firebase.tsx";
 
-// Dynamicly import environment variables from .env file and pass them to the service worker
+// Register service worker
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker
     .register("/firebase-messaging-sw.js")
     .then((registration) => {
+      console.log("Service Worker registered with scope:", registration.scope);
       if (registration.active) {
         registration.active.postMessage({
           firebaseConfig: {
@@ -32,6 +33,7 @@ if ("serviceWorker" in navigator) {
       console.error("Service Worker registration failed:", error);
     });
 }
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <QueryClientProvider client={queryClient}>
     <Router>
