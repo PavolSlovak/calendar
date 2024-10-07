@@ -47,3 +47,11 @@ Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjZjYzNmY2I2NDAzMjc2MGVlYjljMj
 Content-Type: application/json
 
 ###
+POST http://localhost:8080/api/notifications/send-notifications
+Content-Type: application/json
+
+{
+  "uid": "user-uid",
+  "title": "New Notification",
+  "body": "You have a new message."
+}

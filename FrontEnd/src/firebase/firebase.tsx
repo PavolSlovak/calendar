@@ -14,7 +14,7 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
-// Initialize Firebase
+// Initialize Firebase79
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0]; // Get existing app if it exists
 export const auth = getAuth(app);
 export const db = getFirestore(app);

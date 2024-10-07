@@ -1,25 +1,24 @@
-import admin from "./firebase.js";
+import admin from "firebase-admin";
 
-const sendNotif = async (token, title, body) => {
+const FCM_TOKEN_COLLECTION = "fcmTokens";
+export const FCM_TOKEN_KEY = "fcmToken";
+
+export const sendNotif = async (uid, title, body) => {
+  // uid is the user ID to send the notification to
+  const documentSnapshot = await admin
+    .firestore()
+    .collection(FCM_TOKEN_COLLECTION)
+    .doc(uid)
+    .get();
+  const fcmToken = documentSnapshot.data()?.[FCM_TOKEN_KEY];
   try {
-    if (!token || typeof token !== "string") {
-      throw new Error("Invalid FCM token provided");
-    }
     const message = {
       notification: {
         title: title,
         body: body,
       },
-      android: {
-        notification: {
-          sound: "default",
-        },
-        data: {
-          title: title,
-          body: body,
-        },
-      },
-      token: token,
+
+      token: fcmToken,
     };
     const response = await admin.messaging().send(message);
     console.log("Successfully sent message:", response);
