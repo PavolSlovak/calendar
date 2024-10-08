@@ -81,6 +81,8 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     const uid = userCredential.user.uid;
     // If sign-up is successful, save the messaging device token
     await saveMessagingDeviceToken(uid);
+
+    return userCredential;
   }
 
   async function login(email: string, password: string) {

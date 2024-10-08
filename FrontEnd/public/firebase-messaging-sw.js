@@ -6,7 +6,9 @@ self.addEventListener("message", (event) => {
   // Check if firebaseConfig is defined
 
   // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
   const messaging = firebase.messaging();
 
   messaging.onBackgroundMessage((payload) => {
