@@ -1,4 +1,4 @@
-import { getApps, initializeApp } from "firebase/app";
+import { FirebaseApp, getApps, initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getMessaging, isSupported } from "firebase/messaging";
@@ -14,8 +14,10 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
-// Initialize Firebase79
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0]; // Get existing app if it exists
+// Initialize F/Applications/XAMPP/xamppfiles/htdocs/calendar/Frontend/src/firebase/firebase.tsxirebase79
+
+export const app = initializeApp(firebaseConfig);
+
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const messaging = async () => (await isSupported()) && getMessaging(app);

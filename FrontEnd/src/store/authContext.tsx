@@ -49,6 +49,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       const serializedUser = serializeUser(user as User); // firebase User object has additional properties that we don't need in our app (would cause issues when serializing errors)
       setCurrentUser(serializedUser);
+
       setLoading(false);
     });
 

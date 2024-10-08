@@ -16,6 +16,8 @@ if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
   });
+} else {
+  console.log("Firebase admin SDK already initialized");
 }
 
 // Send a notification
