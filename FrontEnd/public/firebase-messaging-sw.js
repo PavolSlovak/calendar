@@ -4,40 +4,37 @@ importScripts(
 importScripts(
   "https://www.gstatic.com/firebasejs/9.2.0/firebase-messaging-compat.js"
 );
+const firebaseConfig = {
+  apiKey: "AIzaSyDla0I23YY8tYKcMYrjE8nq18wEli7arRA",
+  authDomain: "stokemanagecalendar-dev.firebaseapp.com",
+  projectId: "stokemanagecalendar-dev",
+  storageBucket: "stokemanagecalendar-dev.appspot.com",
+  messagingSenderId: "67332492484",
+  appId: "1:67332492484:web:77f5d66bdf2bf3ff0b4d91",
+  measurementId: "G-MTG64YYFVH",
+};
 
-self.addEventListener("message", (event) => {
-  // Check if the firebaseConfig is present in the message data
-  const { firebaseConfig } = event.data || {};
+// Initialize Firebase with the config
+try {
+  firebase.initializeApp(firebaseConfig);
+  console.log("Firebase initialized with config:", firebaseConfig);
+} catch (err) {
+  console.log("Error: ", err);
+}
 
-  console.log("Message received from client:", event.data);
+// Initialize Firebase Messaging
+const messaging = firebase.messaging();
+console.log("Firebase Messaging initialized with instance:", messaging);
 
-  if (firebaseConfig) {
-    console.log("firebaseConfig received from client:", firebaseConfig);
+// Handle background messages
+messaging.onBackgroundMessage((payload) => {
+  console.log("Received background message: ", payload);
 
-    // Initialize Firebase with the config
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-      console.log("Firebase initialized with config:", firebaseConfig);
-    } else {
-      console.log("Firebase already initialized.");
-    }
-  } else {
-    console.error("firebaseConfig is undefined");
-  }
+  const notificationTitle = payload.notification.title;
+  const notificationOptions = {
+    body: payload.notification.body,
+    icon: payload.notification.icon, // Optional: specify icon if needed
+  };
 
-  // Initialize Firebase Messaging
-  const messaging = firebase.messaging();
-
-  // Handle background messages
-  messaging.onBackgroundMessage((payload) => {
-    console.log("Received background message: ", payload);
-
-    const notificationTitle = payload.notification.title;
-    const notificationOptions = {
-      body: payload.notification.body,
-      icon: payload.notification.icon, // Optional: specify icon if needed
-    };
-
-    self.registration.showNotification(notificationTitle, notificationOptions);
-  });
+  self.registration.showNotification(notificationTitle, notificationOptions);
 });
