@@ -3,6 +3,6 @@ import sendNotif from "../config/sendNotif.js";
 
 const router = express.Router();
 
-router.post("/send-notifications", sendNotif);
+router.post("/send-notification", sendNotif);
 
 export { router };

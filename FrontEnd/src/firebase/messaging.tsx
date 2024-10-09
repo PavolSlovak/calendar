@@ -1,6 +1,13 @@
-import { getToken, onMessage } from "firebase/messaging";
+import {
+  getToken,
+  MessagePayload,
+  NextFn,
+  NotificationPayload,
+  onMessage,
+} from "firebase/messaging";
 import { db, messaging } from "./firebase";
 import { doc, setDoc } from "firebase/firestore";
+import { sendNotif } from "../utils/http";
 
 const VAPID_KEY = import.meta.env.VITE_FIREBASE_VAPID_KEY;
 const FCM_TOKEN_COLLECTION = "fcmTokens";
@@ -31,27 +38,17 @@ export async function saveMessagingDeviceToken(uid: string) {
       // Save device token to Firestore
       const tokenRef = doc(db, FCM_TOKEN_COLLECTION, uid);
       await setDoc(tokenRef, { fcmToken });
+
+      // Trigger a notification to confirm that the device token is working.
+      console.log("uid", uid);
+      triggerNotification(uid);
       // This will fire when a message is received while the app is in the foreground.
       // When the app is in the background, firebase-messaging-sw.js will receive the message instead.
-      onMessage(msg, (message) => {
-        console.log(
-          "New foreground notification from Firebase Messaging!",
-          message.notification
-        );
-
-        if (
-          message.notification &&
-          message.notification.title &&
-          message.notification.body
-        ) {
+      onMessage(msg, (message: MessagePayload) => {
+        if (message.notification?.title) {
           new Notification(message.notification.title, {
-            body: message.notification.body,
+            body: message.notification?.body,
           });
-        } else {
-          console.warn(
-            "Received message without notification payload:",
-            message
-          );
         }
       });
     } else {
@@ -62,3 +59,10 @@ export async function saveMessagingDeviceToken(uid: string) {
     console.error("Unable to get messaging token.", error);
   }
 }
+const triggerNotification = async (uid: string) => {
+  try {
+    sendNotif(uid, "Test notification", "This is a test notification");
+  } catch (error) {
+    console.error("Error triggering notification:", error);
+  }
+};
