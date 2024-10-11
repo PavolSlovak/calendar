@@ -6,10 +6,9 @@ import {
   useState,
 } from "react";
 
-import { auth, messaging } from "../firebase/firebase";
+import { auth } from "../firebase/firebase";
 import { User } from "../lib/types";
 import { serializeUser } from "../utils/serializeUser";
-import { onMessage } from "firebase/messaging";
 import {
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,

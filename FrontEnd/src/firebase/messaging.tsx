@@ -1,10 +1,4 @@
-import {
-  getToken,
-  MessagePayload,
-  NextFn,
-  NotificationPayload,
-  onMessage,
-} from "firebase/messaging";
+import { getToken, MessagePayload, onMessage } from "firebase/messaging";
 import { db, messaging } from "./firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { sendNotif } from "../utils/http";
@@ -40,9 +34,11 @@ export async function saveMessagingDeviceToken(uid: string) {
       await setDoc(tokenRef, { fcmToken });
 
       // Trigger a notification to confirm that the device token is working.
-      console.log("uid", uid);
-      triggerNotification(uid);
-      // This will fire when a message is received while the app is in the foreground.
+      try {
+        sendNotif(uid, "Test notification", "This is a test notification");
+      } catch (error) {
+        console.error("Error triggering notification:", error);
+      }
       // When the app is in the background, firebase-messaging-sw.js will receive the message instead.
       onMessage(msg, (message: MessagePayload) => {
         if (message.notification?.title) {
@@ -59,10 +55,3 @@ export async function saveMessagingDeviceToken(uid: string) {
     console.error("Unable to get messaging token.", error);
   }
 }
-const triggerNotification = async (uid: string) => {
-  try {
-    sendNotif(uid, "Test notification", "This is a test notification");
-  } catch (error) {
-    console.error("Error triggering notification:", error);
-  }
-};

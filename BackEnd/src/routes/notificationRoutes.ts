@@ -1,6 +1,5 @@
 import express from "express";
-import sendNotif from "../config/sendNotif.js";
-
+import { sendNotif } from "../controllers/firebase/notificationController.js";
 const router = express.Router();
 
 router.post("/send-notification", sendNotif);

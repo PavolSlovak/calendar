@@ -6,17 +6,15 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { db } from "./firebase"; /* 
-import { getDownloadURL } from "./storage" */
-
+import { db } from "./firebase.js";
 // Name of receipt collection in Firestore
 const USER_COLLECTION = "users";
 
 /* 
-Adds user to Firestore with given user information:
-- uid: user ID
-- role: user role (admin or user)
-*/
+  Adds user to Firestore with given user information:
+  - uid: user ID
+  - role: user role (admin or user)
+  */
 type TAddUser = {
   uid: string;
   role: "admin" | "user";

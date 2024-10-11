@@ -1,6 +1,5 @@
 // firebase admin sdk config
 import admin from "firebase-admin";
-import sendNotif from "./sendNotif.js";
 import dotenv from "dotenv";
 
 dotenv.config();
