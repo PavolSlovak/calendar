@@ -18,7 +18,4 @@ if (!admin.apps.length) {
   console.log("Firebase admin SDK already initialized");
 }
 
-// Send a notification
-/* sendNotif("fcmToken", "title", "body");
- */
 export default admin;

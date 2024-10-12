@@ -15,7 +15,9 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import firebase from "firebase/compat/app";
-import { saveMessagingDeviceToken } from "../firebase/messaging";
+import { getMessagingDeviceToken, sendNotif } from "../firebase/messaging";
+import { addUser, updateUserFCM } from "../utils/http-firestore";
+
 type AuthState = {
   currentUser: User | null;
 };
@@ -78,32 +80,45 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       email,
       password
     );
-    const uid = userCredential.user.uid;
-    // If sign-up is successful, save the messaging device token
-    await saveMessagingDeviceToken(uid);
+    const user = userCredential.user;
+    const uid = user.uid;
 
+    const fcmToken = await getMessagingDeviceToken(uid);
+    if (fcmToken) {
+      // If sign-up is successful, save the FCM token along with the user's role to Firestore
+      await addUser(fcmToken);
+    } else {
+      throw new Error("FCM token not found");
+    }
+    // Trigger a notification to confirm that the device token is working.
+    try {
+      await sendNotif(uid, "Success", "User signed up successfully");
+    } catch (error) {
+      console.error("Error triggering notification:", error);
+    }
     return userCredential;
   }
 
   async function login(email: string, password: string) {
-    try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const user = userCredential.user;
-      if (!user) return;
-      const token = await user.getIdToken();
-      localStorage.setItem("token", token);
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    const user = userCredential.user;
+    if (!user) return;
+    const token = await user.getIdToken();
+    localStorage.setItem("token", token);
 
-      saveMessagingDeviceToken(user.uid); // Save the FCM token to the user document in Firestore
+    const fcmToken = await getMessagingDeviceToken(user.uid); // Get the FCM token for the user
 
-      return token; // Return the token or user object as needed
-    } catch (error) {
-      console.error("Error logging in:", error);
-      throw error; // Rethrow or handle the error as needed
+    if (fcmToken) {
+      await updateUserFCM(fcmToken); // Update the FCM token in Firestore
+    } else {
+      throw new Error("FCM token not found");
     }
+    await sendNotif(user.uid, "Success", "User logged in successfully");
+    return token; // Return the token or user object as needed
   }
   function logout() {
     auth.signOut();

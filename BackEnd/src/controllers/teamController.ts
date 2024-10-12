@@ -1,7 +1,7 @@
 import { Team } from "../models/team.js";
 import { Request, Response } from "express";
 import { DecodedIdToken } from "firebase-admin/auth";
-import User from "../models/user.js";
+
 type CRequest = Request & DecodedIdToken;
 
 export const generateColor = () => {

@@ -5,7 +5,6 @@ import { useAuth } from "../../store/authContext";
 import { useState } from "react";
 import InfoBox from "../../components/UI/InfoBox";
 import { Link, useNavigate } from "react-router-dom";
-import { signupUser } from "../../utils/http";
 
 function Signup() {
   const {
@@ -28,17 +27,7 @@ function Signup() {
       // TODO : submit to server
       setSignupError(null);
 
-      const userCredentials: any = await signup(data.email, data.password);
-
-      const additionalUserData = {
-        firebaseUID: userCredentials.user.uid,
-        email: userCredentials.user.email,
-        displayName: userCredentials.user.displayName || "Anonymous",
-        photoURL: userCredentials.user?.photoURL || "default_photo_url",
-        role: "user",
-      };
-
-      await signupUser(additionalUserData); // Save additional user data to MongoDB
+      await signup(data.email, data.password);
 
       navigate("/"); // Redirect to home page
     } catch (error) {

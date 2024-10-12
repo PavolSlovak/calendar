@@ -7,8 +7,14 @@ import Profile from "./views/Profile/Profile";
 import PrivateRoute from "./components/Navigation/PrivateRoute";
 import UpdateProfile from "./views/Profile/UpdateProfile";
 import CreateSchedule from "./views/CreateSchedule";
+import { useEffect } from "react";
+import { initializeNotificationListener } from "./firebase/messaging";
 
 function App() {
+  useEffect(() => {
+    initializeNotificationListener(); // Listen for incoming notifications
+  }, []);
+
   return (
     <Routes>
       <Route path="/" element={<PrivateRoute element={<Root />} />}>

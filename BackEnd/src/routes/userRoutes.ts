@@ -1,9 +1,14 @@
 import express from "express";
+
+import {
+  FSCreateUser,
+  FSUpdateUserFCMToken,
+} from "../controllers/firestore/userController.js";
 import { authenticateToken } from "../middlewares/authenticateToken.js";
-import { createUser, fetchUser } from "../controllers/userController.js";
+const router = express.Router();
 
-export const router = express.Router();
+router.post("/create-user", authenticateToken, FSCreateUser);
 
-router.post("/", createUser);
+router.post("/update-user-fcm", authenticateToken, FSUpdateUserFCMToken);
 
-router.get("/:userId", authenticateToken, fetchUser);
+export { router };
