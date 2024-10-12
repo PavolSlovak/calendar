@@ -15,8 +15,8 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import firebase from "firebase/compat/app";
-import { getMessagingDeviceToken, sendNotif } from "../firebase/messaging";
-import { addUser, updateUserFCM } from "../utils/http-firestore";
+import { getMessagingDeviceToken } from "../firebase/messaging";
+import { addUser, sendNotif, updateUserFCM } from "../utils/http-firestore";
 
 type AuthState = {
   currentUser: User | null;
@@ -86,7 +86,12 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     const fcmToken = await getMessagingDeviceToken(uid);
     if (fcmToken) {
       // If sign-up is successful, save the FCM token along with the user's role to Firestore
-      await addUser(fcmToken);
+      try {
+        await addUser(fcmToken);
+      } catch (error) {
+        console.error("Error adding user to Firestore:", error);
+        throw new Error("Failed to save user information.");
+      }
     } else {
       throw new Error("FCM token not found");
     }

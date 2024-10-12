@@ -32,3 +32,52 @@ export async function updateUserFCM(fcmToken: string) {
     );
   }
 }
+export async function sendNotif(uid: string, title: string, body: string) {
+  console.log("sendNotif", uid, title, body);
+
+  const NotificationPayload = {
+    notification: {
+      title: title,
+      body: body,
+    },
+    to: uid, // Add the recipient's UID here
+  };
+  const response = await fetch(
+    VITE_API_URL + "notifications/send-notification",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(NotificationPayload),
+    }
+  );
+  if (!response.ok) {
+    throw new Error(
+      "Error occured while sending notification.Response not ok."
+    );
+  }
+  await storeNotification(uid, title, body);
+}
+export async function storeNotification(
+  to: string,
+  title: string,
+  body: string
+) {
+  const response = await fetch(
+    VITE_API_URL + "notifications/store-notification",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({ to, title, body }),
+    }
+  );
+  if (!response.ok) {
+    throw new Error(
+      "Error occured while storing notification.Response not ok."
+    );
+  }
+}
