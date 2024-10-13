@@ -40,7 +40,7 @@ export const sendNotif = async (req: Request, res: Response) => {
   }
 };
 
-export const FBStoreNotification = async (req: CRequest, res: Response) => {
+export const FSStoreNotification = async (req: CRequest, res: Response) => {
   try {
     const { uid } = req.user;
     const { to, title, body } = req.body;
@@ -65,5 +65,62 @@ export const FBStoreNotification = async (req: CRequest, res: Response) => {
   } catch (error) {
     console.error("Error storing notification:", error.message);
     res.status(500).send("Error storing notification");
+  }
+};
+export const FSGetNotifications = async (req: CRequest, res: Response) => {
+  try {
+    const { uid } = req.user;
+    const notifications = await admin
+      .firestore()
+      .collection(USERS_COLLECTION)
+      .doc(uid)
+      .collection(NOTIFICATIONS_SUBCOLLECTION)
+      .orderBy("timestamp", "desc")
+      .get();
+    const notificationsList: any[] = [];
+    notifications.forEach((doc) => {
+      notificationsList.push({
+        id: doc.id,
+        ...doc.data(),
+      });
+    });
+    res.status(200).send(notificationsList);
+  } catch (error) {
+    console.error("Error getting notifications:", error.message);
+    res.status(500).send("Error getting notifications");
+  }
+};
+export const FSDeleteNotification = async (req: CRequest, res: Response) => {
+  try {
+    const { uid } = req.user;
+    const { id } = req.params;
+    await admin
+      .firestore()
+      .collection(USERS_COLLECTION)
+      .doc(uid)
+      .collection(NOTIFICATIONS_SUBCOLLECTION)
+      .doc(id)
+      .delete();
+    res.status(200).send({ success: true });
+  } catch (error) {
+    console.error("Error deleting notification:", error.message);
+    res.status(500).send("Error deleting notification");
+  }
+};
+export const FSMarkNotificationRead = async (req: CRequest, res: Response) => {
+  try {
+    const { uid } = req.user;
+    const { id } = req.body;
+    await admin
+      .firestore()
+      .collection(USERS_COLLECTION)
+      .doc(uid)
+      .collection(NOTIFICATIONS_SUBCOLLECTION)
+      .doc(id)
+      .update({ status: "read" });
+    res.status(200).send({ success: true });
+  } catch (error) {
+    console.error("Error marking notification read:", error.message);
+    res.status(500).send("Error marking notification read");
   }
 };

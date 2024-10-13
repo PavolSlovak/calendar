@@ -30,6 +30,9 @@ app.use("/api/users", userRoutes);
 import { router as notificationRoutes } from "./routes/notificationRoutes.js";
 app.use("/api/notifications", notificationRoutes);
 
+import { router as invitationRoutes } from "./routes/invitationRoutes.js";
+app.use("/api/invitations", invitationRoutes);
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
