@@ -94,13 +94,13 @@ export const FSGetNotifications = async (req: CRequest, res: Response) => {
 export const FSDeleteNotification = async (req: CRequest, res: Response) => {
   try {
     const { uid } = req.user;
-    const { id } = req.params;
+    const { notificationId } = req.body;
     await admin
       .firestore()
       .collection(USERS_COLLECTION)
       .doc(uid)
       .collection(NOTIFICATIONS_SUBCOLLECTION)
-      .doc(id)
+      .doc(notificationId)
       .delete();
     res.status(200).send({ success: true });
   } catch (error) {
@@ -111,13 +111,13 @@ export const FSDeleteNotification = async (req: CRequest, res: Response) => {
 export const FSMarkNotificationRead = async (req: CRequest, res: Response) => {
   try {
     const { uid } = req.user;
-    const { id } = req.body;
+    const { notificationId } = req.body;
     await admin
       .firestore()
       .collection(USERS_COLLECTION)
       .doc(uid)
       .collection(NOTIFICATIONS_SUBCOLLECTION)
-      .doc(id)
+      .doc(notificationId)
       .update({ status: "read" });
     res.status(200).send({ success: true });
   } catch (error) {

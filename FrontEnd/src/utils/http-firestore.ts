@@ -93,6 +93,7 @@ export async function getNotifications() {
   return response.json();
 }
 export async function markNotificationAsRead(notificationId: string) {
+  console.log("markNotificationAsRead", notificationId);
   const response = await fetch(
     VITE_API_URL + "notifications/mark-notification-as-read",
     {
@@ -110,7 +111,7 @@ export async function markNotificationAsRead(notificationId: string) {
     );
   }
 }
-export async function markAllNotificationsAsRead() {
+/* export async function markAllNotificationsAsRead() {
   const response = await fetch(
     VITE_API_URL + "notifications/mark-all-notifications-as-read",
     {
@@ -126,7 +127,7 @@ export async function markAllNotificationsAsRead() {
       "Error occured while marking all notifications as read.Response not ok."
     );
   }
-}
+} */
 export async function deleteNotification(notificationId: string) {
   const response = await fetch(
     VITE_API_URL + "notifications/delete-notification",
