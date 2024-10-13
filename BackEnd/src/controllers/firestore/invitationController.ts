@@ -72,6 +72,23 @@ export const FSDeclineInvitation = async (req: CRequest, res: Response) => {
   try {
     const { uid } = req.user;
     const { invitationId } = req.body;
+    const documentSnapshot = await admin
+      .firestore()
+      .collection(USERS_COLLECTION)
+      .doc(uid)
+      .collection(INVITATIONS_SUBCOLLECTION)
+      .doc(invitationId)
+      .update({ status: "declined" });
+    res.status(200).send({ success: true });
+  } catch (error) {
+    console.error("Error declining invitation:", error.message);
+    res.status(500).send("Error declining invitation");
+  }
+};
+export const FSDeleteInvitation = async (req: CRequest, res: Response) => {
+  try {
+    const { uid } = req.user;
+    const { invitationId } = req.body;
     await admin
       .firestore()
       .collection(USERS_COLLECTION)
