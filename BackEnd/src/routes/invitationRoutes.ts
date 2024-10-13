@@ -15,6 +15,6 @@ router.get("/get-invitations", authenticateToken, FSGetInvitations);
 
 router.post("/accept-invitation", authenticateToken, FSAcceptInvitation);
 
-router.post("/decline-invitation", authenticateToken, FSDeclineInvitation);
+router.post("/delete-invitation", authenticateToken, FSDeclineInvitation);
 
 export { router };
