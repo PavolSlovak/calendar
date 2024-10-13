@@ -35,13 +35,6 @@ export async function updateUserFCM(fcmToken: string) {
 export async function sendNotif(uid: string, title: string, body: string) {
   console.log("sendNotif", uid, title, body);
 
-  const NotificationPayload = {
-    notification: {
-      title: title,
-      body: body,
-    },
-    to: uid, // Add the recipient's UID here
-  };
   const response = await fetch(
     VITE_API_URL + "notifications/send-notification",
     {
@@ -49,7 +42,7 @@ export async function sendNotif(uid: string, title: string, body: string) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(NotificationPayload),
+      body: JSON.stringify({ uid, title, body }),
     }
   );
   if (!response.ok) {

@@ -7,10 +7,11 @@ export const FCM_TOKEN_KEY = "fcmToken";
 const USERS_COLLECTION = "users"; // Main users collection
 const NOTIFICATIONS_SUBCOLLECTION = "notifications"; // Subcollection for notifications
 type CRequest = Request & DecodedIdToken;
+
 export const sendNotif = async (req: Request, res: Response) => {
   try {
     // to is uid of the user to send the notification to
-    const { to, notification } = req.body;
+    const { to, title, body } = req.body;
     const documentSnapshot = await admin
       .firestore()
       .collection(USERS_COLLECTION)
@@ -25,8 +26,8 @@ export const sendNotif = async (req: Request, res: Response) => {
     console.log("fcmToken");
     const message = {
       notification: {
-        title: notification.title,
-        body: notification.body,
+        title: title,
+        body: body,
       },
       token: fcmToken,
     };
