@@ -1,5 +1,5 @@
 import React from "react";
-import NavbarLink from "../UI/NavLink";
+
 type DropdownMenuProps = {
   handleClick: (event: React.MouseEvent<HTMLDivElement>) => void;
 
@@ -16,15 +16,11 @@ function DropdownMenu({
   ID,
 }: DropdownMenuProps) {
   return (
-    <div
-      id={ID}
-      onClick={handleClick}
-      className="flex items-center justify-center"
-    >
+    <div id={ID} onClick={handleClick} className="linkclasses">
       <div>{trigger}</div>
 
       {isOpen && (
-        <div className="absolute top-16 right-0 bg-white shadow-lg">
+        <div className="absolute top-20 right-0 w-1/2 sm:w-1/3 bg-white shadow-lg">
           <ul>
             <li>{children}</li>
           </ul>

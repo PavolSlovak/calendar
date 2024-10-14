@@ -114,6 +114,16 @@ const teamSchema = z.object({
   updatedAt: z.date().default(() => new Date()),
 });
 
+const notificationSchema = z.object({
+  from: z.string(),
+  notification: z.object({
+    title: z.string(),
+    body: z.string(),
+  }),
+  timestamp: z.date(),
+  status: z.enum(["unread", "read"]),
+});
+
 export type User = z.infer<typeof UserSchema>;
 export type Exception = z.infer<typeof exceptionSchema>;
 export type Recurrence = z.infer<typeof recurrenceSchema>;
@@ -121,3 +131,5 @@ export type Comment = z.infer<typeof commentSchema>;
 export type Member = z.infer<typeof memberSchema>;
 export type Shift = z.infer<typeof shiftSchema>;
 export type Team = z.infer<typeof teamSchema>;
+
+export type Notification = z.infer<typeof notificationSchema>;

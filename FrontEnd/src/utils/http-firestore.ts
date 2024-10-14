@@ -111,23 +111,7 @@ export async function markNotificationAsRead(notificationId: string) {
     );
   }
 }
-/* export async function markAllNotificationsAsRead() {
-  const response = await fetch(
-    VITE_API_URL + "notifications/mark-all-notifications-as-read",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    }
-  );
-  if (!response.ok) {
-    throw new Error(
-      "Error occured while marking all notifications as read.Response not ok."
-    );
-  }
-} */
+
 export async function deleteNotification(notificationId: string) {
   const response = await fetch(
     VITE_API_URL + "notifications/delete-notification",

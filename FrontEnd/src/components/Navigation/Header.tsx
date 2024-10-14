@@ -1,24 +1,61 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../store/authContext";
 import useNavbarSticky from "../../store/hooks/useNavbarSticky";
 import NavbarLink from "../UI/NavLink";
 import DropdownMenu from "./DropdownMenu";
 import { BellIcon, UsersIcon } from "@heroicons/react/outline";
+import { Link } from "react-router-dom";
+import { getInvitations, getNotifications } from "../../utils/http-firestore";
+import { useQuery } from "@tanstack/react-query";
+import LoadingIndicator from "../UI/LoadingIndicator";
+import { Notification } from "@shared/schemas";
 
 type HeaderProps = {
   handleToggle: () => void;
   openModal: () => void;
   path: string | undefined;
 };
-
 function Header({ handleToggle, openModal, path }: HeaderProps) {
   useNavbarSticky(); // Custom hook to add sticky behavior to the header
   const { currentUser } = useAuth();
-  console.log(currentUser?.uid);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [notificationDropdownOpen, setNotificationDropdownOpen] =
     useState(false);
   const [invitationDropdownOpen, setInvitationDropdownOpen] = useState(false);
+
+  const [notifications, setNotifications] = useState<[]>([]);
+  const [invitations, setInvitations] = useState([]);
+  const {
+    status: notStatus,
+    data: notData,
+    isPending: notIsPending,
+    isError: notIsError,
+    error: notError,
+  } = useQuery({
+    queryKey: ["notifications"], // query key is an array with the query key and the query key object
+    queryFn: () => getNotifications(),
+  });
+  const {
+    status: invStatus,
+    data: invData,
+    isPending: invIsPending,
+    isError: invIsError,
+    error: invError,
+  } = useQuery({
+    queryKey: ["invitations"], // query key is an array with the query key and the query key object
+    queryFn: () => getInvitations(),
+  });
+  useEffect(() => {
+    if (notStatus === "success" && notData) {
+      setNotifications(notData);
+    }
+  }, [notStatus, notData]);
+
+  useEffect(() => {
+    if (invStatus === "success" && invData) {
+      setInvitations(invData);
+    }
+  }, [invStatus, invData]);
 
   function handleOpenDropdown(event: React.MouseEvent<HTMLDivElement>) {
     console.log(event.currentTarget.id);
@@ -72,16 +109,16 @@ function Header({ handleToggle, openModal, path }: HeaderProps) {
               Calendar
             </NavbarLink>
           </li>
-          <li className={`flex flex-col justify-center`}>
+          <li className={`flex flex-col justify-center h-full`}>
             <NavbarLink location={"/teams"} onActive={path}>
               Teams
             </NavbarLink>
           </li>
         </ul>
       </nav>
-      <div className="flex justify-center items-center h-full  w-60">
-        <div className="mr-5">
-          <button onClick={openModal} className="btn-blue h-10 mr-5">
+      <div className="flex h-full">
+        <div className="flex items-center">
+          <button onClick={openModal} className="btn-blue h-10 ">
             New Team
           </button>
         </div>
@@ -94,9 +131,16 @@ function Header({ handleToggle, openModal, path }: HeaderProps) {
               isOpen={notificationDropdownOpen}
               trigger={<BellIcon className="h-5 w-5" />}
             >
-              <NavbarLink location={"/profile"} onActive={path}>
-                Notifications
-              </NavbarLink>
+              <h1>Notifications</h1>
+              {notIsPending ? (
+                <LoadingIndicator />
+              ) : (
+                <ul>
+                  {notifications.map((notification: Notification) => (
+                    <li key={notification.id}>{notification}</li>
+                  ))}
+                </ul>
+              )}
             </DropdownMenu>
             <DropdownMenu
               ID={"invitations"}
@@ -104,9 +148,16 @@ function Header({ handleToggle, openModal, path }: HeaderProps) {
               isOpen={invitationDropdownOpen}
               trigger={<UsersIcon className="h-5 w-5" />}
             >
-              <NavbarLink location={"/profile"} onActive={path}>
-                Team invitations
-              </NavbarLink>
+              <h1>Invitations</h1>
+              {/*  {invIsPending ? (
+                <LoadingIndicator />
+              ) : (
+                <ul>
+                  {invitations.map((invitation) => (
+                    <li>{invitation}</li>
+                  ))}
+                </ul>
+              )} */}
             </DropdownMenu>
             <DropdownMenu
               ID={"profile"}
@@ -116,9 +167,7 @@ function Header({ handleToggle, openModal, path }: HeaderProps) {
                 <span className="flex h-10 w-10  rounded-full bg-black"></span>
               }
             >
-              <NavbarLink location={"/profile"} onActive={path}>
-                Profile
-              </NavbarLink>
+              <Link to={"/profile"}>Profile</Link>
             </DropdownMenu>
           </>
         ) : (
