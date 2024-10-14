@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import { getInvitations, getNotifications } from "../../utils/http-firestore";
 import { useQuery } from "@tanstack/react-query";
 import LoadingIndicator from "../UI/LoadingIndicator";
-import { Notification } from "@shared/schemas";
+import { Invitation, Notification } from "@shared/schemas";
 
 type HeaderProps = {
   handleToggle: () => void;
@@ -23,8 +23,8 @@ function Header({ handleToggle, openModal, path }: HeaderProps) {
     useState(false);
   const [invitationDropdownOpen, setInvitationDropdownOpen] = useState(false);
 
-  const [notifications, setNotifications] = useState<[]>([]);
-  const [invitations, setInvitations] = useState([]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [invitations, setInvitations] = useState<Invitation[]>([]);
   const {
     status: notStatus,
     data: notData,
@@ -48,12 +48,14 @@ function Header({ handleToggle, openModal, path }: HeaderProps) {
   useEffect(() => {
     if (notStatus === "success" && notData) {
       setNotifications(notData);
+      console.log(notData);
     }
   }, [notStatus, notData]);
 
   useEffect(() => {
     if (invStatus === "success" && invData) {
       setInvitations(invData);
+      console.log(invData.invitations);
     }
   }, [invStatus, invData]);
 
@@ -136,8 +138,8 @@ function Header({ handleToggle, openModal, path }: HeaderProps) {
                 <LoadingIndicator />
               ) : (
                 <ul>
-                  {notifications.map((notification: Notification) => (
-                    <li key={notification.id}>{notification}</li>
+                  {notifications.map((dat: Notification) => (
+                    <li key={dat.id}>{dat.notification.title}</li>
                   ))}
                 </ul>
               )}
@@ -149,15 +151,18 @@ function Header({ handleToggle, openModal, path }: HeaderProps) {
               trigger={<UsersIcon className="h-5 w-5" />}
             >
               <h1>Invitations</h1>
-              {/*  {invIsPending ? (
+              {invIsPending ? (
                 <LoadingIndicator />
               ) : (
                 <ul>
-                  {invitations.map((invitation) => (
-                    <li>{invitation}</li>
+                  {invitations.map((dat: Invitation) => (
+                    <li key={dat.id}>
+                      User {dat.invitedByUserId} invited you to the team{" "}
+                      {dat.invitedByUserId}{" "}
+                    </li>
                   ))}
                 </ul>
-              )} */}
+              )}
             </DropdownMenu>
             <DropdownMenu
               ID={"profile"}

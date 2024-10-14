@@ -1,6 +1,7 @@
 import admin from "firebase-admin";
 import { Request, Response } from "express";
 import { DecodedIdToken } from "firebase-admin/auth";
+import { Invitation } from "@shared/schemas.js";
 
 export const FCM_TOKEN_KEY = "fcmToken";
 
@@ -42,10 +43,10 @@ export const FSGetInvitations = async (req: CRequest, res: Response) => {
       .doc(uid)
       .collection(INVITATIONS_SUBCOLLECTION)
       .get();
-    const invitations = documentSnapshot.docs.map((doc) => {
+    const invitationsList: Invitation[] = documentSnapshot.docs.map((doc) => {
       return { id: doc.id, ...doc.data() };
     });
-    res.status(200).send({ success: true, invitations });
+    res.status(200).send(invitationsList);
   } catch (error) {
     console.error("Error getting notifications:", error.message);
     res.status(500).send("Error getting notifications");

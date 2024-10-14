@@ -1,6 +1,7 @@
 import admin from "firebase-admin";
 import { Request, Response } from "express";
 import { DecodedIdToken } from "firebase-admin/auth";
+import { Notification } from "@shared/schemas.js";
 
 export const FCM_TOKEN_KEY = "fcmToken";
 
@@ -78,7 +79,7 @@ export const FSGetNotifications = async (req: CRequest, res: Response) => {
       .collection(NOTIFICATIONS_SUBCOLLECTION)
       .orderBy("timestamp", "desc")
       .get();
-    const notificationsList: any[] = [];
+    const notificationsList: Notification[] = [];
     notifications.forEach((doc) => {
       notificationsList.push({
         id: doc.id,

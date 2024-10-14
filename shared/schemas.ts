@@ -115,6 +115,7 @@ const teamSchema = z.object({
 });
 
 const notificationSchema = z.object({
+  id: z.string(),
   from: z.string(),
   notification: z.object({
     title: z.string(),
@@ -122,6 +123,13 @@ const notificationSchema = z.object({
   }),
   timestamp: z.date(),
   status: z.enum(["unread", "read"]),
+});
+const invitationSchema = z.object({
+  id: z.string(),
+  invitedByUserId: z.string(),
+  status: z.enum(["pending", "accepted", "rejected"]),
+  teamId: z.string(),
+  timestamp: z.date(),
 });
 
 export type User = z.infer<typeof UserSchema>;
@@ -133,3 +141,4 @@ export type Shift = z.infer<typeof shiftSchema>;
 export type Team = z.infer<typeof teamSchema>;
 
 export type Notification = z.infer<typeof notificationSchema>;
+export type Invitation = z.infer<typeof invitationSchema>;
