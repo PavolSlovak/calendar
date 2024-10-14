@@ -1,25 +1,32 @@
+import React from "react";
 import NavbarLink from "../UI/NavLink";
 type DropdownMenuProps = {
-  path: string | undefined;
-  onOpen: (value: boolean) => void;
+  handleClick: (event: React.MouseEvent<HTMLDivElement>) => void;
+
   isOpen: boolean;
+  children?: React.ReactNode;
+  trigger: React.ReactNode;
+  ID: string;
 };
-function DropdownMenu({ path, onOpen, isOpen }: DropdownMenuProps) {
+function DropdownMenu({
+  handleClick,
+  isOpen,
+  children,
+  trigger,
+  ID,
+}: DropdownMenuProps) {
   return (
-    <div className="flex  items-center justify-center  w-10 h-10">
-      <span
-        className="flex h-10 w-10  rounded-full bg-black"
-        onClick={() => onOpen(!isOpen)}
-      ></span>
+    <div
+      id={ID}
+      onClick={handleClick}
+      className="flex items-center justify-center"
+    >
+      <div>{trigger}</div>
 
       {isOpen && (
         <div className="absolute top-16 right-0 bg-white shadow-lg">
           <ul>
-            <li>
-              <NavbarLink location={"/profile"} onActive={path}>
-                Profile
-              </NavbarLink>
-            </li>
+            <li>{children}</li>
           </ul>
         </div>
       )}

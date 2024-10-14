@@ -3,6 +3,7 @@ import { useAuth } from "../../store/authContext";
 import useNavbarSticky from "../../store/hooks/useNavbarSticky";
 import NavbarLink from "../UI/NavLink";
 import DropdownMenu from "./DropdownMenu";
+import { BellIcon, UsersIcon } from "@heroicons/react/outline";
 
 type HeaderProps = {
   handleToggle: () => void;
@@ -14,7 +15,31 @@ function Header({ handleToggle, openModal, path }: HeaderProps) {
   useNavbarSticky(); // Custom hook to add sticky behavior to the header
   const { currentUser } = useAuth();
   console.log(currentUser?.uid);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const [notificationDropdownOpen, setNotificationDropdownOpen] =
+    useState(false);
+  const [invitationDropdownOpen, setInvitationDropdownOpen] = useState(false);
+
+  function handleOpenDropdown(event: React.MouseEvent<HTMLDivElement>) {
+    console.log(event.currentTarget.id);
+    switch (event.currentTarget.id) {
+      case "profile":
+        setProfileDropdownOpen(!profileDropdownOpen);
+        setNotificationDropdownOpen(false);
+        setInvitationDropdownOpen(false);
+        break;
+      case "notifications":
+        setNotificationDropdownOpen(!notificationDropdownOpen);
+        setProfileDropdownOpen(false);
+        setInvitationDropdownOpen(false);
+        break;
+      case "invitations":
+        setInvitationDropdownOpen(!invitationDropdownOpen);
+        setProfileDropdownOpen(false);
+        setNotificationDropdownOpen(false);
+        break;
+    }
+  }
   return (
     <header className="flex w-screen h-20 items-center  top-0 bg-white ">
       <div className="flex h-full w-40 justify-center items-center">
@@ -62,11 +87,40 @@ function Header({ handleToggle, openModal, path }: HeaderProps) {
         </div>
 
         {currentUser?.uid ? (
-          <DropdownMenu
-            path={path}
-            onOpen={setDropdownOpen}
-            isOpen={dropdownOpen}
-          />
+          <>
+            <DropdownMenu
+              ID={"notifications"}
+              handleClick={handleOpenDropdown}
+              isOpen={notificationDropdownOpen}
+              trigger={<BellIcon className="h-5 w-5" />}
+            >
+              <NavbarLink location={"/profile"} onActive={path}>
+                Notifications
+              </NavbarLink>
+            </DropdownMenu>
+            <DropdownMenu
+              ID={"invitations"}
+              handleClick={handleOpenDropdown}
+              isOpen={invitationDropdownOpen}
+              trigger={<UsersIcon className="h-5 w-5" />}
+            >
+              <NavbarLink location={"/profile"} onActive={path}>
+                Team invitations
+              </NavbarLink>
+            </DropdownMenu>
+            <DropdownMenu
+              ID={"profile"}
+              handleClick={handleOpenDropdown}
+              isOpen={profileDropdownOpen}
+              trigger={
+                <span className="flex h-10 w-10  rounded-full bg-black"></span>
+              }
+            >
+              <NavbarLink location={"/profile"} onActive={path}>
+                Profile
+              </NavbarLink>
+            </DropdownMenu>
+          </>
         ) : (
           <NavbarLink location={"/auth"} onActive={path}>
             Login
