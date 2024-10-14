@@ -16,11 +16,11 @@ export async function addUser(fcmToken: string) {
 }
 export async function updateUserFCM(fcmToken: string) {
   const token = localStorage.getItem("token");
-
+  console.log("updateUserFCM", fcmToken);
   const response = await fetch(VITE_API_URL + "users/update-user-fcm", {
     method: "POST",
     headers: {
-      "Content-Type": "application-json",
+      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
 
@@ -31,10 +31,9 @@ export async function updateUserFCM(fcmToken: string) {
       "Error occured while updating user's fcm token.Response not ok."
     );
   }
+  return response.json();
 }
-export async function sendNotif(uid: string, title: string, body: string) {
-  console.log("sendNotif", uid, title, body);
-
+export async function sendNotif(to: string, title: string, body: string) {
   const response = await fetch(
     VITE_API_URL + "notifications/send-notification",
     {
@@ -42,7 +41,7 @@ export async function sendNotif(uid: string, title: string, body: string) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ uid, title, body }),
+      body: JSON.stringify({ to, title, body }),
     }
   );
   if (!response.ok) {
@@ -50,7 +49,8 @@ export async function sendNotif(uid: string, title: string, body: string) {
       "Error occured while sending notification.Response not ok."
     );
   }
-  await storeNotification(uid, title, body);
+  await storeNotification(to, title, body);
+  return response.json();
 }
 export async function storeNotification(
   to: string,
@@ -73,6 +73,7 @@ export async function storeNotification(
       "Error occured while storing notification.Response not ok."
     );
   }
+  return response.json();
 }
 export async function getNotifications() {
   const response = await fetch(

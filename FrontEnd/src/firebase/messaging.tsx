@@ -43,6 +43,7 @@ export async function initializeNotificationListener() {
     console.log("Message received. ", message);
 
     if (message.notification?.title) {
+      console.log("Showing notification...");
       new Notification(message.notification.title, {
         body: message.notification?.body,
       });

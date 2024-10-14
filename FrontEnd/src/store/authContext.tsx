@@ -116,14 +116,15 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("token", token);
 
     const fcmToken = await getMessagingDeviceToken(user.uid); // Get the FCM token for the user
-
+    console.log("fcmToken", fcmToken);
     if (fcmToken) {
       await updateUserFCM(fcmToken); // Update the FCM token in Firestore
     } else {
       throw new Error("FCM token not found");
     }
+    console.log("User id", user.uid);
     await sendNotif(user.uid, "Success", "User logged in successfully");
-    return token; // Return the token or user object as needed
+    return userCredential;
   }
   function logout() {
     auth.signOut();
