@@ -60,3 +60,11 @@ export const fetchTeams = async (req: CRequest, res: Response) => {
     res.status(500).send("Error fetching teams");
   }
 };
+export const addMemberMongoDB = async (teamId: string, userId: string) => {
+  const team = await Team.findById(teamId);
+  if (!team) {
+    throw new Error("Team not found");
+  }
+  team.members.push({ firebaseID: userId });
+  await team.save();
+};

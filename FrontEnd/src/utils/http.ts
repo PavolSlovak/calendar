@@ -29,3 +29,4 @@ export async function fetchTeams() {
 
   return teams;
 }
+export function addMemberToTeamInMongoDB(teamId: string, uid: string) {}

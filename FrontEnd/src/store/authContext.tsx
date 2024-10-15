@@ -80,8 +80,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       email,
       password
     );
-    const user = userCredential.user;
-    const uid = user.uid;
+    const { uid } = userCredential.user;
 
     const fcmToken = await getMessagingDeviceToken(uid);
     if (fcmToken) {

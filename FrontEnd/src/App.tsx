@@ -9,12 +9,20 @@ import UpdateProfile from "./views/Profile/UpdateProfile";
 import CreateSchedule from "./views/CreateSchedule";
 import { useEffect } from "react";
 import { initializeNotificationListener } from "./firebase/messaging";
+import { listenForInvitationAcceptance } from "./firebase/firestore";
+import { useAuth } from "./store/authContext";
 
 function App() {
+  const { currentUser } = useAuth();
+
   useEffect(() => {
     initializeNotificationListener(); // Listen for incoming notifications
   }, []);
-
+  useEffect(() => {
+    if (currentUser) {
+      listenForInvitationAcceptance(currentUser?.uid); // Listen for invitation acceptance
+    }
+  }, []);
   return (
     <Routes>
       <Route path="/" element={<PrivateRoute element={<Root />} />}>

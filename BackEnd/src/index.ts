@@ -9,10 +9,11 @@ const PORT = process.env.PORT || 3000;
 
 // Connect to MongoDB
 connectDB();
-
 if (process.env.NODE_ENV !== "production") {
   dotenvConfig();
 }
+// Listen for invitation changes in Firestore
+listenForInvitationChanges();
 
 // Middlewares
 
@@ -31,6 +32,7 @@ import { router as notificationRoutes } from "./routes/notificationRoutes.js";
 app.use("/api/notifications", notificationRoutes);
 
 import { router as invitationRoutes } from "./routes/invitationRoutes.js";
+import { listenForInvitationChanges } from "./config/invitationsChangeListener.js";
 app.use("/api/invitations", invitationRoutes);
 
 app.listen(PORT, () => {
