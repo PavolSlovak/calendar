@@ -1,9 +1,9 @@
 import express from "express";
 import { authenticateToken } from "../middlewares/authenticateToken.js";
 import {
-  createTeam,
-  fetchTeam,
-  fetchTeams,
+  createTeamMongoDB,
+  fetchTeamMongoDB,
+  fetchTeamsMongoDB,
 } from "../controllers/teamController.js";
 
 const router = express.Router();
@@ -13,10 +13,10 @@ const router = express.Router();
 /* router.get("/", (req, res) => {
   res.send("GET request to the homepage");
 }); */
-router.post("/", authenticateToken, createTeam);
+router.post("/create", authenticateToken, createTeamMongoDB);
 
-router.get("/", authenticateToken, fetchTeams);
+router.get("/", authenticateToken, fetchTeamsMongoDB);
 
-router.get("/:teamId", authenticateToken, fetchTeam);
+router.get("/:teamId", authenticateToken, fetchTeamMongoDB);
 
 export { router };

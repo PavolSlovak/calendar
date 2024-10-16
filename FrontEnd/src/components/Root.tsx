@@ -51,7 +51,7 @@ function Root() {
           )}
         </AnimatePresence>
         <AnimatePresence>
-          {isCreateTeamOpen && <CreateTeam onDone={closeModal} />}
+          {/*           {isCreateTeamOpen && <CreateTeam onDone={closeModal} />} */}
         </AnimatePresence>
         <main className="flex grow justify-center">
           <Outlet />

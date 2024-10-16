@@ -13,6 +13,7 @@ import { RootState as ReduxRootState } from "../../../store";
 import { z } from "zod";
 import InfoBox from "../../UI/InfoBox";
 import InvitationTable from "../InvitationTable";
+import { createTeam } from "../../../utils/http";
 
 type CreateTeamProps = {
   onDone: () => void;
@@ -25,21 +26,13 @@ function CreateTeam({ onDone }: CreateTeamProps) {
   const dispatch = useDispatch();
   const { currentUser } = useAuth();
 
-  const [newTeam, setNewTeam] = useState<Team>({
-    id: Math.random().toString(36).substring(7),
+  type TNewTeam = {
+    teamName: string;
+    invitations: string[];
+  };
+  const [newTeam, setNewTeam] = useState<TNewTeam>({
     teamName: "",
     invitations: [],
-    members: [],
-    createdBy: currentUser!,
-    weekSchedule: [
-      { day: "Sun", shifts: [] },
-      { day: "Mon", shifts: [] },
-      { day: "Tue", shifts: [] },
-      { day: "Wed", shifts: [] },
-      { day: "Thu", shifts: [] },
-      { day: "Fri", shifts: [] },
-      { day: "Sat", shifts: [] },
-    ],
   });
 
   useEffect(() => {
@@ -55,33 +48,21 @@ function CreateTeam({ onDone }: CreateTeamProps) {
   function handlePrev() {
     setCurrentSlide((prev) => Math.max(prev - 1, 1));
   }
-  function generateRandomColor() {
-    return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-  }
 
-  function handleSubmit() {
-    setIsSubmitting(true);
-    // TODO - Add the new team to the database
+  async function handleSubmit() {
+    const { teamName, invitations } = newTeam;
+    try {
+      setIsSubmitting(true);
+      // TODO - Add the new team to the database
 
-    // Extract necessary fields from the currentUser object
-    /* const userToAdd: MemberSchema = {
-      uid: currentUser?.uid || "",
-      email: currentUser?.email || "",
-      displayName: currentUser?.displayName || "",
-      photoURL: currentUser?.photoURL || "",
-      color: generateRandomColor(),
-    };
-    const userToAdd2 = {
-      uid: users[1].uid,
-      email: users[1].email,
-      displayName: users[1].displayName,
-      photoURL: users[1].photoURL,
-      color: generateRandomColor(),
-    };
-    newTeam.members.push(userToAdd, userToAdd2); */
-    dispatch(teamSlice.actions.addTeam(newTeam));
-    setIsSubmitting(false);
-    onDone(); // Close the modal
+      await createTeam(teamName, invitations);
+
+      setIsSubmitting(false);
+      onDone(); // Close the modal
+    } catch (error) {
+      console.error("Error creating team:", error);
+      setIsSubmitting(false);
+    }
   }
   let slideContent;
   let slideHeader;

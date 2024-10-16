@@ -22,6 +22,7 @@ const teamSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });
+
 // Middleware to generate a unique color for each member
 teamSchema.pre("save", function (next) {
   this.members.forEach((member) => {

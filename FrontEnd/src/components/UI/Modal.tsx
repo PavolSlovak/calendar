@@ -1,5 +1,14 @@
-import { motion } from "framer-motion";
-import { forwardRef, ReactNode, useImperativeHandle, useRef } from "react";
+import { ForwardRefComponent, motion } from "framer-motion";
+import {
+  forwardRef,
+  FunctionComponent,
+  ReactElement,
+  ReactNode,
+  Ref,
+  RefAttributes,
+  useImperativeHandle,
+  useRef,
+} from "react";
 import { createPortal } from "react-dom";
 
 type ModalProps = {
@@ -9,6 +18,14 @@ type ModalProps = {
 export type ModalHandle = {
   open: () => void;
 };
+// Define an interface to add the subcomponents
+type ModalComponent = FunctionComponent<ModalProps> &
+  ForwardRefComponent<ModalHandle, ModalProps & RefAttributes<ModalHandle>> & {
+    Body: FunctionComponent<TModalBodyProps>;
+    Header: FunctionComponent<TModalHeaderProps>;
+    Footer: FunctionComponent<TModalFooterProps>;
+  };
+
 const Modal = forwardRef<ModalHandle, ModalProps>(
   ({ children, onClose }, ref) => {
     const dialog = useRef<HTMLDialogElement>(null);
@@ -70,5 +87,45 @@ const Modal = forwardRef<ModalHandle, ModalProps>(
       document.getElementById("modal-root")!
     );
   }
-);
+) as ModalComponent;
+
+type TModalHeaderProps = {
+  title: string;
+};
+const ModalHeader: FunctionComponent<TModalHeaderProps> = ({ title }) => {
+  return (
+    <div className="p-4 relative">
+      <span className="absolute top-4 right-4">x</span>
+    </div>
+  );
+};
+
+type TModalBodyProps = {
+  children: ReactNode;
+};
+const ModalBody: FunctionComponent<TModalBodyProps> = ({ children }) => {
+  return <div className="p-4">{children}</div>;
+};
+type TModalFooterProps = {
+  handleClose: () => void;
+  actions?: ReactElement;
+};
+const ModalFooter: FunctionComponent<TModalFooterProps> = ({
+  handleClose,
+  actions,
+}) => {
+  return (
+    <div className="p-4">
+      <button onClick={handleClose} className="text-black justify-end">
+        Cancel
+      </button>
+      {actions}
+    </div>
+  );
+};
+
+Modal.Body = ModalBody;
+Modal.Header = ModalHeader;
+Modal.Footer = ModalFooter;
+
 export default Modal;

@@ -13,10 +13,17 @@ export const generateColor = () => {
   return color;
 };
 
-export const createTeam = async (req: CRequest, res: Response) => {
+export const createTeamMongoDB = async (req: CRequest, res: Response) => {
   try {
     console.log("Received team body:", req.body);
-    const team = new Team(req.body);
+    const { name, invitations } = req.body;
+    const { uid } = req.user;
+    const team = new Team({
+      teamName: name,
+      members: [{ firebaseID: uid }],
+      createdBy: { firebaseID: uid },
+      invitations: invitations,
+    });
 
     await team.save();
     console.log("Team created successfully:", team);
@@ -27,7 +34,7 @@ export const createTeam = async (req: CRequest, res: Response) => {
   }
 };
 
-export const fetchTeam = async (req: CRequest, res: Response) => {
+export const fetchTeamMongoDB = async (req: CRequest, res: Response) => {
   const teamId = req.params.teamId;
   const teamData = await Team.findById(teamId).populate(
     "createdBy.memberID members.memberID shifts.memberID"
@@ -42,7 +49,7 @@ export const fetchTeam = async (req: CRequest, res: Response) => {
   console.log("Team fetched successfully:", teamData);
   res.status(200).send(teamData);
 };
-export const fetchTeams = async (req: CRequest, res: Response) => {
+export const fetchTeamsMongoDB = async (req: CRequest, res: Response) => {
   try {
     const userData = req.user;
     console.log("userData", userData);
@@ -60,6 +67,7 @@ export const fetchTeams = async (req: CRequest, res: Response) => {
     res.status(500).send("Error fetching teams");
   }
 };
+// Gets triggered when a user accepts an invitation
 export const addMemberMongoDB = async (teamId: string, userId: string) => {
   const team = await Team.findById(teamId);
   if (!team) {

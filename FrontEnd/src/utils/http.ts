@@ -1,4 +1,5 @@
 import { QueryClient } from "@tanstack/react-query";
+import { storeInvitation } from "./http-firestore";
 export const queryClient = new QueryClient();
 
 type FetchError = {
@@ -29,4 +30,27 @@ export async function fetchTeams() {
 
   return teams;
 }
-export function addMemberToTeamInMongoDB(teamId: string, uid: string) {}
+export async function createTeam(name: string, invitations: string[]) {
+  const token = localStorage.getItem("token");
+  const response = await fetch(VITE_API_URL + "teams/create", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ name, invitations }),
+  });
+
+  if (!response.ok) {
+    const error = new Error("An error occurred while creating the team");
+    (error as FetchError).code = response.status;
+    (error as FetchError).info = await response.text();
+    throw error;
+  }
+  console.log(
+    `Team created successfully: ${name} with invitations: ${invitations} and response ${response.json()}`
+  );
+  /* await storeInvitation(teamId, userId); */
+
+  return response.json();
+}

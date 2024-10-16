@@ -11,7 +11,6 @@ type CRequest = Request & DecodedIdToken;
 
 export const FSStoreInvitation = async (req: CRequest, res: Response) => {
   try {
-    console.log("JEBE");
     const { uid } = req.user;
     const { teamId, invitedUserId } = req.body;
     const timestamp = admin.firestore.FieldValue.serverTimestamp();
