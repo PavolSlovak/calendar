@@ -1,19 +1,19 @@
 import { useEffect, useRef, useState } from "react";
-import Modal, { ModalHandle } from "../../UI/Modal";
-import Button from "../../UI/Button";
-import RadioButtons from "../../UI/RadioButtons";
-import { teamSlice } from "../../../store/teams-slice";
+import Modal, { ModalHandle } from "./src/components/UI/Modal";
+import Button from "./src/components/UI/Button";
+import RadioButtons from "./src/components/UI/RadioButtons";
+import { teamSlice } from "./src/store/teams-slice";
 import { useDispatch, useSelector } from "react-redux";
-import { useAuth } from "../../../store/authContext";
-import { MemberSchema, Team } from "../../../lib/types";
-import users from "../../../dummy_users";
+import { useAuth } from "./src/store/authContext";
+import { MemberSchema, Team } from "./src/lib/types";
+import users from "./src/dummy_users";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RootState as ReduxRootState } from "../../../store";
+import { RootState as ReduxRootState } from "./src/store";
 import { z } from "zod";
-import InfoBox from "../../UI/InfoBox";
-import InvitationTable from "../InvitationTable";
-import { createTeam } from "../../../utils/http";
+import InfoBox from "./src/components/UI/InfoBox";
+import InvitationTable from "./src/components/Teams/InvitationTable";
+import { createTeam } from "./src/utils/http";
 
 type CreateTeamProps = {
   onDone: () => void;

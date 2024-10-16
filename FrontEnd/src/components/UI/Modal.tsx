@@ -4,7 +4,6 @@ import {
   FunctionComponent,
   ReactElement,
   ReactNode,
-  Ref,
   RefAttributes,
   useImperativeHandle,
   useRef,
@@ -64,7 +63,6 @@ const Modal = forwardRef<ModalHandle, ModalProps>(
           className="fixed inset-0 bg-black bg-opacity-50 z-10"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.1 }}
           exit={{ opacity: 0 }}
           onClick={handleBackdropClick}
         >
@@ -76,6 +74,7 @@ const Modal = forwardRef<ModalHandle, ModalProps>(
               variants={modalVariants}
               initial="hidden"
               animate="visible"
+              exit="hidden"
               transition={{ type: "spring", stiffness: 120, duration: 0.1 }}
             >
               {children}
@@ -124,8 +123,8 @@ const ModalFooter: FunctionComponent<TModalFooterProps> = ({
   );
 };
 
-Modal.Body = ModalBody;
 Modal.Header = ModalHeader;
+Modal.Body = ModalBody;
 Modal.Footer = ModalFooter;
 
 export default Modal;

@@ -1,6 +1,6 @@
 import { ComponentPropsWithoutRef, ReactNode } from "react";
 import { Link, type LinkProps } from "react-router-dom";
-import { motion, MotionProps } from "framer-motion";
+
 type BaseProps = {
   children: ReactNode;
   textOnly?: boolean;

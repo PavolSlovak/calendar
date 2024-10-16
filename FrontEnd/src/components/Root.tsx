@@ -3,11 +3,12 @@ import Footer from "./Footer";
 import Header from "./Navigation/Header";
 import MenuColumn from "./Navigation/MenuColumn";
 import { AnimatePresence } from "framer-motion";
-import CreateTeam from "./Teams/CreateTeamForms/CreateTeam";
 import useScreenController from "../store/hooks/useScreenController";
 import { Outlet, useLocation } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "../store";
+import NewTeamModal from "./Teams/NewTeamModal";
+import Modal from "./UI/Modal";
 
 function Root() {
   const [isCreateTeamOpen, setIsCreateTeamOpen] = useState<boolean>(false);
@@ -52,7 +53,7 @@ function Root() {
         </AnimatePresence>
         <AnimatePresence>
           {/*{isCreateTeamOpen && <CreateTeam onDone={closeModal} />} */}
-          {isCreateTeamOpen && <CreateTeam onDone={closeModal} />}
+          {isCreateTeamOpen && <NewTeamModal onDone={closeModal} />}
         </AnimatePresence>
         <main className="flex grow justify-center">
           <Outlet />

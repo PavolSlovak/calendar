@@ -1,19 +1,26 @@
-import Modal from "../../UI/Modal";
-
-export const newTeamModal = () => {
+import Modal from "../UI/Modal";
+type NewTeamModalProps = {
+  onDone: () => void;
+};
+const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
   return (
-    <div>
-      <Modal
-        show={show}
-        onHide={handleClose}
-        backdrop="static"
-        keyboard={false}
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Create a new team</Modal.Title>
-        </Modal.Header>
+    <>
+      <Modal onClose={onDone}>
+        <Modal.Header title="Create new team" />
         <Modal.Body>
-          <Form>
+          <p>Jebe</p>
+        </Modal.Body>
+        <Modal.Footer
+          handleClose={onDone}
+          actions={<button className="btn-submit">Create team</button>}
+        />
+      </Modal>
+    </>
+  );
+};
+export default NewTeamModal;
+{
+  /*  <Form>
             <Form.Group className="mb-3" controlId="formBasicTeamName">
               <Form.Label>Team name</Form.Label>
               <Form.Control
@@ -32,17 +39,5 @@ export const newTeamModal = () => {
                 onChange={(e) => setTeamDescription(e.target.value)}
               />
             </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={createTeam}>
-            Create
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </div>
-  );
-};
+          </Form> */
+}
