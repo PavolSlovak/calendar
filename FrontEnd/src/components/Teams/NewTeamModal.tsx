@@ -1,4 +1,9 @@
-import { FormEvent, useEffect, useState } from "react";
+import React, {
+  ButtonHTMLAttributes,
+  FormEvent,
+  useEffect,
+  useState,
+} from "react";
 import { Form } from "../UI/Form";
 import Modal from "../UI/Modal";
 import InfoBox from "../UI/InfoBox";
@@ -28,11 +33,12 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
   const email = watch("inviteMember");
 
   const {
-    mutate,
+    mutate: InvitationMutation,
     isPending: inviteIsLoading,
     isError: inviteIsError,
     error: inviteError,
   } = useMutation({
+    mutationKey: ["inviteMember"],
     mutationFn: (email: string) => fetchUserByEmail(email),
     onSuccess: (data) => {
       if (data) {
@@ -60,6 +66,7 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
     isError: createTeamIsError,
     error: createTeamError,
   } = useMutation({
+    mutationKey: ["createTeam"],
     mutationFn: (data: TCreateTeam) =>
       createTeam(data.teamName, invitedMembers),
     onSuccess: (data) => {
@@ -67,9 +74,13 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
       onDone();
     },
   });
-  async function onSubmit(data: TCreateTeam) {
-    console.log("Submitting", data);
+  function onSubmit(data: TCreateTeam) {
     createTeamMutation(data);
+  }
+  function onInvite(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+
+    InvitationMutation(email);
   }
 
   return (
@@ -125,10 +136,7 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
               <div className="flex justify-end">
                 <button
                   className="btn-invite mt-2 disabled:opacity-50"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    mutate(email);
-                  }}
+                  onClick={onInvite}
                   disabled={inviteIsLoading}
                 >
                   Invite
