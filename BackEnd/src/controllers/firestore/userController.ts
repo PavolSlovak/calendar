@@ -42,11 +42,11 @@ export const FSGetUserByEmail = async (req: CRequest, res: Response) => {
     }
     return res.status(200).send(user);
   } catch (error) {
-    console.error("Error fetching user by email", error);
+    console.error("Error fetching user by email", error.errorInfo.message);
+
     res.status(500).send({
       success: false,
-      message: "Error fetching user by email",
-      error: error.message,
+      message: error.errorInfo.message,
     });
   }
 };

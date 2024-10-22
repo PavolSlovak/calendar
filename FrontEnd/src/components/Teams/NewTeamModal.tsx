@@ -1,9 +1,4 @@
-import React, {
-  ButtonHTMLAttributes,
-  FormEvent,
-  useEffect,
-  useState,
-} from "react";
+import React, { FormEvent, useState } from "react";
 import { Form } from "../UI/Form";
 import Modal from "../UI/Modal";
 import InfoBox from "../UI/InfoBox";
@@ -24,7 +19,6 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
     watch,
     setError,
   } = useForm<TCreateTeam>({
@@ -32,33 +26,30 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
   });
   const email = watch("inviteMember");
 
-  const {
-    mutate: InvitationMutation,
-    isPending: inviteIsLoading,
-    isError: inviteIsError,
-    error: inviteError,
-  } = useMutation({
-    mutationKey: ["inviteMember"],
-    mutationFn: (email: string) => fetchUserByEmail(email),
-    onSuccess: (data) => {
-      if (data) {
-        if (invitedMembers.includes(data.email)) {
-          setError("inviteMember", {
-            type: "manual",
-            message: "User already invited",
-          });
-          return;
+  const { mutate: InvitationMutation, isPending: inviteIsLoading } =
+    useMutation({
+      mutationKey: ["inviteMember"],
+      mutationFn: (email: string) => fetchUserByEmail(email),
+      onSuccess: (data) => {
+        if (data) {
+          if (invitedMembers.includes(data.email)) {
+            setError("inviteMember", {
+              type: "manual",
+              message: "User already invited",
+            });
+            return;
+          }
+          setInvitedMembers((prev) => [...prev, data.email]);
+          console.log(data);
         }
-        setInvitedMembers((prev) => [...prev, data.email]);
-        console.log(data);
-      } else {
+      },
+      onError: (error) => {
         setError("inviteMember", {
           type: "manual",
-          message: "User not found",
+          message: error.message,
         });
-      }
-    },
-  });
+      },
+    });
 
   const {
     mutate: createTeamMutation,
@@ -74,12 +65,12 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
       onDone();
     },
   });
+
   function onSubmit(data: TCreateTeam) {
     createTeamMutation(data);
   }
   function onInvite(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
-
     InvitationMutation(email);
   }
 
@@ -92,14 +83,14 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
           the future team members
         </p>
         <Modal.Body>
-          {inviteIsError && (
+          {/*  {inviteIsError && (
             <>
               {console.log("inviteError", inviteError)}
               <InfoBox mode="warning" severity="high">
                 {inviteError.message || "Error inviting user"}
               </InfoBox>
             </>
-          )}
+          )} */}
           {createTeamIsError && (
             <>
               {console.log("createTeamError", createTeamError)}

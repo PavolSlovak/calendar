@@ -12,7 +12,8 @@ export const fetchUserByEmail = async (email: string) => {
     }
   );
   if (!response.ok) {
-    throw new Error("Error occured while fetching user by email.");
+    const errorData = await response.json();
+    throw new Error(errorData.message);
   }
   return response.json();
 };
