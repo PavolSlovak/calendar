@@ -15,15 +15,27 @@ export const generateColor = () => {
 
 export const createTeamMongoDB = async (req: CRequest, res: Response) => {
   try {
-    console.log("Received team body:", req.body);
     const { name, invitations } = req.body;
     const { uid } = req.user;
+    console.log("Received team body:", req.body, uid);
     const team = new Team({
       teamName: name,
-      members: [{ firebaseID: uid }],
-      createdBy: { firebaseID: uid },
+      members: [
+        // add the creator as a member
+        {
+          firebaseID: uid,
+        },
+      ],
+      createdBy: uid,
       invitations: invitations,
     });
+    const alreadyExists = await Team.findOne({ teamName: name });
+
+    if (alreadyExists) {
+      console.log("Team already exists");
+      res.status(400).send("Team already exists");
+      return;
+    }
 
     await team.save();
     console.log("Team created successfully:", team);

@@ -1,14 +1,8 @@
 import mongoose from "mongoose";
 import { generateColor } from "../controllers/teamController.js";
-import "./user.js";
 import "./shift.js";
 
 const memberSchema = new mongoose.Schema({
-  memberID: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
   firebaseID: { type: String, required: true },
   color: { type: String },
 });
@@ -17,7 +11,7 @@ const teamSchema = new mongoose.Schema({
   teamName: { type: String, required: true, unique: true },
   members: [memberSchema],
   invitations: [{ type: String }],
-  createdBy: memberSchema,
+  createdBy: { type: String, required: true },
   shifts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Shift" }],
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },

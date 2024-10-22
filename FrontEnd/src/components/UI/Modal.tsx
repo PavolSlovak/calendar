@@ -1,10 +1,10 @@
 import { ForwardRefComponent, motion } from "framer-motion";
 import {
+  ComponentPropsWithoutRef,
   forwardRef,
   FunctionComponent,
   ReactElement,
   ReactNode,
-  RefAttributes,
   useImperativeHandle,
   useRef,
 } from "react";
@@ -13,17 +13,17 @@ import { createPortal } from "react-dom";
 type ModalProps = {
   children: ReactNode;
   onClose: () => void;
-};
+} & ComponentPropsWithoutRef<"dialog">;
+
 export type ModalHandle = {
   open: () => void;
 };
 // Define an interface to add the subcomponents
-type ModalComponent = FunctionComponent<ModalProps> &
-  ForwardRefComponent<ModalHandle, ModalProps & RefAttributes<ModalHandle>> & {
-    Body: FunctionComponent<TModalBodyProps>;
-    Header: FunctionComponent<TModalHeaderProps>;
-    Footer: FunctionComponent<TModalFooterProps>;
-  };
+type ModalComponent = ForwardRefComponent<ModalHandle, ModalProps> & {
+  Header: FunctionComponent<TModalHeaderProps>;
+  Body: FunctionComponent<TModalBodyProps>;
+  Footer: FunctionComponent<TModalFooterProps>;
+};
 
 const Modal = forwardRef<ModalHandle, ModalProps>(
   ({ children, onClose }, ref) => {
@@ -40,7 +40,7 @@ const Modal = forwardRef<ModalHandle, ModalProps>(
     });
     // Handle backdrop click to close the modal
     const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-      if (e.target === dialog.current) {
+      if (e.currentTarget === e.target) {
         onClose();
       }
     };
@@ -49,37 +49,42 @@ const Modal = forwardRef<ModalHandle, ModalProps>(
       hidden: {
         opacity: 0,
         y: -50,
+        transition: {
+          duration: 0.2,
+        },
       },
       visible: {
         opacity: 1,
         y: 0,
+        transition: {
+          duration: 0.2,
+        },
       },
     };
 
     return createPortal(
       <>
         {/* Backdrop */}
+
         <motion.div
-          className="fixed inset-0 bg-black bg-opacity-50 z-10"
+          className="fixed flex justify-center items-center w-full h-full bg-black bg-opacity-50 z-10 "
+          onClick={handleBackdropClick}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          onClick={handleBackdropClick}
+          variants={modalVariants}
         >
-          <motion.div className="absolute flex justify-center items-center w-full h-full">
-            <motion.dialog
-              ref={dialog}
-              className="flex flex-col items-center rounded-lg shadow-lg w-full max-w-xl z-20"
-              onClose={onClose}
-              variants={modalVariants}
-              initial="hidden"
-              animate="visible"
-              exit="hidden"
-              transition={{ type: "spring", stiffness: 120, duration: 0.1 }}
-            >
-              {children}
-            </motion.dialog>
-          </motion.div>
+          <motion.dialog
+            ref={dialog}
+            className="flex flex-col items-center rounded-lg shadow-lg w-full max-w-xl z-20"
+            onClose={onClose}
+            variants={modalVariants}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+          >
+            {children}
+          </motion.dialog>
         </motion.div>
       </>,
 
@@ -93,8 +98,8 @@ type TModalHeaderProps = {
 };
 const ModalHeader: FunctionComponent<TModalHeaderProps> = ({ title }) => {
   return (
-    <div className="p-4 relative">
-      <span className="absolute top-4 right-4">x</span>
+    <div className="my-4">
+      <h1>{title}</h1>
     </div>
   );
 };
@@ -103,7 +108,7 @@ type TModalBodyProps = {
   children: ReactNode;
 };
 const ModalBody: FunctionComponent<TModalBodyProps> = ({ children }) => {
-  return <div className="p-4">{children}</div>;
+  return <div className="px-4 w-full">{children}</div>;
 };
 type TModalFooterProps = {
   handleClose: () => void;

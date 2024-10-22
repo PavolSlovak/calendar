@@ -1,5 +1,4 @@
 import { QueryClient } from "@tanstack/react-query";
-import { storeInvitation } from "./http-firestore";
 export const queryClient = new QueryClient();
 
 type FetchError = {
@@ -48,7 +47,7 @@ export async function createTeam(name: string, invitations: string[]) {
     throw error;
   }
   console.log(
-    `Team created successfully: ${name} with invitations: ${invitations} and response ${response.json()}`
+    `Team created successfully: ${name} with invitations:${invitations}`
   );
   /* await storeInvitation(teamId, userId); */
 

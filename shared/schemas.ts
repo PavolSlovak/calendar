@@ -131,6 +131,10 @@ const invitationSchema = z.object({
   teamId: z.string(),
   timestamp: z.date(),
 });
+export const createTeamSchema = z.object({
+  teamName: z.string().nonempty(),
+  inviteMember: z.string().email(),
+});
 
 export type User = z.infer<typeof UserSchema>;
 export type Exception = z.infer<typeof exceptionSchema>;
@@ -142,3 +146,5 @@ export type Team = z.infer<typeof teamSchema>;
 
 export type Notification = z.infer<typeof notificationSchema>;
 export type Invitation = z.infer<typeof invitationSchema>;
+
+export type TCreateTeam = z.infer<typeof createTeamSchema>;

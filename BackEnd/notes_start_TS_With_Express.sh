@@ -22,7 +22,7 @@ tsconfig.json:
    
    
     "paths": {
-      "@shared/types": ["../shared/types"]
+      "@shared/types": ["../shared/schemas"]
     },
 
     "allowSyntheticDefaultImports": true,

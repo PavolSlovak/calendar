@@ -41,7 +41,7 @@
   }
 }
 .infobox {
-  @apply mt-4 p-2 text-center text-sm shadow-md rounded-lg;
+  @apply p-2 text-center text-sm shadow-md rounded-lg;
 }
 .infobox-hint {
   @apply text-blue-300 border border-blue-300;

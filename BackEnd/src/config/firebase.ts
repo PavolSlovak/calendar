@@ -18,5 +18,6 @@ if (!admin.apps.length) {
 } else {
   console.log("Firebase admin SDK already initialized");
 }
+
 export const db = admin.firestore();
 export default admin;

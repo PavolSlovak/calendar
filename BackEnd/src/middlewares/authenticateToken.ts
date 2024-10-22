@@ -23,10 +23,10 @@ export const authenticateToken = async (
     const decodedToken = await admin.auth().verifyIdToken(token);
     // Attach user info to the request object
     req.user = decodedToken as User & DecodedIdToken;
-    console.log(
+    /* console.log(
       "Successfully authenticated user, decoded token:",
       decodedToken
-    );
+    ); */
     next();
   } catch (error) {
     console.error("Error verifying token:", error);
