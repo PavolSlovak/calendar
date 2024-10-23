@@ -4,8 +4,8 @@ import { RootState as ReduxRootState } from "../store";
 import { teamSlice } from "../store/teams-slice";
 import { CalendarIcon, ChevronLeftIcon } from "@heroicons/react/outline";
 import { AnimatePresence, motion } from "framer-motion";
-import { MemberSchema } from "../lib/types";
 import { scheduleSlice } from "../store/schedule-slice";
+import { Member } from "@shared/schemas.js";
 
 export default function CreateSchedule() {
   const teams = useSelector((state: ReduxRootState) => state.teams.teams);
@@ -17,9 +17,13 @@ export default function CreateSchedule() {
       dispatch(setActiveTeam(teams[0]));
     }
   }, [teams]);
+
   const activeTeam = useSelector(
     (state: ReduxRootState) => state.schedule.activeTeam
   );
+  useEffect(() => {
+    console.log("activeTeam", activeTeam);
+  }, [activeTeam]);
   return (
     <>
       <Sidebar />
@@ -44,7 +48,7 @@ function Sidebar() {
       <h2 className="text-lg font-semibold mb-4">Teams</h2>
       <ul>
         {teams.map((team) => (
-          <li key={team.id}>
+          <li key={team._id}>
             <button
               className="text-left text-sm"
               onClick={() => dispatch(setActiveTeam(team))}
@@ -112,7 +116,7 @@ function Day({ day, dayIdx }: { day: string; dayIdx: number }) {
     if (!checkedMember || !activeTeam) return;
     dispatch(
       addToSchedule({
-        teamId: activeTeam.id,
+        teamId: activeTeam._id,
         memberId: checkedMember.uid,
         day,
         startTime: startTime,
@@ -124,7 +128,7 @@ function Day({ day, dayIdx }: { day: string; dayIdx: number }) {
     if (!checkedMember || !activeTeam) return;
     dispatch(
       updateSchedule({
-        teamId: activeTeam.id,
+        teamId: activeTeam._id,
         memberId: checkedMember.uid,
         day,
         startTime: startTime,
@@ -213,7 +217,7 @@ function MembersAccordion() {
     closed: { opacity: 0, height: 0 },
   };
 
-  function handleCheckedMember(member: MemberSchema) {
+  function handleCheckedMember(member: Member) {
     if (checkedMember?.uid === member.uid) {
       dispatch(setCheckedMember(null));
     } else {

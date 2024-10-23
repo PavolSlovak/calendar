@@ -1,11 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Team } from "../lib/types";
+import { Team } from "@shared/schemas";
+import { startOfToday } from "date-fns";
 
 type InitialState = {
   activeTeam: Team | null;
+  selectedDay: Date;
 };
 const initialState: InitialState = {
   activeTeam: null,
+  selectedDay: startOfToday(),
 };
 export const calendarSlice = createSlice({
   name: "schedule",
@@ -16,6 +19,9 @@ export const calendarSlice = createSlice({
 
       console.log("activeTeam", state.activeTeam);
     },
+    setSelectedDay: (state, action: PayloadAction<Date>) => {
+      state.selectedDay = action.payload;
+    },
   },
 });
-export const { setActiveTeam } = calendarSlice.actions;
+export const { setActiveTeam, setSelectedDay } = calendarSlice.actions;

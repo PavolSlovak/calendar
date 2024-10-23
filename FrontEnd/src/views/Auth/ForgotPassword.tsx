@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { resetPasswordSchema, TResetPasswordSchema } from "../../lib/types";
+import { resetPasswordSchema, TResetPasswordSchema } from "@shared/schemas";
 import { useAuth } from "../../store/authContext";
 import { useEffect, useState } from "react";
 import InfoBox from "../../components/UI/InfoBox";

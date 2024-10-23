@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signUpSchema, TSignUpSchema } from "../../lib/types";
+import { signUpSchema, TSignUpSchema } from "@shared/schemas";
 import { useAuth } from "../../store/authContext";
 import { useState } from "react";
 import InfoBox from "../../components/UI/InfoBox";

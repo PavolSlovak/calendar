@@ -97,7 +97,7 @@ const shiftSchema = z.object({
   memberID: z.string(), // Change to z.string() as ObjectId is a string in TypeScript
   startTime: z.string(),
   endTime: z.string(),
-  date: z.date().nullable().optional(),
+  date: z.date(),
   recurrence: recurrenceSchema.nullable().optional(),
   status: z.enum(["pending", "approved", "rejected"]).default("pending"),
   comments: z.array(z.string()).optional(), // Use string array for comment IDs
@@ -105,11 +105,12 @@ const shiftSchema = z.object({
 
 // Define the team schema
 const teamSchema = z.object({
+  _id: z.string(), // Change to z.string() as ObjectId is a string in TypeScript
   teamName: z.string().min(1).max(100), // Adjust min/max according to your needs
   members: z.array(memberSchema),
   invitations: z.array(z.string()).default([]),
   createdBy: memberSchema,
-  shifts: z.array(shiftSchema).optional(),
+  shifts: z.array(shiftSchema),
   createdAt: z.date().default(() => new Date()),
   updatedAt: z.date().default(() => new Date()),
 });

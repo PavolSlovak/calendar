@@ -1,73 +1,28 @@
-// https://chatgpt.com/share/66fca7dd-04d4-800e-87d1-3ccfae48960c - Calendar UI
-import { Menu, Transition } from "@headlessui/react";
-import { DotsVerticalIcon } from "@heroicons/react/outline";
+import { Team } from "@shared/schemas";
 import { format, parse, parseISO, startOfToday } from "date-fns";
 import { Fragment, useEffect, useState } from "react";
-import { RootState as ReduxRootState } from "../store";
 import { useDispatch, useSelector } from "react-redux";
-import { Shift, Team } from "@shared/schemas";
-
+import { RootState as ReduxRootState } from "../store";
 import { calendarSlice } from "../store/calendar-slice";
-import { fetchTeams } from "../utils/http";
-import { CalendarBody, classNames } from "../components/Calendar/CalendarBody";
 import { useQuery } from "@tanstack/react-query";
-import ErrorBlock from "../components/UI/ErrorBlock";
+import { fetchTeams } from "../utils/http";
+import { setTeams } from "../store/teams-slice";
 import LoadingIndicator from "../components/UI/LoadingIndicator";
 import { CalendarHeader } from "../components/Calendar/CalendarHeader";
-import { setTeams } from "../store/teams-slice";
+import { CalendarBody, classNames } from "../components/Calendar/CalendarBody";
+import ErrorBlock from "../components/UI/ErrorBlock";
+import { Menu, Transition } from "@headlessui/react";
+import { DotsVerticalIcon } from "@heroicons/react/outline";
 
-const comments = [
-  {
-    id: 1,
-    name: "Leslie Alexander",
-    imageUrl:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    startDatetime: "2024-09-16T13:00",
-    endDatetime: "2024-08-17T14:30",
-  },
-  {
-    id: 2,
-    name: "Michael Foster",
-    imageUrl:
-      "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    startDatetime: "2024-08-17T09:00",
-    endDatetime: "2024-08-17T11:30",
-  },
-  {
-    id: 3,
-    name: "Dries Vincent",
-    imageUrl:
-      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    startDatetime: "2022-05-20T17:00",
-    endDatetime: "2022-05-20T18:30",
-  },
-  {
-    id: 4,
-    name: "Leslie Alexander",
-    imageUrl:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    startDatetime: "2022-06-09T13:00",
-    endDatetime: "2022-06-09T14:30",
-  },
-  {
-    id: 5,
-    name: "Michael Foster",
-    imageUrl:
-      "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    startDatetime: "2022-05-13T14:00",
-    endDatetime: "2022-05-13T14:30",
-  },
-];
-
-export default function Calendar() {
+export default function Calendar2() {
   let today = startOfToday();
   let [selectedDay, setSelectedDay] = useState(today);
   let [currentMonth, setCurrentMonth] = useState(format(today, "MMM-yyyy"));
   let firstDayCurrentMonth = parse(currentMonth, "MMM-yyyy", new Date());
 
   /* let selectedDayShifts = meetings.filter((meeting) =>
-    isSameDay(parseISO(meeting.startDatetime), selectedDay)
-  ); */
+      isSameDay(parseISO(meeting.startDatetime), selectedDay)
+    ); */
 
   // ...................................
   const teams: Team[] = useSelector(
@@ -115,7 +70,6 @@ export default function Calendar() {
     console.log("data", data);
     content = (
       <>
-        <CurrentShiftsOverview selectedDay={selectedDay} />
         <div className="flex flex-col items-center">
           <p>
             To view team, please pick a team:
@@ -151,7 +105,7 @@ export default function Calendar() {
                   {format(selectedDay, "MMM dd, yyy")}
                 </time>
               </h2>
-              <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
+              {/* <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
                 {comments.length > 0 ? (
                   comments.map(
                     (comment) =>
@@ -165,7 +119,7 @@ export default function Calendar() {
                 ) : (
                   <p>No meetings for today.</p>
                 )}
-              </ol>
+              </ol> */}
             </section>
           </div>
         </div>

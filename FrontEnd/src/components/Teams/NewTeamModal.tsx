@@ -13,7 +13,6 @@ import { InvitationsTable } from "../UI/InvitationsTable";
 
 type NewTeamModalProps = {
   onDone: () => void;
-  onSubmit: (e: FormEvent<HTMLFormElement>) => void;
 };
 const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
   const [invitedMembers, setInvitedMembers] = useState<string[]>([]);
