@@ -15,6 +15,7 @@ import ErrorBlock from "../components/UI/ErrorBlock";
 import LoadingIndicator from "../components/UI/LoadingIndicator";
 import { CalendarHeader } from "../components/Calendar/CalendarHeader";
 import { setTeams } from "../store/teams-slice";
+import { CurrentShiftsOverview } from "./CurrentShiftsOverview";
 
 const comments = [
   {
@@ -115,7 +116,7 @@ export default function Calendar() {
     console.log("data", data);
     content = (
       <>
-        <CurrentShiftsOverview selectedDay={selectedDay} />
+        <CurrentShiftsOverview />
         <div className="flex flex-col items-center">
           <p>
             To view team, please pick a team:

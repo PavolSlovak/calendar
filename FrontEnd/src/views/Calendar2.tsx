@@ -1,4 +1,4 @@
-import { Team } from "@shared/schemas";
+import { Shift, Team } from "@shared/schemas";
 import { format, parse, parseISO, startOfToday } from "date-fns";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,29 +16,20 @@ import { DotsVerticalIcon } from "@heroicons/react/outline";
 
 export default function Calendar2() {
   let today = startOfToday();
-  let [selectedDay, setSelectedDay] = useState(today);
   let [currentMonth, setCurrentMonth] = useState(format(today, "MMM-yyyy"));
   let firstDayCurrentMonth = parse(currentMonth, "MMM-yyyy", new Date());
 
-  /* let selectedDayShifts = meetings.filter((meeting) =>
-      isSameDay(parseISO(meeting.startDatetime), selectedDay)
-    ); */
+  const { selectedDay } = useSelector(
+    (state: ReduxRootState) => state.calendar
+  );
+  const { activeTeam } = useSelector((state: ReduxRootState) => state.calendar);
 
-  // ...................................
   const teams: Team[] = useSelector(
     (state: ReduxRootState) => state.teams.teams
   );
-
-  const dispatch = useDispatch();
+  const { setSelectedDay } = calendarSlice.actions;
   const { setActiveTeam } = calendarSlice.actions;
-  const { activeTeam } = useSelector((state: ReduxRootState) => state.calendar);
-
-  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedTeam: Team | undefined = teams.find(
-      (team) => team._id === event.target.value
-    );
-    selectedTeam && dispatch(setActiveTeam(selectedTeam));
-  };
+  const dispatch = useDispatch();
 
   const { status, data, isPending, isError, error } = useQuery({
     queryKey: ["teams"], // query key is an array with the query key and the query key object
@@ -70,21 +61,8 @@ export default function Calendar2() {
     console.log("data", data);
     content = (
       <>
-        <div className="flex flex-col items-center">
-          <p>
-            To view team, please pick a team:
-            <select onChange={handleChange}>
-              <>
-                {data.map((team: Team) => (
-                  <option key={team._id} value={team._id}>
-                    {team.teamName}
-                  </option>
-                ))}
-              </>
-            </select>
-          </p>
-        </div>
-
+        <CurrentShiftsOverview />
+        <TeamPicker data={data} />
         <div className="max-w-md px-4 mx-auto sm:px-7 md:max-w-4xl md:px-6">
           <div className="md:grid md:grid-cols-2 md:divide-x md:divide-gray-200">
             <div className="md:pr-14">
@@ -95,32 +73,10 @@ export default function Calendar2() {
               <CalendarBody
                 firstDayCurrentMonth={firstDayCurrentMonth}
                 selectedDay={selectedDay}
-                setSelectedDay={setSelectedDay}
+                setSelectedDay={() => dispatch(setSelectedDay(selectedDay))}
               />
             </div>
-            <section className="mt-12 md:mt-0 md:pl-14">
-              <h2 className="font-semibold text-gray-900">
-                Schedule for
-                <time dateTime={format(selectedDay, "yyyy-MM-dd")}>
-                  {format(selectedDay, "MMM dd, yyy")}
-                </time>
-              </h2>
-              {/* <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
-                {comments.length > 0 ? (
-                  comments.map(
-                    (comment) =>
-                      format(parseISO(comment.startDatetime), "yyyy-MM-dd") ===
-                        format(selectedDay, "yyyy-MM-dd") && (
-                        <>
-                          <Meeting key={comment.id} meeting={comment} />
-                        </>
-                      )
-                  )
-                ) : (
-                  <p>No meetings for today.</p>
-                )}
-              </ol> */}
-            </section>
+            <CommentList />
           </div>
         </div>
       </>
@@ -128,6 +84,7 @@ export default function Calendar2() {
   }
   return <div className="pt-5">{content}</div>;
 }
+
 type MeetingProps = {
   meeting: {
     id: number;
@@ -213,5 +170,114 @@ function Meeting({ meeting }: MeetingProps) {
         </Transition>
       </Menu>
     </li>
+  );
+}
+function CurrentShiftsOverview() {
+  const { activeTeam, selectedDay } = useSelector(
+    (state: ReduxRootState) => state.calendar
+  );
+  const activeTeamMembers = activeTeam?.members;
+  console.log("activeTeamMembers", activeTeamMembers);
+
+  let selectedDayShifts: Shift[] = activeTeam?.shifts || [];
+
+  /*   const todaysShifts = activeTeam?.weekSchedule?.find(
+      (schedule) => schedule.day === format(today, "eee")
+    )?.shifts; */
+
+  let today = format(startOfToday(), "MMM dd, yyyy");
+  console.log(
+    "activeTeam",
+    activeTeam?.members.map((member) => member.firebaseID)
+  );
+  // TODO - get the user data from the store
+
+  return (
+    <div className="flex flex-col items-center">
+      <h2>Team Members</h2>
+      <ul>
+        {activeTeamMembers?.map((member, index) => (
+          <li key={index}>{member.firebaseID}</li>
+        ))}
+      </ul>
+      <h2 className="font-semibold text-gray-900">Current Shifts {today}</h2>
+      {selectedDayShifts.length === 0 ? (
+        <p>No shifts for today.</p>
+      ) : (
+        <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
+          {selectedDayShifts.map((shift) => (
+            <li
+              key={shift.memberID}
+              className="flex items-center px-4 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100"
+            >
+              <div>
+                <p>{shift.memberID}</p>
+                <p>
+                  {shift.startTime} - {shift.endTime}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      )}
+    </div>
+  );
+}
+function TeamPicker({ data }: { data: Team[] }) {
+  const { teams } = useSelector((state: ReduxRootState) => state.teams);
+  const { setActiveTeam } = calendarSlice.actions;
+  const dispatch = useDispatch();
+
+  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedTeam: Team | undefined = teams.find(
+      (team) => team._id === event.target.value
+    );
+    selectedTeam && dispatch(setActiveTeam(selectedTeam));
+  };
+  return (
+    <div className="flex flex-col items-center">
+      <p>
+        To view team, please pick a team:
+        <select onChange={handleChange}>
+          <>
+            {data.map((team: Team) => (
+              <option key={team._id} value={team._id}>
+                {team.teamName}
+              </option>
+            ))}
+          </>
+        </select>
+      </p>
+    </div>
+  );
+}
+function CommentList() {
+  const { selectedDay } = useSelector(
+    (state: ReduxRootState) => state.calendar
+  );
+  return (
+    <section className="mt-12 md:mt-0 md:pl-14">
+      <h2 className="font-semibold text-gray-900">
+        Schedule for
+        <time dateTime={format(selectedDay, "yyyy-MM-dd")}>
+          {format(selectedDay, "MMM dd, yyy")}
+        </time>
+      </h2>
+      {/* <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
+                {comments.length > 0 ? (
+                  comments.map(
+                    (comment) =>
+                      format(parseISO(comment.startDatetime), "yyyy-MM-dd") ===
+                        format(selectedDay, "yyyy-MM-dd") && (
+                        <>
+                          <Meeting key={comment.id} meeting={comment} />
+                        </>
+                      )
+                  )
+                ) : (
+                  <p>No meetings for today.</p>
+                )}
+              </ol> */}
+    </section>
   );
 }

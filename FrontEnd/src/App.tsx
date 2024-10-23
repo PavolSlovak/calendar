@@ -10,7 +10,7 @@ import { useEffect } from "react";
 import { initializeNotificationListener } from "./firebase/messaging";
 import { listenForInvitationAcceptance } from "./firebase/firestore";
 import { useAuth } from "./store/authContext";
-import CalendarComponents from "./views/CalendarComponents";
+import Calendar2 from "./views/Calendar2";
 
 function App() {
   const { currentUser } = useAuth();
@@ -28,7 +28,7 @@ function App() {
     <Routes>
       <Route path="/" element={<PrivateRoute element={<Root />} />}>
         <Route index={true} element={<Home />} />
-        <Route path="/calendar" element={<CalendarComponents />} />
+        <Route path="/calendar" element={<Calendar2 />} />
         <Route path="/teams" element={<CreateSchedule />} />
         <Route path="profile" element={<Profile />} />
         <Route path="update-profile" element={<UpdateProfile />} />

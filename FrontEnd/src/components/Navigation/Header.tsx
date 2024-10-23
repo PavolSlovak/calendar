@@ -55,7 +55,7 @@ function Header({ handleToggle, openModal, path }: HeaderProps) {
   useEffect(() => {
     if (invStatus === "success" && invData) {
       setInvitations(invData);
-      console.log(invData.invitations);
+      console.log("Invitations", invData);
     }
   }, [invStatus, invData]);
 

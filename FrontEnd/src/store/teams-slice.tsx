@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Shifts, Team, WeekSchema } from "../lib/types";
+import { Shift, Team } from "@shared/schemas";
 
 type InitialState = {
   teams: Team[];
@@ -24,7 +24,7 @@ export const teamSlice = createSlice({
     },
 
     updateTeam: (state, action: PayloadAction<Team>) => {
-      const team = state.teams.find((team) => team.id === action.payload.id);
+      const team = state.teams.find((team) => team._id === action.payload._id);
       if (!team) return;
     },
 
@@ -34,65 +34,18 @@ export const teamSlice = createSlice({
 
     updateSchedule: (state, action: PayloadAction<UpdateScheduleProps>) => {
       const team = state.teams.find(
-        (team) => team.id === action.payload.teamId
+        (team) => team._id === action.payload.teamId
       );
       if (!team) return;
-
-      const updatedWeekSchedule: WeekSchema = team.weekSchedule.map(
-        (weekDay) => {
-          if (weekDay.day === action.payload.day) {
-            return {
-              ...weekDay,
-              shifts: weekDay.shifts.map((shift) =>
-                shift.memberId === action.payload.memberId
-                  ? {
-                      ...shift,
-                      startTime: action.payload.startTime,
-                      endTime: action.payload.endTime,
-                    }
-                  : shift
-              ),
-            };
-          }
-          return weekDay;
-        }
-      );
-      team.weekSchedule = updatedWeekSchedule;
+      // TODO: Implement update schedule
     },
     addToSchedule: (state, action: PayloadAction<UpdateScheduleProps>) => {
       const team = state.teams.find(
-        (team) => team.id === action.payload.teamId
+        (team) => team._id === action.payload.teamId
       );
       if (!team) return;
 
-      const updatedWeekSchedule: WeekSchema = team.weekSchedule.map(
-        (weekDay) => {
-          if (weekDay.day === action.payload.day) {
-            const isMemberScheduled = weekDay.shifts.find(
-              (shift) => shift.memberId === action.payload.memberId
-            );
-            return {
-              ...weekDay,
-
-              shifts: isMemberScheduled
-                ? weekDay.shifts.filter(
-                    (shift) => shift.memberId !== action.payload.memberId
-                  )
-                : [
-                    ...weekDay.shifts,
-                    {
-                      memberId: action.payload.memberId,
-                      startTime: action.payload.startTime,
-                      endTime: action.payload.endTime,
-                    },
-                  ],
-            };
-          }
-          return weekDay;
-        }
-      );
-
-      team.weekSchedule = updatedWeekSchedule;
+      // TODO: Implement add to schedule
     },
   },
 });

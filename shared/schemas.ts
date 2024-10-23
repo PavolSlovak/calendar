@@ -113,10 +113,10 @@ const shiftSchema = z.object({
 const teamSchema = z.object({
   _id: z.string(), // Change to z.string() as ObjectId is a string in TypeScript
   teamName: z.string().min(1).max(100), // Adjust min/max according to your needs
-  members: z.array(memberSchema),
+  members: z.array(memberSchema).default([]),
   invitations: z.array(z.string()).default([]),
   createdBy: memberSchema,
-  shifts: z.array(shiftSchema),
+  shifts: z.array(shiftSchema).default([]),
   createdAt: z.date().default(() => new Date()),
   updatedAt: z.date().default(() => new Date()),
 });
