@@ -60,5 +60,23 @@ Input.displayName = "Input"; // Needed for React DevTools when using forwardRef
 
 export default Input;
 
+type TFormFooterProps = {
+  className?: string;
+  actionsClassName?: string;
+  children?: ReactNode;
+};
+const Footer = ({
+  className,
+  actionsClassName,
+  children,
+}: TFormFooterProps) => {
+  return (
+    <div className={`p-4 flex justify-center ${className}`}>
+      <div className={actionsClassName}>{children}</div>
+    </div>
+  );
+};
+
 Form.Group = Group;
 Form.Input = Input;
+Form.Footer = Footer;

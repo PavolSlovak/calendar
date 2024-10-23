@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import { Form } from "../UI/Form";
 import Modal from "../UI/Modal";
 import InfoBox from "../UI/InfoBox";
@@ -8,6 +8,8 @@ import { fetchUserByEmail } from "../../utils/http-FS_users";
 import { createTeam } from "../../utils/http";
 import { createTeamSchema, TCreateTeam } from "@shared/schemas";
 import { useMutation } from "@tanstack/react-query";
+import { useAuth } from "../../store/authContext";
+import { InvitationsTable } from "../UI/InvitationsTable";
 
 type NewTeamModalProps = {
   onDone: () => void;
@@ -25,7 +27,9 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
     resolver: zodResolver(createTeamSchema),
   });
   const email = watch("inviteMember");
+  const teamName = watch("teamName");
 
+  const { currentUser } = useAuth();
   const { mutate: InvitationMutation, isPending: inviteIsLoading } =
     useMutation({
       mutationKey: ["inviteMember"],
@@ -36,6 +40,14 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
             setError("inviteMember", {
               type: "manual",
               message: "User already invited",
+            });
+
+            return;
+          }
+          if (currentUser?.email === data.email) {
+            setError("inviteMember", {
+              type: "manual",
+              message: "You can't invite yourself",
             });
             return;
           }
@@ -73,24 +85,19 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
     e.preventDefault();
     InvitationMutation(email);
   }
+  useEffect(() => {
+    console.log(email);
+  }, [email]);
 
   return (
     <>
       <Modal onClose={onDone}>
-        <Modal.Header title="Create new team" />
+        <Modal.Header title="Create new team" handleClose={onDone} />
         <p className="text-center">
           Create a new team by typing in the team name and send invitations to
           the future team members
         </p>
         <Modal.Body>
-          {/*  {inviteIsError && (
-            <>
-              {console.log("inviteError", inviteError)}
-              <InfoBox mode="warning" severity="high">
-                {inviteError.message || "Error inviting user"}
-              </InfoBox>
-            </>
-          )} */}
           {createTeamIsError && (
             <>
               {console.log("createTeamError", createTeamError)}
@@ -124,33 +131,34 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
                   {errors.inviteMember.message}
                 </InfoBox>
               )}
-              <div className="flex justify-end">
+              <div className="flex justify-end"></div>
+              <InvitationsTable
+                invitations={invitedMembers}
+                handleDelete={(email) =>
+                  setInvitedMembers((prev) =>
+                    prev.filter((member) => member !== email)
+                  )
+                }
+              />
+              <Form.Footer actionsClassName="flex  gap-2">
                 <button
-                  className="btn-invite mt-2 disabled:opacity-50"
+                  className="btn-invite disabled:opacity-50"
                   onClick={onInvite}
-                  disabled={inviteIsLoading}
+                  disabled={inviteIsLoading || !email}
                 >
                   Invite
                 </button>
-              </div>
-              <button
-                className="btn-submit ml-4 "
-                disabled={createTeamIsLoading}
-              >
-                Create team
-              </button>
+                <button
+                  type="submit"
+                  className="btn-submit"
+                  disabled={createTeamIsLoading || !teamName}
+                >
+                  Create Team
+                </button>
+              </Form.Footer>
             </Form.Group>
           </Form>
-          <div className="flex">
-            <h3 className="text-lg font-bold">Invited members</h3>
-            <ul className="list-disc ml-4">
-              {invitedMembers.map((email) => (
-                <li key={email}>{email}</li>
-              ))}
-            </ul>
-          </div>
         </Modal.Body>
-        <Modal.Footer handleClose={onDone} />
       </Modal>
     </>
   );

@@ -1,3 +1,4 @@
+import { XIcon } from "@heroicons/react/outline";
 import { ForwardRefComponent, motion } from "framer-motion";
 import {
   ComponentPropsWithoutRef,
@@ -95,10 +96,20 @@ const Modal = forwardRef<ModalHandle, ModalProps>(
 
 type TModalHeaderProps = {
   title: string;
+  handleClose: () => void;
 };
-const ModalHeader: FunctionComponent<TModalHeaderProps> = ({ title }) => {
+const ModalHeader: FunctionComponent<TModalHeaderProps> = ({
+  title,
+  handleClose,
+}) => {
   return (
     <div className="my-4">
+      <span
+        className="absolute right-2 top-2 cursor-pointer"
+        onClick={handleClose}
+      >
+        <XIcon className="h-6 w-6" />
+      </span>
       <h1>{title}</h1>
     </div>
   );
@@ -110,22 +121,12 @@ type TModalBodyProps = {
 const ModalBody: FunctionComponent<TModalBodyProps> = ({ children }) => {
   return <div className="px-4 w-full">{children}</div>;
 };
+
 type TModalFooterProps = {
-  handleClose: () => void;
-  actions?: ReactElement;
+  actions: ReactElement;
 };
-const ModalFooter: FunctionComponent<TModalFooterProps> = ({
-  handleClose,
-  actions,
-}) => {
-  return (
-    <div className="p-4">
-      <button onClick={handleClose} className="text-black justify-end">
-        Cancel
-      </button>
-      {actions}
-    </div>
-  );
+const ModalFooter: FunctionComponent<TModalFooterProps> = ({ actions }) => {
+  return <div className="p-4">{actions}</div>;
 };
 
 Modal.Header = ModalHeader;
