@@ -122,7 +122,7 @@ export const FSMarkNotificationRead = async (req: CRequest, res: Response) => {
       .doc(uid)
       .collection(NOTIFICATIONS_SUBCOLLECTION)
       .doc(notificationId)
-      .update({ status: "read" });
+      .set({ status: "read" });
     res.status(200).send({ success: true });
   } catch (error) {
     console.error("Error marking notification read:", error.message);

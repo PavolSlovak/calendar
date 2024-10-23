@@ -7,8 +7,7 @@ import {
 } from "react";
 
 import { auth } from "../firebase/firebase";
-import { User } from "../lib/types";
-import { serializeUser } from "../utils/serializeUser";
+import { User } from "@shared/schemas";
 import {
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
@@ -48,8 +47,13 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // firebase auth state change listener to update the current user
     const unsubscribe = auth.onAuthStateChanged((user) => {
-      const serializedUser = serializeUser(user as User); // firebase User object has additional properties that we don't need in our app (would cause issues when serializing errors)
-      setCurrentUser(serializedUser);
+      setCurrentUser({
+        firebaseUID: user?.uid || "",
+        email: user?.email || "",
+        displayName: user?.displayName || "",
+        photoURL: user?.photoURL || "",
+        role: "user",
+      });
 
       setLoading(false);
     });

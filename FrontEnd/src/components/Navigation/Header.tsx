@@ -125,7 +125,7 @@ function Header({ handleToggle, openModal, path }: HeaderProps) {
           </button>
         </div>
 
-        {currentUser?.uid ? (
+        {currentUser?.firebaseUID ? (
           <>
             <DropdownMenu
               ID={"notifications"}

@@ -59,6 +59,12 @@ export const UserSchema = z.object({
   photoURL: z.string().url(),
   role: z.string(),
 });
+const FirebaseAuthUserSchema = z.object({
+  uid: z.string(),
+  email: z.string(),
+  displayName: z.string(),
+  photoURL: z.string(),
+});
 
 // Define the exception schema
 const exceptionSchema = z.object({
@@ -136,8 +142,8 @@ export const createTeamSchema = z.object({
   teamName: z.string().nonempty(),
   inviteMember: z.string().email(),
 });
-
 export type User = z.infer<typeof UserSchema>;
+export type FirebaseAuthUser = z.infer<typeof FirebaseAuthUserSchema>;
 export type Exception = z.infer<typeof exceptionSchema>;
 export type Recurrence = z.infer<typeof recurrenceSchema>;
 export type Comment = z.infer<typeof commentSchema>;
