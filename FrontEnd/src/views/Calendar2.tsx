@@ -13,7 +13,7 @@ import { CalendarBody, classNames } from "../components/Calendar/CalendarBody";
 import ErrorBlock from "../components/UI/ErrorBlock";
 import { Menu, Transition } from "@headlessui/react";
 import { DotsVerticalIcon } from "@heroicons/react/outline";
-import { fetchTeamMember } from "../utils/http-FS_users";
+import { fetchUserData } from "../utils/http-FS_users";
 
 export default function Calendar2() {
   let today = startOfToday();
@@ -197,9 +197,7 @@ function CurrentShiftsOverview() {
     queryFn: () =>
       activeTeamMembers && activeTeamMembers.length > 0
         ? Promise.all(
-            activeTeamMembers.map((member) =>
-              fetchTeamMember(member.firebaseID)
-            )
+            activeTeamMembers.map((member) => fetchUserData(member.firebaseID))
           )
         : [],
   });
@@ -227,7 +225,7 @@ function CurrentShiftsOverview() {
         <ul>
           {membersData.map((member) => (
             <li key={member.id}>
-              <button className="text-left text-sm">{member.uid}</button>
+              <button className="text-left text-sm">{member.username}</button>
             </li>
           ))}
         </ul>

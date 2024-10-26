@@ -51,7 +51,7 @@ export const FSGetUserByEmail = async (req: CRequest, res: Response) => {
     });
   }
 };
-export const FSGetUserByUID = async (req: CRequest, res: Response) => {
+export const GetFSAdditionalUserData = async (req: CRequest, res: Response) => {
   try {
     const { uid } = req.params;
 
@@ -78,7 +78,7 @@ export const FSGetUserByUID = async (req: CRequest, res: Response) => {
     });
   }
 };
-export const GetFirestoreAuthUser = async (req: CRequest, res: Response) => {
+export const GetUserAuth = async (req: CRequest, res: Response) => {
   try {
     const { uid } = req.params;
 

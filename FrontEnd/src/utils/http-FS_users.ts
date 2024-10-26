@@ -17,6 +17,14 @@ export const fetchUserByEmail = async (email: string) => {
   }
   return response.json();
 };
+
+export async function fetchUserData(uid: string) {
+  const [authUserData, additionalUserData] = await Promise.all([
+    fetchUserByUID(uid),
+    fetchAdditionalUserData(uid),
+  ]);
+  return { ...authUserData, ...additionalUserData };
+}
 export const fetchUserByUID = async (uid: string) => {
   const response = await fetch(VITE_API_URL + `users/get-user-by-uid/${uid}`, {
     method: "GET",
@@ -31,8 +39,8 @@ export const fetchUserByUID = async (uid: string) => {
   }
   return response.json();
 };
-export const fetchTeamMember = async (uid: string) => {
-  const response = await fetch(VITE_API_URL + `users/get-user-by-uid/${uid}`, {
+export const fetchAdditionalUserData = async (uid: string) => {
+  const response = await fetch(VITE_API_URL + `users/get-fs-data/${uid}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
