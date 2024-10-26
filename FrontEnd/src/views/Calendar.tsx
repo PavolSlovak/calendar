@@ -5,7 +5,7 @@ import { format, parse, parseISO, startOfToday } from "date-fns";
 import { Fragment, useEffect, useState } from "react";
 import { RootState as ReduxRootState } from "../store";
 import { useDispatch, useSelector } from "react-redux";
-import { Shift, Team } from "@shared/schemas";
+import {, Team } from "@shared/schemas";
 
 import { calendarSlice } from "../store/calendar-slice";
 import { fetchTeams } from "../utils/http";
@@ -15,7 +15,6 @@ import ErrorBlock from "../components/UI/ErrorBlock";
 import LoadingIndicator from "../components/UI/LoadingIndicator";
 import { CalendarHeader } from "../components/Calendar/CalendarHeader";
 import { setTeams } from "../store/teams-slice";
-import { CurrentShiftsOverview } from "./CurrentShiftsOverview";
 
 const comments = [
   {

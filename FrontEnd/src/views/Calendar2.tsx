@@ -3,7 +3,7 @@ import { format, parse, parseISO, startOfToday } from "date-fns";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState as ReduxRootState } from "../store";
-import { calendarSlice } from "../store/calendar-slice";
+import { calendarSlice, setActiveMembers } from "../store/calendar-slice";
 import { useQuery } from "@tanstack/react-query";
 import { fetchTeams } from "../utils/http";
 import { setTeams } from "../store/teams-slice";
@@ -13,6 +13,7 @@ import { CalendarBody, classNames } from "../components/Calendar/CalendarBody";
 import ErrorBlock from "../components/UI/ErrorBlock";
 import { Menu, Transition } from "@headlessui/react";
 import { DotsVerticalIcon } from "@heroicons/react/outline";
+import { fetchTeamMember } from "../utils/http-FS_users";
 
 export default function Calendar2() {
   let today = startOfToday();
@@ -42,7 +43,6 @@ export default function Calendar2() {
       dispatch(setActiveTeam(data[0]));
     }
   }, [status, data]);
-
   useEffect(() => {
     console.log("activeTeam", activeTeam);
   }, [activeTeam]);
@@ -57,7 +57,7 @@ export default function Calendar2() {
     );
   if (isError) content = <ErrorBlock error={error} />;
 
-  if (data) {
+  if (data && status === "success") {
     console.log("data", data);
     content = (
       <>
@@ -173,66 +173,105 @@ function Meeting({ meeting }: MeetingProps) {
   );
 }
 function CurrentShiftsOverview() {
+  let today = format(startOfToday(), "MMM dd, yyyy");
   const { activeTeam, selectedDay } = useSelector(
     (state: ReduxRootState) => state.calendar
   );
+  const dispatch = useDispatch();
   const activeTeamMembers = activeTeam?.members;
   console.log("activeTeamMembers", activeTeamMembers);
 
-  let selectedDayShifts: Shift[] = activeTeam?.shifts || [];
+  let selectedDayShifts: Shift[] =
+    activeTeam?.shifts?.filter(
+      (shift) => shift.date === selectedDay,
+      "yyyy-MM-dd"
+    ) || [];
+  const {
+    status: membersStatus,
+    data: membersData,
+    isPending: membersIsPending,
+    isError: membersIsError,
+    error: membersError,
+  } = useQuery({
+    queryKey: ["activeTeamMembers", activeTeam], // query key is an array with the query key and the query key object
+    queryFn: () =>
+      activeTeamMembers && activeTeamMembers.length > 0
+        ? Promise.all(
+            activeTeamMembers.map((member) =>
+              fetchTeamMember(member.firebaseID)
+            )
+          )
+        : [],
+  });
 
-  /*   const todaysShifts = activeTeam?.weekSchedule?.find(
-      (schedule) => schedule.day === format(today, "eee")
-    )?.shifts; */
+  useEffect(() => {
+    if (membersStatus === "success" && membersData) {
+      dispatch(setActiveMembers(membersData));
+    }
+  }, [membersStatus, membersData, dispatch]);
 
-  let today = format(startOfToday(), "MMM dd, yyyy");
-  console.log(
-    "activeTeam",
-    activeTeam?.members.map((member) => member.firebaseID)
-  );
-  // TODO - get the user data from the store
+  let content;
+  if (membersIsPending)
+    content = (
+      <div className="flex flex-col w-full justifye-center align-middle">
+        <LoadingIndicator />
+        <p>Loading team members...</p>
+      </div>
+    );
 
+  if (membersIsError) content = <ErrorBlock error={membersError} />;
+  if (membersData && membersStatus === "success") {
+    console.log("membersData", membersData);
+    content = (
+      <>
+        <ul>
+          {membersData.map((member) => (
+            <li key={member.id}>
+              <button className="text-left text-sm">{member.uid}</button>
+            </li>
+          ))}
+        </ul>
+        <h2 className="font-semibold text-gray-900">Current Shifts {today}</h2>
+        {selectedDayShifts.length === 0 ? (
+          <p>No shifts for today.</p>
+        ) : (
+          <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
+            {selectedDayShifts.map((shift) => (
+              <li
+                key={shift.memberID}
+                className="flex items-center px-4 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100"
+              >
+                <div>
+                  <p>{shift.memberID}</p>
+                  <p>
+                    {shift.startTime} - {shift.endTime}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        )}
+      </>
+    );
+  }
   return (
     <div className="flex flex-col items-center">
       <h2>Team Members</h2>
-      <ul>
-        {activeTeamMembers?.map((member, index) => (
-          <li key={index}>{member.firebaseID}</li>
-        ))}
-      </ul>
-      <h2 className="font-semibold text-gray-900">Current Shifts {today}</h2>
-      {selectedDayShifts.length === 0 ? (
-        <p>No shifts for today.</p>
-      ) : (
-        <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
-          {selectedDayShifts.map((shift) => (
-            <li
-              key={shift.memberID}
-              className="flex items-center px-4 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100"
-            >
-              <div>
-                <p>{shift.memberID}</p>
-                <p>
-                  {shift.startTime} - {shift.endTime}
-                </p>
-              </div>
-            </li>
-          ))}
-        </ol>
-      )}
+      {content}
     </div>
   );
 }
+
 function TeamPicker({ data }: { data: Team[] }) {
   const { teams } = useSelector((state: ReduxRootState) => state.teams);
   const { setActiveTeam } = calendarSlice.actions;
   const dispatch = useDispatch();
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedTeam: Team | undefined = teams.find(
+    const inputSelectedTeam: Team | undefined = teams.find(
       (team) => team._id === event.target.value
     );
-    selectedTeam && dispatch(setActiveTeam(selectedTeam));
+    inputSelectedTeam && dispatch(setActiveTeam(inputSelectedTeam));
   };
   return (
     <div className="flex flex-col items-center">

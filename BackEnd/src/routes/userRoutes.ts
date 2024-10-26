@@ -5,6 +5,7 @@ import {
   FSGetUserByEmail,
   FSGetUserByUID,
   FSUpdateUserFCMToken,
+  GetFirestoreAuthUser,
 } from "../controllers/firestore/userController.js";
 import { authenticateToken } from "../middlewares/authenticateToken.js";
 const router = express.Router();
@@ -15,5 +16,6 @@ router.post("/update-user-fcm", authenticateToken, FSUpdateUserFCMToken);
 
 router.get("/get-user-by-email/:email", authenticateToken, FSGetUserByEmail);
 
-router.get("/get-user-by-uid/:uid", authenticateToken, FSGetUserByUID);
+router.get("/get-user-by-uid/:uid", authenticateToken, GetFirestoreAuthUser);
+
 export { router };

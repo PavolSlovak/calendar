@@ -29,7 +29,7 @@ function App() {
       <Route path="/" element={<PrivateRoute element={<Root />} />}>
         <Route index={true} element={<Home />} />
         <Route path="/calendar" element={<Calendar2 />} />
-        <Route path="/teams" element={<CreateSchedule />} />
+        {/*   <Route path="/teams" element={<CreateSchedule />} /> */}
         <Route path="profile" element={<Profile />} />
         <Route path="update-profile" element={<UpdateProfile />} />
       </Route>

@@ -77,3 +77,24 @@ export const FSGetUserByUID = async (req: CRequest, res: Response) => {
     });
   }
 };
+export const GetFirestoreAuthUser = async (req: CRequest, res: Response) => {
+  try {
+    const { uid } = req.params;
+
+    const user = await admin.auth().getUser(uid);
+    if (!user) {
+      res.status(404).send({
+        success: false,
+        message: "User not found",
+      });
+    }
+    return res.status(200).send(user);
+  } catch (error) {
+    console.error("Error fetching user by UID", error.errorInfo.message);
+
+    res.status(500).send({
+      success: false,
+      message: error.errorInfo.message,
+    });
+  }
+};

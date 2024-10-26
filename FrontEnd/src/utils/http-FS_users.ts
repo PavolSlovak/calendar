@@ -31,3 +31,17 @@ export const fetchUserByUID = async (uid: string) => {
   }
   return response.json();
 };
+export const fetchTeamMember = async (uid: string) => {
+  const response = await fetch(VITE_API_URL + `users/get-user-by-uid/${uid}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message);
+  }
+  return response.json();
+};
