@@ -22,7 +22,7 @@ type AuthState = {
 };
 
 type AuthContextType = AuthState & {
-  signup: (email: string, password: string) => void;
+  signup: (email: string, password: string, username: string) => void;
   login: (email: string, password: string) => void;
   logout: () => void;
   resetPassword: (email: string) => void;
@@ -78,7 +78,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  async function signup(email: string, password: string) {
+  async function signup(email: string, password: string, username: string) {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       email,
@@ -87,10 +87,10 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     const { uid } = userCredential.user;
 
     const fcmToken = await getMessagingDeviceToken(uid);
-    if (fcmToken) {
+    if (fcmToken && username) {
       // If sign-up is successful, save the FCM token along with the user's role to Firestore
       try {
-        await addUser(fcmToken);
+        await addUser(fcmToken, username);
       } catch (error) {
         console.error("Error adding user to Firestore:", error);
         throw new Error("Failed to save user information.");

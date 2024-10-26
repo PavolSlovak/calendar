@@ -27,7 +27,7 @@ function Signup() {
       // TODO : submit to server
       setSignupError(null);
 
-      await signup(data.email, data.password);
+      await signup(data.email, data.password, data.username);
 
       navigate("/"); // Redirect to home page
     } catch (error) {
@@ -50,6 +50,16 @@ function Signup() {
           {signupError}
         </InfoBox>
       )}
+
+      <input
+        {...register("username")}
+        placeholder="Username"
+        className={inputStyles} // this is a string
+      />
+      {errors.username && (
+        <p className="text-red-500">{`${errors.username.message}`}</p>
+      )}
+
       <input
         {...register("email")}
         type="email"

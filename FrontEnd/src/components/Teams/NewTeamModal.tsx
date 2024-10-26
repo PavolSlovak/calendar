@@ -25,7 +25,7 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
   } = useForm<TCreateTeam>({
     resolver: zodResolver(createTeamSchema),
   });
-  const email = watch("inviteMember");
+  const email: string | null = watch("inviteMember");
   const teamName = watch("teamName");
 
   const { currentUser } = useAuth();
@@ -82,7 +82,9 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
   }
   function onInvite(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
-    InvitationMutation(email);
+    if (email) {
+      InvitationMutation(email);
+    }
   }
   useEffect(() => {
     console.log(email);

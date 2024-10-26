@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const signUpSchema = z
   .object({
+    username: z.string().min(3, "Username must be at least 3 characters!"),
     email: z.string().email(),
     password: z.string().min(8, "Password must be at least 8 characters!"),
     confirmPassword: z.string(),
@@ -140,7 +141,7 @@ const invitationSchema = z.object({
 });
 export const createTeamSchema = z.object({
   teamName: z.string().nonempty(),
-  inviteMember: z.string().email(),
+  inviteMember: z.string().email().nullable().or(z.literal("")), // Accepts null or an empty string
 });
 export type User = z.infer<typeof UserSchema>;
 export type FirebaseAuthUser = z.infer<typeof FirebaseAuthUserSchema>;

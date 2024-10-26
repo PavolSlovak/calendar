@@ -7,13 +7,14 @@ type CRequest = Request & DecodedIdToken;
 
 export const FSCreateUser = async (req: CRequest, res: Response) => {
   const { uid } = req.user;
-  const { fcmToken } = req.body;
+  const { fcmToken, username } = req.body;
   const timestamp = admin.firestore.FieldValue.serverTimestamp();
 
   await admin.firestore().collection(USERS_COLLECTION).doc(uid).set({
     fcmToken: fcmToken,
-    timeStamp: timestamp,
+    username: username,
     role: "user",
+    timeStamp: timestamp,
   });
   console.log(`Firestore user created for ${uid}`);
   res.status(200).send({ message: "User created" });
