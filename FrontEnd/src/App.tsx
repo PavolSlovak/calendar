@@ -21,7 +21,7 @@ function App() {
   useEffect(() => {
     if (currentUser) {
       console.log("Current user:", currentUser);
-      listenForInvitationAcceptance(currentUser?.firebaseUID); // Listen for invitation acceptance
+      listenForInvitationAcceptance(currentUser?.uid); // Listen for invitation acceptance
     }
   }, []);
   return (

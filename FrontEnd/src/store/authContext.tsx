@@ -16,6 +16,7 @@ import {
 import firebase from "firebase/compat/app";
 import { getMessagingDeviceToken } from "../firebase/messaging";
 import { addUser, sendNotif, updateUserFCM } from "../utils/http-firestore";
+import { fetchAdditionalUserData } from "../utils/http-FS_users";
 
 type AuthState = {
   currentUser: User | null;
@@ -46,14 +47,15 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // firebase auth state change listener to update the current user
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      setCurrentUser({
-        firebaseUID: user?.uid || "",
-        email: user?.email || "",
-        displayName: user?.displayName || "",
-        photoURL: user?.photoURL || "",
-        role: "user",
-      });
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      if (!user) {
+        setCurrentUser(null);
+        setLoading(false);
+        return;
+      }
+      const FSAdditionalUserData = await fetchAdditionalUserData(user.uid);
+
+      setCurrentUser({ ...user, ...FSAdditionalUserData });
 
       setLoading(false);
     });

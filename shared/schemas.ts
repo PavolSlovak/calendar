@@ -54,7 +54,8 @@ export type TFirebaseConfig = {
 
 // Define a Zod schema for user data
 export const UserSchema = z.object({
-  firebaseUID: z.string(),
+  uid: z.string(),
+  username: z.string(),
   email: z.string().email(),
   displayName: z.string(),
   photoURL: z.string().url(),
