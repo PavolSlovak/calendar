@@ -53,13 +53,12 @@ export type TFirebaseConfig = {
 };
 
 // Define a Zod schema for user data
-export const UserSchema = z.object({
-  uid: z.string(),
-  email: z.string().email(),
-  displayName: z.string(),
-  photoURL: z.string().url(),
+export const userAdditionalDataSchema = z.object({
+  fcmToken: z.string(),
+  role: z.enum(["admin", "user"]),
+  username: z.string(),
 });
-const FirebaseAuthUserSchema = z.object({
+const firebaseAuthUserSchema = z.object({
   uid: z.string(),
   email: z.string(),
   displayName: z.string(),
@@ -142,8 +141,8 @@ export const createTeamSchema = z.object({
   teamName: z.string().nonempty(),
   inviteMember: z.string().email().nullable().or(z.literal("")), // Accepts null or an empty string
 });
-export type User = z.infer<typeof UserSchema>;
-export type FirebaseAuthUser = z.infer<typeof FirebaseAuthUserSchema>;
+export type UserAdditionalData = z.infer<typeof userAdditionalDataSchema>;
+export type FirebaseAuthUser = z.infer<typeof firebaseAuthUserSchema>;
 export type Exception = z.infer<typeof exceptionSchema>;
 export type Recurrence = z.infer<typeof recurrenceSchema>;
 export type Comment = z.infer<typeof commentSchema>;

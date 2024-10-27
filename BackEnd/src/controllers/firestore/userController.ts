@@ -23,7 +23,7 @@ export const FSUpdateUserFCMToken = async (req: CRequest, res: Response) => {
   const { uid } = req.user;
   const { fcmToken } = req.body;
   const timestamp = admin.firestore.FieldValue.serverTimestamp();
-  await admin.firestore().collection(USERS_COLLECTION).doc(uid).set({
+  await admin.firestore().collection(USERS_COLLECTION).doc(uid).update({
     fcmToken: fcmToken,
     timeStamp: timestamp,
   });

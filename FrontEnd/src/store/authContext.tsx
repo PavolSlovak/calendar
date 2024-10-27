@@ -7,7 +7,7 @@ import {
 } from "react";
 
 import { auth } from "../firebase/firebase";
-import { FirebaseAuthUser, User } from "@shared/schemas";
+import { FirebaseAuthUser, UserAdditionalData } from "@shared/schemas";
 import {
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
@@ -16,10 +16,9 @@ import {
 import firebase from "firebase/compat/app";
 import { getMessagingDeviceToken } from "../firebase/messaging";
 import { addUser, sendNotif, updateUserFCM } from "../utils/http-firestore";
-import { fetchAdditionalUserData } from "../utils/http-FS_users";
 
 type AuthState = {
-  currentUser: User | null;
+  currentUser: FirebaseAuthUser | null;
 };
 
 type AuthContextType = AuthState & {
