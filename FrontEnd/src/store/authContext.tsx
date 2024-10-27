@@ -7,7 +7,7 @@ import {
 } from "react";
 
 import { auth } from "../firebase/firebase";
-import { User } from "@shared/schemas";
+import { FirebaseAuthUser, User } from "@shared/schemas";
 import {
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
@@ -42,20 +42,18 @@ export function useAuth() {
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [currentUser, setCurrentUser] = useState<FirebaseAuthUser | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // firebase auth state change listener to update the current user
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
-      if (!user) {
-        setCurrentUser(null);
-        setLoading(false);
-        return;
-      }
-      const FSAdditionalUserData = await fetchAdditionalUserData(user.uid);
-
-      setCurrentUser({ ...user, ...FSAdditionalUserData });
+      setCurrentUser({
+        uid: user?.uid || "",
+        email: user?.email || "",
+        displayName: user?.displayName || "",
+        photoURL: user?.photoURL || "",
+      });
 
       setLoading(false);
     });
