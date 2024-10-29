@@ -39,7 +39,7 @@ function Root() {
   }, [location]);
 
   return (
-    <div id="page-container" className="flex flex-col min-h-screen">
+    <div id="page-container" className="flex flex-col min-h-[100vh]">
       <Provider store={store}>
         <Header
           handleToggle={handleMobileMenu}
@@ -55,7 +55,7 @@ function Root() {
           {/*{isCreateTeamOpen && <CreateTeam onDone={closeModal} />} */}
           {isCreateTeamOpen && <NewTeamModal onDone={closeModal} />}
         </AnimatePresence>
-        <main className="flex grow justify-center">
+        <main className="flex grow justify-center min-h-[80vh]">
           <Outlet />
         </main>
       </Provider>

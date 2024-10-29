@@ -68,7 +68,7 @@ const Modal = forwardRef<ModalHandle, ModalProps>(
         {/* Backdrop */}
 
         <motion.div
-          className="fixed flex justify-center items-center w-full h-full bg-black bg-opacity-50 z-10 "
+          className="fixed flex justify-center items-center w-full h-full bg-black bg-opacity-50 z-50 "
           onClick={handleBackdropClick}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -77,7 +77,7 @@ const Modal = forwardRef<ModalHandle, ModalProps>(
         >
           <motion.dialog
             ref={dialog}
-            className="flex flex-col items-center rounded-lg shadow-lg w-full max-w-xl z-20"
+            className="flex flex-col items-center rounded-lg shadow-lg w-full max-w-xl"
             onClose={onClose}
             variants={modalVariants}
             initial="hidden"

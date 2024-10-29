@@ -172,7 +172,7 @@ export default function Calendar() {
       </>
     );
   }
-  return <div className="pt-5">{content}</div>;
+  return <div className="flex">{content}</div>;
 }
 type MeetingProps = {
   meeting: {

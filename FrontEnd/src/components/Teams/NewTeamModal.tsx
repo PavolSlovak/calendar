@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form } from "../UI/Form";
 import Modal from "../UI/Modal";
 import InfoBox from "../UI/InfoBox";
@@ -10,6 +10,8 @@ import { createTeamSchema, TCreateTeam } from "@shared/schemas";
 import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "../../store/authContext";
 import { InvitationsTable } from "../UI/InvitationsTable";
+import { useDispatch } from "react-redux";
+import { addTeam } from "../../store/teams-slice";
 
 type NewTeamModalProps = {
   onDone: () => void;
@@ -29,6 +31,7 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
   const teamName = watch("teamName");
 
   const { currentUser } = useAuth();
+  const dispatch = useDispatch();
   const { mutate: InvitationMutation, isPending: inviteIsLoading } =
     useMutation({
       mutationKey: ["inviteMember"],
@@ -73,6 +76,7 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
       createTeam(data.teamName, invitedMembers),
     onSuccess: (data) => {
       console.log("Team created successfully", data);
+      dispatch(addTeam(data));
       onDone();
     },
   });

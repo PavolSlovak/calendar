@@ -12,7 +12,10 @@ import { CalendarHeader } from "../components/Calendar/CalendarHeader";
 import { CalendarBody, classNames } from "../components/Calendar/CalendarBody";
 import ErrorBlock from "../components/UI/ErrorBlock";
 import { Menu, Transition } from "@headlessui/react";
-import { DotsVerticalIcon } from "@heroicons/react/outline";
+import {
+  ArrowCircleRightIcon,
+  DotsVerticalIcon,
+} from "@heroicons/react/outline";
 import { fetchUserData } from "../utils/http-FS_users";
 
 export default function Calendar2() {
@@ -32,8 +35,11 @@ export default function Calendar2() {
   const { setActiveTeam } = calendarSlice.actions;
   const dispatch = useDispatch();
 
+  function onHandleAddRecurrentShift() {
+    console.log("onHandleAddRecurrentShift");
+  }
   const { status, data, isPending, isError, error } = useQuery({
-    queryKey: ["teams"], // query key is an array with the query key and the query key object
+    queryKey: ["teams", teams], // query key is an array with the query key and the query key object
     queryFn: () => fetchTeams(),
   });
 
@@ -43,9 +49,7 @@ export default function Calendar2() {
       dispatch(setActiveTeam(data[0]));
     }
   }, [status, data]);
-  useEffect(() => {
-    console.log("activeTeam", activeTeam);
-  }, [activeTeam]);
+
   let content;
 
   if (isPending)
@@ -63,6 +67,11 @@ export default function Calendar2() {
       <>
         <TeamPicker data={data} />
         <CurrentShiftsOverview />
+        <div className="flex  items-center">
+          <button className="btn-submit" onClick={onHandleAddRecurrentShift}>
+            Add Recurrent shift
+          </button>
+        </div>
         <div className="max-w-md px-4 mx-auto sm:px-7 md:max-w-4xl md:px-6">
           <div className="md:grid md:grid-cols-2 md:divide-x md:divide-gray-200">
             <div className="md:pr-14">
@@ -82,7 +91,7 @@ export default function Calendar2() {
       </>
     );
   }
-  return <div className="pt-5">{content}</div>;
+  return <div>{content}</div>;
 }
 
 type MeetingProps = {
@@ -178,14 +187,17 @@ function CurrentShiftsOverview() {
     (state: ReduxRootState) => state.calendar
   );
   const dispatch = useDispatch();
-  const activeTeamMembers = activeTeam?.members;
-  console.log("activeTeamMembers", activeTeamMembers);
+  const { activeMembers } = useSelector(
+    (state: ReduxRootState) => state.calendar
+  );
 
   let selectedDayShifts: Shift[] =
     activeTeam?.shifts?.filter(
       (shift) => shift.date === selectedDay,
       "yyyy-MM-dd"
     ) || [];
+
+  /* Fetch team members for active team*/
   const {
     status: membersStatus,
     data: membersData,
@@ -193,22 +205,43 @@ function CurrentShiftsOverview() {
     isError: membersIsError,
     error: membersError,
   } = useQuery({
-    queryKey: ["activeTeamMembers", activeTeam], // query key is an array with the query key and the query key object
+    queryKey: ["activeTeamMembers", activeTeam],
     queryFn: () =>
-      activeTeamMembers && activeTeamMembers.length > 0
+      activeTeam?.members && activeTeam?.members.length > 0
         ? Promise.all(
-            activeTeamMembers.map((member) => fetchUserData(member.firebaseID))
+            activeTeam?.members.map((member) =>
+              fetchUserData(member.firebaseID)
+            )
           )
         : [],
   });
-
+  /* If team members are fetched successfully, update state in Redux  */
   useEffect(() => {
     if (membersStatus === "success" && membersData) {
-      dispatch(setActiveMembers(membersData));
+      const membersWithColorStamp = membersData.map((fsMember) => {
+        const colorStamp = activeTeam?.members.find(
+          (m) => m.firebaseID === fsMember.uid
+        )?.color;
+        return {
+          fcmToken: fsMember.fcmToken,
+          role: fsMember.role,
+          timeStamp: fsMember.timeStamp,
+
+          uid: fsMember.uid,
+          email: fsMember.email,
+          displayName: fsMember.username,
+          photoURL: fsMember.photoURL,
+          color: colorStamp || "",
+        };
+      });
+      dispatch(setActiveMembers(membersWithColorStamp));
     }
   }, [membersStatus, membersData, dispatch]);
 
+  /* Set content */
   let content;
+
+  /* If is pending */
   if (membersIsPending)
     content = (
       <div className="flex flex-col w-full justifye-center align-middle">
@@ -216,19 +249,31 @@ function CurrentShiftsOverview() {
         <p>Loading team members...</p>
       </div>
     );
-
+  /* If there is an error */
   if (membersIsError) content = <ErrorBlock error={membersError} />;
-  if (membersData && membersStatus === "success") {
-    console.log("membersData", membersData);
+
+  /* If data is fetched successfully:*/
+  if (activeMembers) {
     content = (
       <>
-        <ul>
-          {membersData.map((member) => (
-            <li key={member.id}>
-              <button className="text-left text-sm">{member.username}</button>
-            </li>
-          ))}
-        </ul>
+        {console.log("activeMembers", activeMembers)}
+        {activeMembers.length > 0 ? (
+          <ul>
+            {activeMembers.map((m) => (
+              <li key={m.uid}>
+                <button className="text-left text-sm">
+                  <span
+                    style={{ backgroundColor: m.color }}
+                    className={`w-1 h-1 rounded-full`}
+                  />
+                  {m.displayName}
+                </button>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No team members</p>
+        )}
         <h2 className="font-semibold text-gray-900">Current Shifts {today}</h2>
         {selectedDayShifts.length === 0 ? (
           <p>No shifts for today.</p>
@@ -254,6 +299,7 @@ function CurrentShiftsOverview() {
   }
   return (
     <div className="flex flex-col items-center">
+      <h1>{activeTeam?.teamName}</h1>
       <h2>Team Members</h2>
       {content}
     </div>
@@ -261,19 +307,48 @@ function CurrentShiftsOverview() {
 }
 
 function TeamPicker({ data }: { data: Team[] }) {
+  /* Redux variables and function */
   const { teams } = useSelector((state: ReduxRootState) => state.teams);
   const { setActiveTeam } = calendarSlice.actions;
   const dispatch = useDispatch();
 
+  const [isTeamsListOpen, setIsTeamListOpen] = useState<boolean>(false);
+
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const inputSelectedTeam: Team | undefined = teams.find(
+    const activeTeam: Team | undefined = teams.find(
       (team) => team._id === event.target.value
     );
-    inputSelectedTeam && dispatch(setActiveTeam(inputSelectedTeam));
+    activeTeam && dispatch(setActiveTeam(activeTeam));
   };
+
   return (
-    <div className="flex flex-col items-center">
-      <p>
+    <>
+      <button
+        onClick={() => setIsTeamListOpen(!isTeamsListOpen)}
+        className={`absolute flex items-center top-[10vh] text-xs z-40 bg-slate-300 p-2 hover:bg-slate-100 ${
+          isTeamsListOpen ? "left-1/2" : "left-0"
+        }`}
+      >
+        <ArrowCircleRightIcon className="w-5 h-5" /> Teams
+      </button>
+      <div
+        className={`flex flex-col absolute top-[10vh]  w-1/2 h-[80vh] bg-slate-300 ${
+          isTeamsListOpen ? "left-0" : "-left-full"
+        }`}
+      >
+        <ul>
+          {teams.map((team: Team) => (
+            <li key={team._id}>
+              <button
+                onClick={() => dispatch(setActiveTeam(team))}
+                className="text-left text-sm text-slate-500 w-full  p-5 hover:bg-slate-100"
+              >
+                {team.teamName}
+              </button>
+            </li>
+          ))}
+        </ul>
+        {/* <p>
         To view team, please pick a team:
         <select onChange={handleChange}>
           <>
@@ -284,8 +359,9 @@ function TeamPicker({ data }: { data: Team[] }) {
             ))}
           </>
         </select>
-      </p>
-    </div>
+      </p> */}
+      </div>
+    </>
   );
 }
 function CommentList() {

@@ -12,6 +12,7 @@ import {
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
 import firebase from "firebase/compat/app";
 import { getMessagingDeviceToken } from "../firebase/messaging";
@@ -83,13 +84,17 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       email,
       password
     );
-    const { uid } = userCredential.user;
+    const { user } = userCredential;
+    // Set the display name for the newly created user
+    await updateProfile(user, {
+      displayName: username,
+    });
 
-    const fcmToken = await getMessagingDeviceToken(uid);
+    const fcmToken = await getMessagingDeviceToken(user.uid);
     if (fcmToken && username) {
       // If sign-up is successful, save the FCM token along with the user's role to Firestore
       try {
-        await addUser(fcmToken, username);
+        await addUser(fcmToken);
       } catch (error) {
         console.error("Error adding user to Firestore:", error);
         throw new Error("Failed to save user information.");
@@ -99,7 +104,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     }
     // Trigger a notification to confirm that the device token is working.
     try {
-      await sendNotif(uid, "Success", "User signed up successfully");
+      await sendNotif(user.uid, "Success", "User signed up successfully");
     } catch (error) {
       console.error("Error triggering notification:", error);
     }

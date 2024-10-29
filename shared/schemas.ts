@@ -56,13 +56,19 @@ export type TFirebaseConfig = {
 export const userAdditionalDataSchema = z.object({
   fcmToken: z.string(),
   role: z.enum(["admin", "user"]),
-  username: z.string(),
+  timeStamp: z.date(),
 });
 const firebaseAuthUserSchema = z.object({
   uid: z.string(),
   email: z.string(),
   displayName: z.string(),
   photoURL: z.string(),
+});
+
+const combinedSchema = z.object({
+  ...userAdditionalDataSchema.shape,
+  ...firebaseAuthUserSchema.shape,
+  color: z.string(),
 });
 
 // Define the exception schema
@@ -141,8 +147,11 @@ export const createTeamSchema = z.object({
   teamName: z.string().nonempty(),
   inviteMember: z.string().email().nullable().or(z.literal("")), // Accepts null or an empty string
 });
+
 export type UserAdditionalData = z.infer<typeof userAdditionalDataSchema>;
 export type FirebaseAuthUser = z.infer<typeof firebaseAuthUserSchema>;
+export type UserCombined = z.infer<typeof combinedSchema>;
+
 export type Exception = z.infer<typeof exceptionSchema>;
 export type Recurrence = z.infer<typeof recurrenceSchema>;
 export type Comment = z.infer<typeof commentSchema>;

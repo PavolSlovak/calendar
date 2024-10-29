@@ -1,6 +1,6 @@
 import { VITE_API_URL } from "./http";
 
-export async function addUser(fcmToken: string, username: string) {
+export async function addUser(fcmToken: string) {
   const token = localStorage.getItem("token");
   const response = await fetch(VITE_API_URL + "users/create-user", {
     method: "POST",
@@ -8,7 +8,7 @@ export async function addUser(fcmToken: string, username: string) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ fcmToken, username }),
+    body: JSON.stringify({ fcmToken }),
   });
   if (!response.ok) {
     throw new Error("Error occured while adding user.Response not ok.");
