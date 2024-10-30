@@ -53,3 +53,23 @@ export async function createTeam(name: string, invitations: string[]) {
 
   return response.json();
 }
+export async function editRecurrentShifts(data: any) {
+  const token = localStorage.getItem("token");
+  const response = await fetch(VITE_API_URL + "teams/shift-edit", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const error = new Error("An error occurred while editing the team");
+    (error as FetchError).code = response.status;
+    (error as FetchError).info = await response.text();
+    throw error;
+  }
+  console.log(`Shifts edited successfully: ${data}`);
+  return response.json();
+}

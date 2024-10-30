@@ -27,7 +27,7 @@ function Profile() {
           {error}
         </InfoBox>
       )}
-      <p>Username: {currentUser?.username}</p>
+      <p>Username: {currentUser?.displayName}</p>
       <p>Email: {currentUser?.email}</p>
       <Link to="/update-profile" className="btn-blue">
         Update Profile

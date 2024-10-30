@@ -17,16 +17,22 @@ import {
   DotsVerticalIcon,
 } from "@heroicons/react/outline";
 import { fetchUserData } from "../utils/http-FS_users";
+import { useAuth } from "../store/authContext";
+import { AnimatePresence } from "framer-motion";
+import EditRecurrentShiftModal from "../components/Calendar/EditRecurrentShiftModal";
 
 export default function Calendar2() {
   let today = startOfToday();
-  let [currentMonth, setCurrentMonth] = useState(format(today, "MMM-yyyy"));
+  let [currentMonth, setCurrentMonth] = useState<string>(
+    format(today, "MMM-yyyy")
+  );
+  let [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
+  let [memberUIDToEdit, setMemberUIDToEdit] = useState<string>("");
   let firstDayCurrentMonth = parse(currentMonth, "MMM-yyyy", new Date());
 
   const { selectedDay } = useSelector(
     (state: ReduxRootState) => state.calendar
   );
-  const { activeTeam } = useSelector((state: ReduxRootState) => state.calendar);
 
   const teams: Team[] = useSelector(
     (state: ReduxRootState) => state.teams.teams
@@ -37,6 +43,14 @@ export default function Calendar2() {
 
   function onHandleAddRecurrentShift() {
     console.log("onHandleAddRecurrentShift");
+  }
+
+  function openModal(): void {
+    setIsEditModalOpen(!isEditModalOpen);
+  }
+
+  function closeModal(): void {
+    setIsEditModalOpen(false);
   }
   const { status, data, isPending, isError, error } = useQuery({
     queryKey: ["teams", teams], // query key is an array with the query key and the query key object
@@ -54,10 +68,10 @@ export default function Calendar2() {
 
   if (isPending)
     content = (
-      <div className="flex flex-col w-full justify-center align-middle">
+      <>
         <LoadingIndicator />
         <p>Loading shifts...</p>
-      </div>
+      </>
     );
   if (isError) content = <ErrorBlock error={error} />;
 
@@ -65,8 +79,19 @@ export default function Calendar2() {
     console.log("data", data);
     content = (
       <>
-        <TeamPicker data={data} />
-        <CurrentShiftsOverview />
+        <TeamPicker />
+        <AnimatePresence>
+          {isEditModalOpen && (
+            <EditRecurrentShiftModal
+              onDone={closeModal}
+              memberData={memberUIDToEdit}
+            />
+          )}
+        </AnimatePresence>
+        <CurrentShiftsOverview
+          onModalOpen={openModal}
+          onMemberSelect={setMemberUIDToEdit}
+        />
         <div className="flex  items-center">
           <button className="btn-submit" onClick={onHandleAddRecurrentShift}>
             Add Recurrent shift
@@ -181,7 +206,14 @@ function Meeting({ meeting }: MeetingProps) {
     </li>
   );
 }
-function CurrentShiftsOverview() {
+type CurrentShiftsOverviewProps = {
+  onModalOpen: () => void;
+  onMemberSelect: (uid: string) => void;
+};
+function CurrentShiftsOverview({
+  onModalOpen,
+  onMemberSelect,
+}: CurrentShiftsOverviewProps) {
   let today = format(startOfToday(), "MMM dd, yyyy");
   const { activeTeam, selectedDay } = useSelector(
     (state: ReduxRootState) => state.calendar
@@ -190,7 +222,7 @@ function CurrentShiftsOverview() {
   const { activeMembers } = useSelector(
     (state: ReduxRootState) => state.calendar
   );
-
+  const { currentUser } = useAuth();
   let selectedDayShifts: Shift[] =
     activeTeam?.shifts?.filter(
       (shift) => shift.date === selectedDay,
@@ -238,6 +270,11 @@ function CurrentShiftsOverview() {
     }
   }, [membersStatus, membersData, dispatch]);
 
+  function handleEditRecurrence(uid: string) {
+    onMemberSelect(uid);
+    onModalOpen();
+  }
+
   /* Set content */
   let content;
 
@@ -258,16 +295,25 @@ function CurrentShiftsOverview() {
       <>
         {console.log("activeMembers", activeMembers)}
         {activeMembers.length > 0 ? (
-          <ul>
+          <ul className="w-1/2">
             {activeMembers.map((m) => (
-              <li key={m.uid}>
-                <button className="text-left text-sm">
-                  <span
-                    style={{ backgroundColor: m.color }}
-                    className={`w-1 h-1 rounded-full`}
-                  />
-                  {m.displayName}
-                </button>
+              <li
+                key={m.uid}
+                className="flex items-center justify-between text-sm w-full "
+              >
+                <span
+                  style={{ backgroundColor: m.color }}
+                  className={`w-3 h-3 rounded-full`}
+                />
+                <p>{m.displayName}</p>
+                {currentUser?.uid === activeTeam?.createdBy && (
+                  <button
+                    className="btn-submit"
+                    onClick={() => handleEditRecurrence(m.uid)}
+                  >
+                    Edit Recurrence
+                  </button>
+                )}
               </li>
             ))}
           </ul>
@@ -306,20 +352,13 @@ function CurrentShiftsOverview() {
   );
 }
 
-function TeamPicker({ data }: { data: Team[] }) {
+function TeamPicker() {
   /* Redux variables and function */
   const { teams } = useSelector((state: ReduxRootState) => state.teams);
   const { setActiveTeam } = calendarSlice.actions;
   const dispatch = useDispatch();
 
   const [isTeamsListOpen, setIsTeamListOpen] = useState<boolean>(false);
-
-  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const activeTeam: Team | undefined = teams.find(
-      (team) => team._id === event.target.value
-    );
-    activeTeam && dispatch(setActiveTeam(activeTeam));
-  };
 
   return (
     <>
@@ -348,18 +387,6 @@ function TeamPicker({ data }: { data: Team[] }) {
             </li>
           ))}
         </ul>
-        {/* <p>
-        To view team, please pick a team:
-        <select onChange={handleChange}>
-          <>
-            {data.map((team: Team) => (
-              <option key={team._id} value={team._id}>
-                {team.teamName}
-              </option>
-            ))}
-          </>
-        </select>
-      </p> */}
       </div>
     </>
   );

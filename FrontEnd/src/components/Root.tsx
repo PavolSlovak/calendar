@@ -8,7 +8,6 @@ import { Outlet, useLocation } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "../store";
 import NewTeamModal from "./Teams/NewTeamModal";
-import Modal from "./UI/Modal";
 
 function Root() {
   const [isCreateTeamOpen, setIsCreateTeamOpen] = useState<boolean>(false);

@@ -5,7 +5,7 @@ import InfoBox from "../UI/InfoBox";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { fetchUserByEmail } from "../../utils/http-FS_users";
-import { createTeam } from "../../utils/http";
+import { createTeam, queryClient } from "../../utils/http";
 import { createTeamSchema, TCreateTeam } from "@shared/schemas";
 import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "../../store/authContext";

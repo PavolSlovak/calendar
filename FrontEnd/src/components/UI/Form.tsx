@@ -39,16 +39,21 @@ type InputProps = {
 } & ComponentPropsWithoutRef<"input">;
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ label, id, className, labelClassName, inputClassname, ...props }, ref) => {
+  (
+    { label, id, className, labelClassName, inputClassname, ...inputProps },
+    ref
+  ) => {
     return (
       <div className={`flex flex-col py-2 w-full ${className}`}>
-        <label htmlFor={id} className={`pb-2 ${labelClassName}`}>
-          {label}
-        </label>
+        {label && (
+          <label htmlFor={id} className={`pb-2 ${labelClassName}`}>
+            {label}
+          </label>
+        )}
         <input
           id={id}
-          ref={ref} // forward the ref to the input element
-          {...props}
+          ref={ref}
+          {...inputProps}
           className={`border border-black rounded p-2 ${inputClassname}`}
         />
       </div>

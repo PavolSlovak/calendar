@@ -104,12 +104,13 @@ const memberSchema = z.object({
 });
 
 // Define the shift schema
-const shiftSchema = z.object({
+export const shiftSchema = z.object({
   memberID: z.string(), // Change to z.string() as ObjectId is a string in TypeScript
+  teamID: z.string(),
   startTime: z.string(),
   endTime: z.string(),
   date: z.date(),
-  recurrence: recurrenceSchema.nullable().optional(),
+  recurrence: recurrenceSchema.nullable(),
   status: z.enum(["pending", "approved", "rejected"]).default("pending"),
   comments: z.array(z.string()).optional(), // Use string array for comment IDs
 });

@@ -19,16 +19,16 @@
   }
 
   .btn-blue {
-    @apply flex justify-center bg-blue-500  px-6 py-2 rounded-lg text-white hover:bg-blue-400;
+    @apply flex items-center bg-blue-500  px-4 py-1 rounded-lg text-xs text-white hover:bg-blue-400;
   }
   .btn-delete {
     @apply bg-red-500 py-1 px-4 rounded  text-white hover:bg-red-400;
   }
   .btn-submit {
-    @apply bg-slate-500 py-1 px-4 rounded  text-white hover:bg-slate-400 disabled:opacity-50 disabled:hover:bg-slate-500;
+    @apply bg-slate-500 py-1 px-4 rounded text-xs  text-white hover:bg-slate-400 disabled:opacity-50 disabled:hover:bg-slate-500;
   }
   .btn-invite {
-    @apply bg-green-500 py-1 px-4 rounded text-white hover:bg-green-400 disabled:opacity-50 disabled:hover:bg-green-500;
+    @apply bg-green-500 py-1 px-4 rounded text-xs text-white hover:bg-green-400 disabled:opacity-50 disabled:hover:bg-green-500;
   }
   .btn-arrow-L {
     @apply absolute top-1/2 text-2xl p-2 select-none rounded-full left-0;
