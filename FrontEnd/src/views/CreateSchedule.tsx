@@ -4,7 +4,7 @@ import { RootState as ReduxRootState } from "../store";
 import { teamSlice } from "../store/teams-slice";
 import { CalendarIcon, ChevronLeftIcon } from "@heroicons/react/outline";
 import { AnimatePresence, motion } from "framer-motion";
-import { scheduleSlice } from "../store/schedule-slice";
+import { scheduleSlice } from "../store/shifts-slice";
 import { Member } from "@shared/schemas.js";
 
 export default function CreateSchedule() {

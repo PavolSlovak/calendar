@@ -1,14 +1,20 @@
-import { useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { Form } from "../UI/Form";
 import Modal from "../UI/Modal";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Shift, shiftSchema } from "@shared/schemas";
-import { useMutation } from "@tanstack/react-query";
-import { useAuth } from "../../store/authContext";
-import { useDispatch } from "react-redux";
-import { addTeam } from "../../store/teams-slice";
+import { useDispatch, useSelector } from "react-redux";
 import { editRecurrentShifts } from "../../utils/http";
+import { RootState as ReduxRootState } from "../../store";
+import {
+  setDays,
+  setFrequency,
+  setIsSubmitting,
+  setMonthDays,
+  setServerError,
+  setSelectedShift,
+  setShifts,
+} from "../../store/shifts-slice";
+import InfoBox from "../UI/InfoBox";
 
 interface EditRecurrentShiftModalProps {
   onDone: () => void;
@@ -18,96 +24,88 @@ const EditRecurrentShiftModal = ({
   onDone,
   memberData,
 }: EditRecurrentShiftModalProps) => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    watch,
-    setError,
-  } = useForm<Shift>({
-    resolver: zodResolver(shiftSchema),
-  });
-
-  /* 
-export const editRecurrentShiftsSchema = z.object({
-  teamId: z.string().nonempty(),
-  memberId: z.string().nonempty(),
-  shifts: z.array(shiftSchema),
-  exceptions: z.array(exceptionSchema),
-});
-
-const shiftSchema = z.object({
-  memberID: z.string(), // Change to z.string() as ObjectId is a string in TypeScript
-  startTime: z.string(),
-  endTime: z.string(),
-  date: z.date(),
-  recurrence: recurrenceSchema.nullable(),
-  status: z.enum(["pending", "approved", "rejected"]).default("pending"),
-  comments: z.array(z.string()).optional(), // Use string array for comment IDs
-});
-const exceptionSchema = z.object({
-  date: z.date(),
-  newStartTime: z.string().optional(),
-  newEndTime: z.string().optional(),
-  skip: z.boolean().optional(),
-});
-
-const recurrenceSchema = z.object({
-  frequency: z.enum(["weekly", "monthly"]),
-  days: z
-    .array(z.enum(["sun", "mon", "tue", "wed", "thu", "fri", "sat"]))
-    .default([]),
-  monthDays: z.array(z.number()).default([]),
-  exceptions: z.array(exceptionSchema).default([]),
-});
-*/
-
   console.log("memberData", memberData);
-  const { currentUser } = useAuth();
   const dispatch = useDispatch();
 
   const daysOfWeek = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-  const [days, setDays] = useState<string[]>([]);
-  const [monthDays, setMonthDays] = useState<number[]>([]);
-  const frequency = watch("recurrence.frequency");
-  
-  const { mutate, isPending, isError, error } = useMutation({
-    mutationKey: ["createTeam"],
-    mutationFn: (data: Shift) => editRecurrentShifts(data),
-    onSuccess: (data) => {
-      dispatch(addTeam(data));
-      onDone();
-    },
-  });
 
-  function onSubmit(data: Shift) {
-    mutate(data);
+  const {
+    shifts,
+    monthDays,
+    days,
+    frequency,
+    isSubmitting,
+    serverError,
+    selectedShift,
+  } = useSelector((state: ReduxRootState) => state.shifts);
+
+  function handleSubmit(data: Shift[]) {
+    try {
+      dispatch(setIsSubmitting(true));
+      dispatch(setServerError(null));
+      editRecurrentShifts(data),
+        dispatch(setShifts([...data])),
+        dispatch(setIsSubmitting(false));
+      onDone();
+      return;
+    } catch (error: any) {
+      dispatch(setIsSubmitting(false));
+      setServerError(error?.message);
+      console.error(error);
+      return;
+    }
   }
 
   function handleMonthDayToggle(date: number) {
-    setMonthDays((prev) =>
-      prev.includes(date) ? prev.filter((d) => d !== date) : [...prev, date]
+    dispatch(
+      monthDays.includes(date)
+        ? setMonthDays(monthDays.filter((d) => d !== date))
+        : setMonthDays([...monthDays, date])
     );
   }
   function handleDayToggle(day: string) {
-    days.includes(day) ? 
-    setDays((prev) =>
-      prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
+    dispatch(
+      days.includes(day)
+        ? setDays(days.filter((d) => d !== day))
+        : setDays([...days, day])
     );
   }
+  function handleFrequencyToggle(frequency: string) {
+    dispatch(setMonthDays([])); // Clear monthDays
+    dispatch(setDays([])); // Clear days
+    dispatch(setFrequency(frequency));
+  }
+  useEffect(() => {
+    console.log(selectedShift);
+  }, [selectedShift]);
+
   return (
     <>
       <Modal onClose={onDone}>
         <Modal.Header title="Edit Redurrent Shifts" handleClose={onDone} />
-        <p className="text-center"></p>
+        {serverError && (
+          <InfoBox mode="warning" severity="high">
+            {serverError}
+          </InfoBox>
+        )}
         <Modal.Body>
-          <Form onSubmit={handleSubmit(onSubmit)}>
+          <Form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit(shifts);
+            }}
+          >
             <Form.Group>
               {/* Frequency Selector */}
               <div className="space-y-2">
-                <label>Recurrence Frequency</label>
                 <label>Frequency</label>
-                <select id="frequency" {...register("recurrence.frequency")}>
+                <select
+                  id="frequency"
+                  onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                    handleFrequencyToggle(e.target.value)
+                  }
+                  defaultValue={"weekly"}
+                >
                   <option value="weekly">Weekly</option>
                   <option value="monthly">Monthly</option>
                 </select>
@@ -154,19 +152,20 @@ const recurrenceSchema = z.object({
               {/* Shift Timing */}
               <div className="space-y-2">
                 <p className="text-xl">Shift Timing</p>
+                {frequency === "weekly" && (
+                  <p>Day of the week {selectedShift}</p>
+                )}
+                {frequency === "monthly" && (
+                  <p>Day of the month {selectedShift}</p>
+                )}
+
                 <div className="flex gap-4">
                   <Form.Input
                     id={`start-time`}
                     type="time"
                     label="Start Time"
-                    {...register("startTime")}
                   />
-                  <Form.Input
-                    id={`end-time`}
-                    type="time"
-                    label="End Time"
-                    {...register("endTime")}
-                  />
+                  <Form.Input id={`end-time`} type="time" label="End Time" />
                 </div>
               </div>
 
@@ -212,7 +211,7 @@ const recurrenceSchema = z.object({
                 <button
                   type="submit"
                   className="btn-submit"
-                  disabled={isPending}
+                  disabled={isSubmitting}
                 >
                   Save
                 </button>

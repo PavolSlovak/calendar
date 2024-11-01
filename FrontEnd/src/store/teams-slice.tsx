@@ -37,6 +37,7 @@ export const teamSlice = createSlice({
         (team) => team._id === action.payload.teamId
       );
       if (!team) return;
+
       // TODO: Implement update schedule
     },
     addToSchedule: (state, action: PayloadAction<UpdateScheduleProps>) => {
@@ -46,6 +47,7 @@ export const teamSlice = createSlice({
       if (!team) return;
 
       // TODO: Implement add to schedule
+      console.log("Add to schedule", action.payload);
     },
   },
 });
