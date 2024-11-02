@@ -13,21 +13,25 @@ import {
   setServerError,
   setSelectedShift,
   setShifts,
+  DaysOfWeek,
 } from "../../store/shifts-slice";
 import InfoBox from "../UI/InfoBox";
 
 interface EditRecurrentShiftModalProps {
   onDone: () => void;
-  memberData: any;
+  memberID: string;
+  teamID: string;
 }
 const EditRecurrentShiftModal = ({
   onDone,
-  memberData,
+  memberID,
+  teamID,
 }: EditRecurrentShiftModalProps) => {
-  console.log("memberData", memberData);
+  console.log("Member Id:", memberID);
+  console.log("Team Id:", teamID);
   const dispatch = useDispatch();
 
-  const daysOfWeek = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+  const daysOfWeek = Object.values(DaysOfWeek);
 
   const {
     shifts,
@@ -37,15 +41,29 @@ const EditRecurrentShiftModal = ({
     isSubmitting,
     serverError,
     selectedShift,
+    startTime,
+    endTime,
   } = useSelector((state: ReduxRootState) => state.shifts);
+  /* 
 
-  function handleSubmit(data: Shift[]) {
-    try {
+export const shiftSchema = z.object({
+  memberID: z.string(), // Change to z.string() as ObjectId is a string in TypeScript
+  teamID: z.string(),
+  startTime: z.string(),
+  endTime: z.string(),
+  date: z.date(),
+  recurrence: recurrenceSchema.nullable(),
+  status: z.enum(["pending", "approved", "rejected"]).default("pending"),
+  comments: z.array(z.string()).optional(), // Use string array for comment IDs
+});
+*/
+  function handleSubmit(data: Shift) {
+    console.log(data);
+    /* try {
       dispatch(setIsSubmitting(true));
       dispatch(setServerError(null));
-      editRecurrentShifts(data),
-        dispatch(setShifts([...data])),
-        dispatch(setIsSubmitting(false));
+      editRecurrentShifts(data), dispatch(setShifts([...shifts, data]));
+      dispatch(setIsSubmitting(false));
       onDone();
       return;
     } catch (error: any) {
@@ -53,7 +71,7 @@ const EditRecurrentShiftModal = ({
       setServerError(error?.message);
       console.error(error);
       return;
-    }
+    } */
   }
 
   function handleMonthDayToggle(date: number) {
@@ -63,7 +81,7 @@ const EditRecurrentShiftModal = ({
         : setMonthDays([...monthDays, date])
     );
   }
-  function handleDayToggle(day: string) {
+  function handleDayToggle(day: DaysOfWeek) {
     dispatch(
       days.includes(day)
         ? setDays(days.filter((d) => d !== day))
@@ -92,7 +110,23 @@ const EditRecurrentShiftModal = ({
           <Form
             onSubmit={(e) => {
               e.preventDefault();
-              handleSubmit(shifts);
+              handleSubmit(
+                shiftSchema.parse({
+                  memberID,
+                  teamID,
+                  startTime,
+                  endTime,
+                  date: new Date(),
+                  recurrence: {
+                    frequency,
+                    days,
+                    monthDays,
+                    startTime,
+                    endTime,
+                  },
+                  status: "pending",
+                })
+              );
             }}
           >
             <Form.Group>

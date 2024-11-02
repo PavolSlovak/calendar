@@ -1,5 +1,5 @@
 import { getToken, MessagePayload, onMessage } from "firebase/messaging";
-import { messaging } from "./firebase";
+import { auth, messaging } from "./firebase";
 
 const VAPID_KEY = import.meta.env.VITE_FIREBASE_VAPID_KEY;
 
@@ -30,11 +30,28 @@ export async function getMessagingDeviceToken(uid: string) {
       // Need to request permissions to show notifications.
       requestNotificationsPermissions(uid);
     }
-  } catch (error) {
-    console.error("Unable to get messaging token.", error);
+  } catch (error: any) {
+    if (error.code === "auth/id-token-expired") {
+      console.log("Token expired, refreshing...");
+      await refreshToken(uid);
+    } else {
+      console.error("Unable to get messaging token.", error);
+    }
   }
 }
-
+// Refresh token if expired
+async function refreshToken(uid: string) {
+  try {
+    const user = auth.currentUser;
+    if (user) {
+      await user.getIdToken(true); // Force refresh the token
+      console.log("Token refreshed, retrying...");
+      return getMessagingDeviceToken(uid); // Retry after refresh
+    }
+  } catch (error) {
+    console.error("Error refreshing token", error);
+  }
+}
 export async function initializeNotificationListener() {
   // When the app is in the background, firebase-messaging-sw.js will receive the message instead.
   const msg: any = await messaging();

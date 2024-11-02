@@ -30,7 +30,7 @@ export default function Calendar2() {
   let [memberUIDToEdit, setMemberUIDToEdit] = useState<string>("");
   let firstDayCurrentMonth = parse(currentMonth, "MMM-yyyy", new Date());
 
-  const { selectedDay } = useSelector(
+  const { selectedDay, activeTeam } = useSelector(
     (state: ReduxRootState) => state.calendar
   );
 
@@ -81,10 +81,11 @@ export default function Calendar2() {
       <>
         <TeamPicker />
         <AnimatePresence>
-          {isEditModalOpen && (
+          {isEditModalOpen && activeTeam && (
             <EditRecurrentShiftModal
               onDone={closeModal}
-              memberData={memberUIDToEdit}
+              memberID={memberUIDToEdit}
+              teamID={activeTeam?._id}
             />
           )}
         </AnimatePresence>

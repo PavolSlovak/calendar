@@ -1,3 +1,4 @@
+import { start } from "repl";
 import { z } from "zod";
 
 export const signUpSchema = z
@@ -86,6 +87,8 @@ const recurrenceSchema = z.object({
     .array(z.enum(["sun", "mon", "tue", "wed", "thu", "fri", "sat"]))
     .default([]),
   monthDays: z.array(z.number()).default([]),
+  startTime: z.string().default("08:00"),
+  endTime: z.string().default("17:00"),
   exceptions: z.array(exceptionSchema).default([]),
 });
 
@@ -105,14 +108,16 @@ const memberSchema = z.object({
 
 // Define the shift schema
 export const shiftSchema = z.object({
-  memberID: z.string(), // Change to z.string() as ObjectId is a string in TypeScript
+  memberID: z.string(),
   teamID: z.string(),
-  startTime: z.string(),
-  endTime: z.string(),
-  date: z.date(),
+
+  // For recurrent shifts, use the startTime and endTime from the recurrence schema
+  startTime: z.string().nullable(),
+  endTime: z.string().nullable(),
+  date: z.date().nullable(),
+
   recurrence: recurrenceSchema.nullable(),
   status: z.enum(["pending", "approved", "rejected"]).default("pending"),
-  comments: z.array(z.string()).optional(), // Use string array for comment IDs
 });
 
 // Define the team schema
@@ -123,6 +128,9 @@ const teamSchema = z.object({
   invitations: z.array(z.string()).default([]),
   createdBy: memberSchema,
   shifts: z.array(shiftSchema).default([]),
+
+  comments: z.array(z.string()).optional(), // Use string array for comment IDs
+
   createdAt: z.date().default(() => new Date()),
   updatedAt: z.date().default(() => new Date()),
 });

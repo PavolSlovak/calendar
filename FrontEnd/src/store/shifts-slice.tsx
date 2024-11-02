@@ -1,12 +1,22 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { Exception, Shift } from "@shared/schemas";
 
+export enum DaysOfWeek {
+  sun = "sun",
+  mon = "mon",
+  tue = "tue",
+  wed = "wed",
+  thu = "thu",
+  fri = "fri",
+  sat = "sat",
+}
+
 type InitialState = {
   shifts: Shift[];
   monthDays: number[];
-  days: string[];
+  days: DaysOfWeek[];
   exceptions: Exception[];
-  frequency: string;
+  frequency: "weekly" | "monthly";
   startTime: string;
   endTime: string;
   isSubmitting: boolean;
