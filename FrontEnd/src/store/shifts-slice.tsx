@@ -17,6 +17,7 @@ type InitialState = {
   isSubmitting: boolean;
   serverError: string | null;
   selectedShift: string | number | null;
+  isEndDateSet: boolean;
 };
 
 const initialState: InitialState = {
@@ -41,6 +42,7 @@ const initialState: InitialState = {
   isSubmitting: false,
   serverError: null,
   selectedShift: null,
+  isEndDateSet: false,
 };
 
 export const shiftSlice = createSlice({
@@ -71,6 +73,9 @@ export const shiftSlice = createSlice({
     setShifts: (state, action) => {
       state.shifts = action.payload;
     },
+    setIsEndDateSet: (state, action) => {
+      state.isEndDateSet = action.payload;
+    },
   },
 });
 export const {
@@ -82,4 +87,5 @@ export const {
   setServerError,
   setSelectedShift,
   setShifts,
+  setIsEndDateSet,
 } = shiftSlice.actions;

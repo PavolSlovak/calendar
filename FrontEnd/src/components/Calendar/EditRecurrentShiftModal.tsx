@@ -9,6 +9,7 @@ import {
   setFrequency,
   setMonthDays,
   DaysOfWeek,
+  setIsEndDateSet,
 } from "../../store/shifts-slice";
 import InfoBox from "../UI/InfoBox";
 
@@ -28,9 +29,8 @@ const EditRecurrentShiftModal = ({
 
   const daysOfWeek = Object.values(DaysOfWeek);
 
-  const { shift, isSubmitting, serverError, selectedShift } = useSelector(
-    (state: ReduxRootState) => state.shifts
-  );
+  const { shift, isSubmitting, serverError, selectedShift, isEndDateSet } =
+    useSelector((state: ReduxRootState) => state.shifts);
   const { frequency, monthDays, days } = shift.recurrence;
   /* 
 
@@ -61,7 +61,9 @@ export const shiftSchema = z.object({
       return;
     } */
   }
-
+  useEffect(() => {
+    console.log("isEndDateSet", isEndDateSet);
+  });
   function handleMonthDayToggle(date: number) {
     dispatch(
       monthDays.includes(date)
@@ -175,6 +177,22 @@ export const shiftSchema = z.object({
                   />
                   <Form.Input id={`end-time`} type="time" label="End Time" />
                 </div>
+              </div>
+              <div className=" space-y-2">
+                <p>When should shift stop recurring? Set end date:</p>
+                <input
+                  type="checkbox"
+                  checked={isEndDateSet}
+                  onChange={() => dispatch(setIsEndDateSet(!isEndDateSet))}
+                />
+                {isEndDateSet && (
+                  <Form.Input
+                    id={`end-date`}
+                    type="date"
+                    label="End Date"
+                    defaultValue={new Date().toISOString().split("T")[0]}
+                  />
+                )}
               </div>
 
               {/* Exceptions */}
