@@ -89,6 +89,7 @@ const recurrenceSchema = z.object({
   monthDays: z.array(z.number()).default([]),
   startTime: z.string().default("08:00"),
   endTime: z.string().default("17:00"),
+  endDate: z.string().default(() => new Date().toISOString().split("T")[0]),
   exceptions: z.array(exceptionSchema).default([]),
 });
 

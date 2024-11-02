@@ -35,6 +35,7 @@ const initialState: InitialState = {
       monthDays: [],
       startTime: "08:00",
       endTime: "17:00",
+      endDate: new Date().toISOString().split("T")[0],
       exceptions: [],
     },
   },
@@ -74,7 +75,18 @@ export const shiftSlice = createSlice({
       state.shifts = action.payload;
     },
     setIsEndDateSet: (state, action) => {
-      state.isEndDateSet = action.payload;
+      state.isEndDateSet = !state.isEndDateSet;
+    },
+    setEndDate: (state, action) => {
+      state.shift.recurrence.endDate = action.payload;
+    },
+    setStartTime: (state, action) => {
+      console.log("Start Time:", action.payload);
+      state.shift.recurrence.startTime = action.payload;
+    },
+    setEndTime: (state, action) => {
+      console.log("End Time:", action.payload);
+      state.shift.recurrence.endTime = action.payload;
     },
   },
 });
@@ -88,4 +100,7 @@ export const {
   setSelectedShift,
   setShifts,
   setIsEndDateSet,
+  setEndDate,
+  setStartTime,
+  setEndTime,
 } = shiftSlice.actions;

@@ -10,6 +10,9 @@ import {
   setMonthDays,
   DaysOfWeek,
   setIsEndDateSet,
+  setEndDate,
+  setStartTime,
+  setEndTime,
 } from "../../store/shifts-slice";
 import InfoBox from "../UI/InfoBox";
 
@@ -31,7 +34,8 @@ const EditRecurrentShiftModal = ({
 
   const { shift, isSubmitting, serverError, selectedShift, isEndDateSet } =
     useSelector((state: ReduxRootState) => state.shifts);
-  const { frequency, monthDays, days } = shift.recurrence;
+  const { frequency, monthDays, days, endTime, startTime, endDate } =
+    shift.recurrence;
   /* 
 
 export const shiftSchema = z.object({
@@ -86,7 +90,10 @@ export const shiftSchema = z.object({
   useEffect(() => {
     console.log(selectedShift);
   }, [selectedShift]);
-
+  useEffect(() => {
+    console.log(isEndDateSet);
+    console.log();
+  });
   return (
     <>
       <Modal onClose={onDone}>
@@ -174,23 +181,32 @@ export const shiftSchema = z.object({
                     id={`start-time`}
                     type="time"
                     label="Start Time"
+                    onChange={(e) => dispatch(setStartTime(e.target.value))}
                   />
-                  <Form.Input id={`end-time`} type="time" label="End Time" />
+                  <Form.Input
+                    id={`end-time`}
+                    type="time"
+                    label="End Time"
+                    onChange={(e) => dispatch(setEndTime(e.target.value))}
+                  />
                 </div>
               </div>
               <div className=" space-y-2">
                 <p>When should shift stop recurring? Set end date:</p>
                 <input
                   type="checkbox"
-                  checked={isEndDateSet}
-                  onChange={() => dispatch(setIsEndDateSet(!isEndDateSet))}
+                  onChange={() => {
+                    dispatch(setIsEndDateSet(!isEndDateSet));
+                  }}
                 />
                 {isEndDateSet && (
                   <Form.Input
-                    id={`end-date`}
+                    id="end-date"
                     type="date"
                     label="End Date"
-                    defaultValue={new Date().toISOString().split("T")[0]}
+                    onChange={(e) => {
+                      dispatch(setEndDate(e.target.value));
+                    }}
                   />
                 )}
               </div>
