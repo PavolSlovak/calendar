@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { Exception, Shift } from "@shared/schemas";
+import { Shift } from "@shared/schemas";
 
 export enum DaysOfWeek {
   sun = "sun",
@@ -13,12 +13,7 @@ export enum DaysOfWeek {
 
 type InitialState = {
   shifts: Shift[];
-  monthDays: number[];
-  days: DaysOfWeek[];
-  exceptions: Exception[];
-  frequency: "weekly" | "monthly";
-  startTime: string;
-  endTime: string;
+  shift: Shift;
   isSubmitting: boolean;
   serverError: string | null;
   selectedShift: string | number | null;
@@ -26,12 +21,23 @@ type InitialState = {
 
 const initialState: InitialState = {
   shifts: [],
-  monthDays: [],
-  days: [],
-  exceptions: [],
-  frequency: "weekly",
-  startTime: "8:00",
-  endTime: "17:00",
+  shift: {
+    memberID: "",
+    teamID: "",
+    startTime: "",
+    endTime: "",
+    date: null,
+    status: "pending",
+    recurrence: {
+      frequency: "weekly",
+      days: [],
+      monthDays: [],
+      startTime: "08:00",
+      endTime: "17:00",
+      exceptions: [],
+    },
+  },
+
   isSubmitting: false,
   serverError: null,
   selectedShift: null,
@@ -42,16 +48,16 @@ export const shiftSlice = createSlice({
   initialState,
   reducers: {
     setMonthDays: (state, action) => {
-      state.monthDays = action.payload;
+      state.shift.recurrence.monthDays = action.payload;
     },
     setDays: (state, action) => {
-      state.days = action.payload;
+      state.shift.recurrence.days = action.payload;
     },
     setExceptions: (state, action) => {
-      state.exceptions = action.payload;
+      state.shift.recurrence.exceptions = action.payload;
     },
     setFrequency: (state, action) => {
-      state.frequency = action.payload;
+      state.shift.recurrence.frequency = action.payload;
     },
     setIsSubmitting: (state, action) => {
       state.isSubmitting = action.payload;

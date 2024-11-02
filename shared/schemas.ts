@@ -110,13 +110,11 @@ const memberSchema = z.object({
 export const shiftSchema = z.object({
   memberID: z.string(),
   teamID: z.string(),
-
   // For recurrent shifts, use the startTime and endTime from the recurrence schema
   startTime: z.string().nullable(),
   endTime: z.string().nullable(),
   date: z.date().nullable(),
-
-  recurrence: recurrenceSchema.nullable(),
+  recurrence: recurrenceSchema,
   status: z.enum(["pending", "approved", "rejected"]).default("pending"),
 });
 

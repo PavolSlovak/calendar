@@ -1,18 +1,13 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { Form } from "../UI/Form";
 import Modal from "../UI/Modal";
-import { Shift, shiftSchema } from "@shared/schemas";
+import { Shift } from "@shared/schemas";
 import { useDispatch, useSelector } from "react-redux";
-import { editRecurrentShifts } from "../../utils/http";
 import { RootState as ReduxRootState } from "../../store";
 import {
   setDays,
   setFrequency,
-  setIsSubmitting,
   setMonthDays,
-  setServerError,
-  setSelectedShift,
-  setShifts,
   DaysOfWeek,
 } from "../../store/shifts-slice";
 import InfoBox from "../UI/InfoBox";
@@ -33,17 +28,10 @@ const EditRecurrentShiftModal = ({
 
   const daysOfWeek = Object.values(DaysOfWeek);
 
-  const {
-    shifts,
-    monthDays,
-    days,
-    frequency,
-    isSubmitting,
-    serverError,
-    selectedShift,
-    startTime,
-    endTime,
-  } = useSelector((state: ReduxRootState) => state.shifts);
+  const { shift, isSubmitting, serverError, selectedShift } = useSelector(
+    (state: ReduxRootState) => state.shifts
+  );
+  const { frequency, monthDays, days } = shift.recurrence;
   /* 
 
 export const shiftSchema = z.object({
@@ -110,23 +98,9 @@ export const shiftSchema = z.object({
           <Form
             onSubmit={(e) => {
               e.preventDefault();
-              handleSubmit(
-                shiftSchema.parse({
-                  memberID,
-                  teamID,
-                  startTime,
-                  endTime,
-                  date: new Date(),
-                  recurrence: {
-                    frequency,
-                    days,
-                    monthDays,
-                    startTime,
-                    endTime,
-                  },
-                  status: "pending",
-                })
-              );
+              handleSubmit({
+                ...shift,
+              });
             }}
           >
             <Form.Group>
