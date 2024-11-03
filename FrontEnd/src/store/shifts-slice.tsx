@@ -87,6 +87,10 @@ export const shiftSlice = createSlice({
       console.log("End Time:", action.payload);
       state.shift.endTime = action.payload;
     },
+    setUserAndTeam: (state, action) => {
+      state.shift.memberID = action.payload.memberID;
+      state.shift.teamID = action.payload.teamID;
+    },
   },
 });
 export const {
@@ -102,4 +106,5 @@ export const {
   setEndDate,
   setStartTime,
   setEndTime,
+  setUserAndTeam,
 } = shiftSlice.actions;

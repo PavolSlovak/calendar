@@ -13,8 +13,12 @@ import {
   setEndDate,
   setStartTime,
   setEndTime,
+  setIsSubmitting,
+  setServerError,
+  setUserAndTeam,
 } from "../../store/shifts-slice";
 import InfoBox from "../UI/InfoBox";
+import { editRecurrentShifts } from "../../utils/http";
 
 interface EditRecurrentShiftModalProps {
   onDone: () => void;
@@ -26,32 +30,19 @@ const EditRecurrentShiftModal = ({
   memberID,
   teamID,
 }: EditRecurrentShiftModalProps) => {
-  console.log("Member Id:", memberID);
-  console.log("Team Id:", teamID);
   const dispatch = useDispatch();
-
   const daysOfWeek = Object.values(DaysOfWeek);
 
   const { shift, isSubmitting, serverError, selectedShift, isEndDateSet } =
     useSelector((state: ReduxRootState) => state.shifts);
-  const { frequency, monthDays, days, endTime, startTime, endDate } =
-    shift.recurrence;
-  /* 
+  const { frequency, monthDays, days, endDate } = shift.recurrence;
+  useEffect(() => {
+    dispatch(setUserAndTeam({ memberID, teamID }));
+  }, []);
 
-export const shiftSchema = z.object({
-  memberID: z.string(), // Change to z.string() as ObjectId is a string in TypeScript
-  teamID: z.string(),
-  startTime: z.string(),
-  endTime: z.string(),
-  date: z.date(),
-  recurrence: recurrenceSchema.nullable(),
-  status: z.enum(["pending", "approved", "rejected"]).default("pending"),
-  comments: z.array(z.string()).optional(), // Use string array for comment IDs
-});
-*/
   function handleSubmit(data: Shift) {
     console.log(data);
-    /* try {
+    /*  try {
       dispatch(setIsSubmitting(true));
       dispatch(setServerError(null));
       editRecurrentShifts(data), dispatch(setShifts([...shifts, data]));
@@ -107,9 +98,7 @@ export const shiftSchema = z.object({
           <Form
             onSubmit={(e) => {
               e.preventDefault();
-              handleSubmit({
-                ...shift,
-              });
+              handleSubmit(shift);
             }}
           >
             <Form.Group>
@@ -181,12 +170,14 @@ export const shiftSchema = z.object({
                     id={`start-time`}
                     type="time"
                     label="Start Time"
+                    value={shift.startTime}
                     onChange={(e) => dispatch(setStartTime(e.target.value))}
                   />
                   <Form.Input
                     id={`end-time`}
                     type="time"
                     label="End Time"
+                    value={shift.endTime}
                     onChange={(e) => dispatch(setEndTime(e.target.value))}
                   />
                 </div>
@@ -207,6 +198,7 @@ export const shiftSchema = z.object({
                     onChange={(e) => {
                       dispatch(setEndDate(e.target.value));
                     }}
+                    defaultValue={endDate}
                   />
                 )}
               </div>
