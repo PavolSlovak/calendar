@@ -27,14 +27,13 @@ const initialState: InitialState = {
     teamID: "",
     startTime: "08:00",
     endTime: "17:00",
-    date: null,
+    date: new Date(),
     status: "pending",
     recurrence: {
       frequency: "weekly",
       days: [],
       monthDays: [],
-
-      endDate: new Date().toISOString().split("T")[0],
+      endDate: null,
       exceptions: [],
     },
   },
@@ -70,10 +69,8 @@ export const shiftSlice = createSlice({
     setSelectedShift: (state, action) => {
       state.selectedShift = action.payload;
     },
-    setShifts: (state, action) => {
-      state.shifts = action.payload;
-    },
     setIsEndDateSet: (state, action) => {
+      state.shift.recurrence.endDate = new Date().toISOString().split("T")[0];
       state.isEndDateSet = !state.isEndDateSet;
     },
     setEndDate: (state, action) => {
@@ -91,6 +88,18 @@ export const shiftSlice = createSlice({
       state.shift.memberID = action.payload.memberID;
       state.shift.teamID = action.payload.teamID;
     },
+    resetForm: (state) => {
+      state.shift = initialState.shift;
+      state.shifts = initialState.shifts;
+      state.isSubmitting = initialState.isSubmitting;
+      state.serverError = initialState.serverError;
+      state.selectedShift = initialState.selectedShift;
+      state.isEndDateSet = initialState.isEndDateSet;
+    },
+    // Add a new reducer to add a shift to the state
+    addShift: (state, action) => {
+      state.shifts = [...state.shifts, action.payload];
+    },
   },
 });
 export const {
@@ -101,10 +110,11 @@ export const {
   setIsSubmitting,
   setServerError,
   setSelectedShift,
-  setShifts,
+  addShift,
   setIsEndDateSet,
   setEndDate,
   setStartTime,
   setEndTime,
   setUserAndTeam,
+  resetForm,
 } = shiftSlice.actions;

@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { Form } from "../UI/Form";
 import Modal from "../UI/Modal";
-import { Shift } from "@shared/schemas";
+import { Shift, shiftSchema } from "@shared/schemas";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState as ReduxRootState } from "../../store";
 import {
@@ -16,9 +16,13 @@ import {
   setIsSubmitting,
   setServerError,
   setUserAndTeam,
+  resetForm,
+  addShift,
 } from "../../store/shifts-slice";
 import InfoBox from "../UI/InfoBox";
-import { editRecurrentShifts } from "../../utils/http";
+import { addRecurrentShift } from "../../utils/http";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 interface EditRecurrentShiftModalProps {
   onDone: () => void;
@@ -32,33 +36,33 @@ const EditRecurrentShiftModal = ({
 }: EditRecurrentShiftModalProps) => {
   const dispatch = useDispatch();
   const daysOfWeek = Object.values(DaysOfWeek);
-
   const { shift, isSubmitting, serverError, selectedShift, isEndDateSet } =
     useSelector((state: ReduxRootState) => state.shifts);
   const { frequency, monthDays, days, endDate } = shift.recurrence;
+
   useEffect(() => {
+    console.log("shift", shift);
     dispatch(setUserAndTeam({ memberID, teamID }));
+    dispatch(resetForm());
   }, []);
 
-  function handleSubmit(data: Shift) {
-    console.log(data);
-    /*  try {
+  async function handleSubmit(data: Shift) {
+    try {
       dispatch(setIsSubmitting(true));
       dispatch(setServerError(null));
-      editRecurrentShifts(data), dispatch(setShifts([...shifts, data]));
+      // add a new shift to the state
+      dispatch(addShift(data));
+      // send the data to the server
+      await addRecurrentShift(data);
       dispatch(setIsSubmitting(false));
-      onDone();
-      return;
+      return onDone();
     } catch (error: any) {
       dispatch(setIsSubmitting(false));
       setServerError(error?.message);
-      console.error(error);
-      return;
-    } */
+      return console.error(error);
+    }
   }
-  useEffect(() => {
-    console.log("isEndDateSet", isEndDateSet);
-  });
+
   function handleMonthDayToggle(date: number) {
     dispatch(
       monthDays.includes(date)
@@ -198,7 +202,7 @@ const EditRecurrentShiftModal = ({
                     onChange={(e) => {
                       dispatch(setEndDate(e.target.value));
                     }}
-                    defaultValue={endDate}
+                    value={endDate || ""}
                   />
                 )}
               </div>

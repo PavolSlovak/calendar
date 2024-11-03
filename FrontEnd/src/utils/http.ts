@@ -53,8 +53,9 @@ export async function createTeam(name: string, invitations: string[]) {
 
   return response.json();
 }
-export async function editRecurrentShifts(data: any) {
-  const token = localStorage.getItem("token");
+export async function addRecurrentShift(data: any) {
+  console.log("data", data);
+  /*   const token = localStorage.getItem("token");
   const response = await fetch(VITE_API_URL + "teams/shift-edit", {
     method: "POST",
     headers: {
@@ -71,5 +72,5 @@ export async function editRecurrentShifts(data: any) {
     throw error;
   }
   console.log(`Shifts edited successfully: ${data}`);
-  return response.json();
+  return response.json(); */
 }

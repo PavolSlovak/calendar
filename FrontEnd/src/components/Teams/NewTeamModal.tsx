@@ -102,6 +102,7 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
           Create a new team by typing in the team name and send invitations to
           the future team members
         </p>
+
         <Modal.Body>
           {createTeamIsError && (
             <>
