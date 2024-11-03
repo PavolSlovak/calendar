@@ -107,24 +107,21 @@ const EditRecurrentShiftModal = ({
           >
             <Form.Group>
               {/* Frequency Selector */}
-              <div className="space-y-2">
-                <label>Frequency</label>
-                <select
-                  id="frequency"
-                  onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-                    handleFrequencyToggle(e.target.value)
-                  }
-                  defaultValue={"weekly"}
-                >
-                  <option value="weekly">Weekly</option>
-                  <option value="monthly">Monthly</option>
-                </select>
-              </div>
+              <Form.Select
+                label="Frequency"
+                id="frequency"
+                options={[
+                  { label: "Weekly", value: "weekly" },
+                  { label: "Monthly", value: "monthly" },
+                ]}
+                value={frequency}
+                onChange={(e) => handleFrequencyToggle(e.target.value)}
+              />
 
               {/* Days Selection for Weekly */}
               {frequency === "weekly" && (
                 <div className="space-y-2">
-                  <label>Select Days of the Week</label>
+                  <p>Select Days of the Week:</p>
                   <div className="flex gap-2">
                     {daysOfWeek.map((day) => (
                       <Form.Input

@@ -82,6 +82,56 @@ const Footer = ({
   );
 };
 
+type SelectProps = {
+  label: string;
+  id?: string;
+  className?: string;
+  options?: { value: string; label: string }[];
+  children?: ReactNode; // Allow children to be passed in as well
+  labelClassName?: string;
+  selectClassName?: string;
+} & ComponentPropsWithoutRef<"select">;
+
+const Select = forwardRef<HTMLSelectElement, SelectProps>(
+  (
+    {
+      label,
+      id,
+      className,
+      children,
+      options = [],
+      labelClassName,
+      selectClassName,
+      ...selectProps
+    },
+    ref
+  ) => {
+    return (
+      <div className={`flex flex-col py-2 w-full ${className}`}>
+        {label && (
+          <label htmlFor={id} className={`pb-2 ${labelClassName}`}>
+            {label}
+          </label>
+        )}
+        <select
+          id={id}
+          ref={ref}
+          {...selectProps}
+          className={`border border-black rounded p-2 ${selectClassName}`}
+        >
+          {options.length > 0
+            ? options.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))
+            : children}
+        </select>
+      </div>
+    );
+  }
+);
 Form.Group = Group;
 Form.Input = Input;
+Form.Select = Select;
 Form.Footer = Footer;
