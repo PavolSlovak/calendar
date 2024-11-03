@@ -87,8 +87,7 @@ const recurrenceSchema = z.object({
     .array(z.enum(["sun", "mon", "tue", "wed", "thu", "fri", "sat"]))
     .default([]),
   monthDays: z.array(z.number()).default([]),
-  startTime: z.string().default("08:00"),
-  endTime: z.string().default("17:00"),
+
   endDate: z.string().default(() => new Date().toISOString().split("T")[0]),
   exceptions: z.array(exceptionSchema).default([]),
 });
@@ -112,8 +111,8 @@ export const shiftSchema = z.object({
   memberID: z.string(),
   teamID: z.string(),
   // For recurrent shifts, use the startTime and endTime from the recurrence schema
-  startTime: z.string().nullable(),
-  endTime: z.string().nullable(),
+  startTime: z.string().default("08:00"),
+  endTime: z.string().default("17:00"),
   date: z.date().nullable(),
   recurrence: recurrenceSchema,
   status: z.enum(["pending", "approved", "rejected"]).default("pending"),

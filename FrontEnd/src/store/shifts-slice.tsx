@@ -25,16 +25,15 @@ const initialState: InitialState = {
   shift: {
     memberID: "",
     teamID: "",
-    startTime: "",
-    endTime: "",
+    startTime: "08:00",
+    endTime: "17:00",
     date: null,
     status: "pending",
     recurrence: {
       frequency: "weekly",
       days: [],
       monthDays: [],
-      startTime: "08:00",
-      endTime: "17:00",
+
       endDate: new Date().toISOString().split("T")[0],
       exceptions: [],
     },
@@ -82,11 +81,11 @@ export const shiftSlice = createSlice({
     },
     setStartTime: (state, action) => {
       console.log("Start Time:", action.payload);
-      state.shift.recurrence.startTime = action.payload;
+      state.shift.startTime = action.payload;
     },
     setEndTime: (state, action) => {
       console.log("End Time:", action.payload);
-      state.shift.recurrence.endTime = action.payload;
+      state.shift.endTime = action.payload;
     },
   },
 });
