@@ -27,7 +27,7 @@ const initialState: InitialState = {
     teamID: "",
     startTime: "08:00",
     endTime: "17:00",
-    date: new Date().toISOString(),
+    date: null,
     status: "pending",
     recurrence: {
       frequency: "weekly",
