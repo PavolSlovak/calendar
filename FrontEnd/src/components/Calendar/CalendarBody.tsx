@@ -7,13 +7,12 @@ import {
   isSameMonth,
   isToday,
 } from "date-fns";
-import { Team } from "../../lib/types";
 import { RootState as ReduxRootState } from "../../store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { calendarSlice } from "../../store/calendar-slice";
 type CalendarBodyProps = {
   firstDayCurrentMonth: Date;
-  selectedDay: Date;
-  setSelectedDay: React.Dispatch<React.SetStateAction<Date>>;
 };
 
 export const colStartClasses = [
@@ -25,31 +24,28 @@ export const colStartClasses = [
   "col-start-6",
   "col-start-7",
 ];
-export function CalendarBody({
-  firstDayCurrentMonth,
-  selectedDay,
-  setSelectedDay,
-}: CalendarBodyProps) {
+export function CalendarBody({ firstDayCurrentMonth }: CalendarBodyProps) {
   let days = eachDayOfInterval({
     start: firstDayCurrentMonth,
     end: endOfMonth(firstDayCurrentMonth),
   });
   const { activeTeam } = useSelector((state: ReduxRootState) => state.calendar);
-  const wSchedule = activeTeam?.weekSchedule;
+  /* const wSchedule = activeTeam?.weekSchedule; */
+
+  const { selectedDay } = useSelector(
+    (state: ReduxRootState) => state.calendar
+  );
+  const dispatch = useDispatch();
+
+  const { setSelectedDay } = calendarSlice.actions;
+  useEffect(() => {
+    console.log(selectedDay);
+  });
   return (
     <div className="grid grid-cols-7 mt-2 text-sm">
       {days.map((day, dayIdx) => {
         const dayString = format(day, "eee");
-        const dayObject = wSchedule?.find(
-          (schedule) => schedule.day === dayString
-        );
-        const shiftsForDay = dayObject?.shifts;
-        const colorStamps = shiftsForDay?.map((shift) => {
-          const member = activeTeam?.members.find(
-            (member) => member.uid === shift.memberId
-          );
-          return member?.color;
-        });
+
         return (
           <div
             key={day.toString()}
@@ -60,7 +56,7 @@ export function CalendarBody({
           >
             <button
               type="button"
-              onClick={() => setSelectedDay(day)}
+              onClick={() => dispatch(setSelectedDay(day.toISOString()))}
               className={classNames(
                 isEqual(day, selectedDay) ? "text-white" : "",
                 !isEqual(day, selectedDay) && isToday(day)
@@ -91,13 +87,13 @@ export function CalendarBody({
             </button>
 
             <div className="flex justify-center">
-              {colorStamps?.map((color, idx) => (
+              {/* {colorStamps?.map((color, idx) => (
                 <div
                   key={idx}
                   className="w-1 h-1 ml-[1px] rounded-full"
                   style={{ backgroundColor: color }}
                 ></div>
-              ))}
+              ))} */}
             </div>
           </div>
         );

@@ -105,11 +105,7 @@ export default function Calendar2() {
                 firstDayCurrentMonth={firstDayCurrentMonth}
                 setCurrentMonth={setCurrentMonth}
               />
-              <CalendarBody
-                firstDayCurrentMonth={firstDayCurrentMonth}
-                selectedDay={selectedDay}
-                setSelectedDay={() => dispatch(setSelectedDay(selectedDay))}
-              />
+              <CalendarBody firstDayCurrentMonth={firstDayCurrentMonth} />
             </div>
             <CommentList />
           </div>

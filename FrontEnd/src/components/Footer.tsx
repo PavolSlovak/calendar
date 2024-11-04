@@ -1,6 +1,6 @@
 function Footer() {
   return (
-    <footer className="w-screen h-[10vh]  bg-slate-200">
+    <footer className=" bottom-0 w-screen h-[80px]  bg-slate-200">
       <div className="flex items-center justify-center py-2 w-full">
         &copy; Pavol Slovak
       </div>

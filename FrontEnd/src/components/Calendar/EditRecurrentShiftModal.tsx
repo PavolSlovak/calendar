@@ -7,12 +7,14 @@ import { RootState as ReduxRootState } from "../../store";
 import {
   DaysOfWeek,
   setIsEndDateSet,
+  setIsSubmitting,
   shiftSlice,
 } from "../../store/shifts-slice";
 import InfoBox from "../UI/InfoBox";
 import { addRecurrentShift } from "../../utils/http";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 interface EditRecurrentShiftModalProps {
   onDone: () => void;
@@ -29,6 +31,22 @@ const EditRecurrentShiftModal = ({
   const { shift, isSubmitting, serverError, selectedShift, isEndDateSet } =
     useSelector((state: ReduxRootState) => state.shifts);
 
+  /*  const { data, isLoading, isError } = useMutation({
+    mutationKey: ["addRecurrentShift"],
+    mutationFn: (data: Shift) => addRecurrentShift(data),
+    onMutate: () => {
+      dispatch(setIsSubmitting(true));
+    },
+    onSuccess: () => {
+      dispatch(setIsSubmitting(false));
+      onDone();
+    },
+    onError: (error: any) => {
+      dispatch(setIsSubmitting(false));
+      dispatch(setServerError(error?.message));
+    },
+  }); */
+
   const {
     setDays,
     setFrequency,
@@ -43,7 +61,6 @@ const EditRecurrentShiftModal = ({
   const {
     handleSubmit,
     control,
-    setValue,
     formState: { errors },
     register,
   } = useForm<Shift>({
@@ -58,21 +75,21 @@ const EditRecurrentShiftModal = ({
     dispatch(resetForm());
   }, []);
 
-  async function onSubmit(data: Shift) {
-    /*  try {
-      dispatch(setIsSubmitting(true));
+  async function handleSave(data: Shift) {
+    try {
+      /* dispatch(setIsSubmitting(true));
       dispatch(setServerError(null));
       // add a new shift to the state
       dispatch(addShift(data));
       // send the data to the server
       await addRecurrentShift(data);
       dispatch(setIsSubmitting(false));
-      return onDone();
+      return onDone(); */
     } catch (error: any) {
-      dispatch(setIsSubmitting(false));
+      /*  dispatch(setIsSubmitting(false));
       setServerError(error?.message);
-      return console.error(error);
-    } */
+      return console.error(error); */
+    }
     console.log(data);
   }
 
@@ -99,12 +116,7 @@ const EditRecurrentShiftModal = ({
           </InfoBox>
         )}
         <Modal.Body>
-          <Form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSubmit(onSubmit);
-            }}
-          >
+          <Form onSubmit={handleSubmit(handleSave)}>
             <Form.Group>
               {/* Frequency Selector */}
               <Controller
@@ -119,7 +131,10 @@ const EditRecurrentShiftModal = ({
                       { label: "Monthly", value: "monthly" },
                     ]}
                     value={field.value}
-                    onChange={(e) => handleFrequencyToggle(e.target.value)}
+                    onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                      field.onChange(e.target.value);
+                      handleFrequencyToggle(e.target.value);
+                    }}
                   />
                 )}
               />
@@ -296,7 +311,27 @@ const EditRecurrentShiftModal = ({
                   </div>
                 ))}
               </div> */}
-
+              <p>
+                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Est,
+                rem quisquam nisi aut et laborum provident facere, voluptatem
+                ipsum fugit rerum! Corporis, ipsa perspiciatis. Ea qui accusamus
+                dolores voluptatem quo? Ducimus, ad vel sunt magni id eum
+                distinctio cum itaque dicta minus porro quisquam quidem,
+                excepturi optio assumenda blanditiis, tenetur perferendis!
+                Quisquam sequi aspernatur neque laboriosam aperiam natus
+                laudantium veniam. Sunt alias unde accusantium reprehenderit
+                pariatur, hic veritatis laboriosam ab? Reprehenderit ea nihil,
+                doloribus, aspernatur facere error suscipit quo hic iure quidem
+                nam voluptatibus blanditiis, quisquam fugiat perspiciatis
+                tenetur. Mollitia? Nihil maiores voluptate magnam sequi laborum,
+                esse nisi corporis, expedita alias adipisci veritatis accusamus
+                soluta cumque sunt consectetur, officiis cupiditate suscipit.
+                Voluptate ipsum magnam maiores et necessitatibus nostrum
+                doloribus possimus! Dolor quae iusto voluptas quis qui incidunt,
+                culpa numquam ab impedit vitae officiis nisi distinctio in sit
+                non quo repellat est asperiores aperiam nemo officia magnam?
+                Explicabo dolor quibusdam quo?
+              </p>
               <Form.Footer actionsClassName="flex  gap-2">
                 <button
                   type="submit"

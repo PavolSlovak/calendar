@@ -38,7 +38,7 @@ function Root() {
   }, [location]);
 
   return (
-    <div id="page-container" className="flex flex-col min-h-[100vh]">
+    <div id="page-container" className="flex flex-col min-h-[100vh] ">
       <Provider store={store}>
         <Header
           handleToggle={handleMobileMenu}

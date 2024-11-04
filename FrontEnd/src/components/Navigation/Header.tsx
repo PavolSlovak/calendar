@@ -80,7 +80,7 @@ function Header({ handleToggle, openModal, path }: HeaderProps) {
     }
   }
   return (
-    <header className="flex w-screen h-[10vh] items-center  top-0 bg-white z-40 ">
+    <header className="flex w-screen  h-[80px] flex-shrink-0 items-center  top-0 bg-white z-40 ">
       <div className="flex h-full w-40 justify-center items-center">
         <span className="flex w-10 h-10  bg-black rounded"></span>
       </div>
