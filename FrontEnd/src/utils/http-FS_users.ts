@@ -37,6 +37,8 @@ export const fetchUserByUID = async (uid: string) => {
     const errorData = await response.json();
     throw new Error(errorData.message);
   }
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+
   return response.json();
 };
 export const fetchAdditionalUserData = async (uid: string) => {

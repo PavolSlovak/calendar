@@ -22,16 +22,14 @@ const menuVariants = {
 function MenuColumn({ handleToggle, path }: MenuColumnProps) {
   return (
     <motion.div
-      className={`flex flex-col fixed top-0 bg-white w-full h-full z-10 `}
+      className={`flex-col top-0 bg-white w-full z-10 `}
       variants={menuVariants}
       initial="hidden"
       animate="visible"
       exit="hidden"
     >
       <span className="flex w-full justify-end">
-        <Button onClick={handleToggle} className="p-5">
-          &#x2717;
-        </Button>
+        <Button onClick={handleToggle}>&#x2717;</Button>
       </span>
       <ul>
         <li className="border-t">

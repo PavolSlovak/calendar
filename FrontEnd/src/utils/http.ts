@@ -26,7 +26,6 @@ export async function fetchTeams() {
   }
   const teams = await response.json();
   /* await new Promise((resolve) => setTimeout(resolve, 1000)); */
-
   return teams;
 }
 export async function createTeam(name: string, invitations: string[]) {

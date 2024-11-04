@@ -68,7 +68,7 @@ const Modal = forwardRef<ModalHandle, ModalProps>(
         {/* Backdrop */}
 
         <motion.div
-          className="fixed flex justify-center items-center w-full h-full bg-black bg-opacity-50 z-50 "
+          className="fixed flex justify-center items-center w-full h-full  bg-black bg-opacity-50 z-50 "
           onClick={handleBackdropClick}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -77,7 +77,7 @@ const Modal = forwardRef<ModalHandle, ModalProps>(
         >
           <motion.dialog
             ref={dialog}
-            className="flex flex-col items-center rounded-lg shadow-lg w-full max-w-xl h-full sm:h-1/2 overflow-y-auto "
+            className="flex flex-col items-center rounded-lg shadow-lg w-full max-w-xl h-full sm:h-2/3  overflow-y-auto "
             onClose={onClose}
             variants={modalVariants}
             initial="hidden"
@@ -103,13 +103,11 @@ const ModalHeader: FunctionComponent<TModalHeaderProps> = ({
   handleClose,
 }) => {
   return (
-    <div className="my-4">
-      <span
-        className="absolute right-2 top-2 cursor-pointer"
+    <div className="relative  flex justify-center w-full my-4  ">
+      <XIcon
+        className=" absolute h-6 w-6 right-3 top-0 cursor-pointer"
         onClick={handleClose}
-      >
-        <XIcon className="h-6 w-6" />
-      </span>
+      />
       <h1>{title}</h1>
     </div>
   );

@@ -38,23 +38,19 @@ function Root() {
   }, [location]);
 
   return (
-    <div id="page-container" className="flex flex-col min-h-[100vh] ">
+    <div id="page-container" className="flex flex-col min-h-screen">
       <Provider store={store}>
         <Header
           handleToggle={handleMobileMenu}
           openModal={openModal}
           path={currentPath}
         />
-        <AnimatePresence>
-          {openMobileMenu && (
-            <MenuColumn handleToggle={handleMobileMenu} path={currentPath} />
-          )}
-        </AnimatePresence>
+
         <AnimatePresence>
           {/*{isCreateTeamOpen && <CreateTeam onDone={closeModal} />} */}
           {isCreateTeamOpen && <NewTeamModal onDone={closeModal} />}
         </AnimatePresence>
-        <main className="flex grow justify-center min-h-[80vh]">
+        <main className="flex-grow">
           <Outlet />
         </main>
       </Provider>
