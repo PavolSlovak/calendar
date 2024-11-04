@@ -10,12 +10,12 @@ import { startOfToday } from "date-fns";
 type InitialState = {
   activeTeam: Team | null;
   activeMembers: UserCombined[];
-  selectedDay: Date;
+  selectedDay: string;
 };
 const initialState: InitialState = {
   activeTeam: null,
   activeMembers: [],
-  selectedDay: startOfToday(),
+  selectedDay: startOfToday().toISOString(),
 };
 export const calendarSlice = createSlice({
   name: "schedule",
@@ -29,7 +29,7 @@ export const calendarSlice = createSlice({
     setActiveMembers: (state, action: PayloadAction<UserCombined[]>) => {
       state.activeMembers = action.payload;
     },
-    setSelectedDay: (state, action: PayloadAction<Date>) => {
+    setSelectedDay: (state, action: PayloadAction<string>) => {
       state.selectedDay = action.payload;
     },
   },

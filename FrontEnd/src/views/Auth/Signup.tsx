@@ -37,7 +37,7 @@ function Signup() {
 
     // TODO : submit to server
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    /*   await new Promise((resolve) => setTimeout(resolve, 1000)); */
     console.log(data);
     reset();
   }

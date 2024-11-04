@@ -9,11 +9,11 @@ const initialState: InitialState = {
   teams: [],
 };
 type UpdateScheduleProps = {
-  teamId: string;
-  memberId: string;
-  day: string;
-  startTime: string;
-  endTime: string;
+  teamId: String;
+  memberId: String;
+  day: String;
+  startTime: String;
+  endTime: String;
 };
 export const teamSlice = createSlice({
   name: "teams",

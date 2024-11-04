@@ -5,23 +5,13 @@ import { Shift, shiftSchema } from "@shared/schemas";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState as ReduxRootState } from "../../store";
 import {
-  setDays,
-  setFrequency,
-  setMonthDays,
   DaysOfWeek,
   setIsEndDateSet,
-  setEndDate,
-  setStartTime,
-  setEndTime,
-  setIsSubmitting,
-  setServerError,
-  setUserAndTeam,
-  resetForm,
-  addShift,
+  shiftSlice,
 } from "../../store/shifts-slice";
 import InfoBox from "../UI/InfoBox";
 import { addRecurrentShift } from "../../utils/http";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 interface EditRecurrentShiftModalProps {
@@ -38,16 +28,38 @@ const EditRecurrentShiftModal = ({
   const daysOfWeek = Object.values(DaysOfWeek);
   const { shift, isSubmitting, serverError, selectedShift, isEndDateSet } =
     useSelector((state: ReduxRootState) => state.shifts);
+
+  const {
+    setDays,
+    setFrequency,
+    setMonthDays,
+    setUserAndTeam,
+    resetForm,
+    addShift,
+  } = shiftSlice.actions;
   const { frequency, monthDays, days, endDate } = shift.recurrence;
+
+  // Set up useForm with zod schema and resolver
+  const {
+    handleSubmit,
+    control,
+    setValue,
+    formState: { errors },
+    register,
+  } = useForm<Shift>({
+    resolver: zodResolver(shiftSchema),
+    defaultValues: shift,
+  });
 
   useEffect(() => {
     console.log("shift", shift);
+    console.log("isEndDateSet", isEndDateSet);
     dispatch(setUserAndTeam({ memberID, teamID }));
     dispatch(resetForm());
   }, []);
 
-  async function handleSubmit(data: Shift) {
-    try {
+  async function onSubmit(data: Shift) {
+    /*  try {
       dispatch(setIsSubmitting(true));
       dispatch(setServerError(null));
       // add a new shift to the state
@@ -60,23 +72,10 @@ const EditRecurrentShiftModal = ({
       dispatch(setIsSubmitting(false));
       setServerError(error?.message);
       return console.error(error);
-    }
+    } */
+    console.log(data);
   }
 
-  function handleMonthDayToggle(date: number) {
-    dispatch(
-      monthDays.includes(date)
-        ? setMonthDays(monthDays.filter((d) => d !== date))
-        : setMonthDays([...monthDays, date])
-    );
-  }
-  function handleDayToggle(day: DaysOfWeek) {
-    dispatch(
-      days.includes(day)
-        ? setDays(days.filter((d) => d !== day))
-        : setDays([...days, day])
-    );
-  }
   function handleFrequencyToggle(frequency: string) {
     dispatch(setMonthDays([])); // Clear monthDays
     dispatch(setDays([])); // Clear days
@@ -93,6 +92,7 @@ const EditRecurrentShiftModal = ({
     <>
       <Modal onClose={onDone}>
         <Modal.Header title="Edit Redurrent Shifts" handleClose={onDone} />
+
         {serverError && (
           <InfoBox mode="warning" severity="high">
             {serverError}
@@ -102,21 +102,32 @@ const EditRecurrentShiftModal = ({
           <Form
             onSubmit={(e) => {
               e.preventDefault();
-              handleSubmit(shift);
+              handleSubmit(onSubmit);
             }}
           >
             <Form.Group>
               {/* Frequency Selector */}
-              <Form.Select
-                label="Frequency"
-                id="frequency"
-                options={[
-                  { label: "Weekly", value: "weekly" },
-                  { label: "Monthly", value: "monthly" },
-                ]}
-                value={frequency}
-                onChange={(e) => handleFrequencyToggle(e.target.value)}
+              <Controller
+                name="recurrence.frequency"
+                control={control}
+                render={({ field }) => (
+                  <Form.Select
+                    label="Frequency"
+                    id="frequency"
+                    options={[
+                      { label: "Weekly", value: "weekly" },
+                      { label: "Monthly", value: "monthly" },
+                    ]}
+                    value={field.value}
+                    onChange={(e) => handleFrequencyToggle(e.target.value)}
+                  />
+                )}
               />
+              {errors.recurrence?.frequency && (
+                <InfoBox mode="warning" severity="medium">
+                  {errors.recurrence.frequency.message}
+                </InfoBox>
+              )}
 
               {/* Days Selection for Weekly */}
               {frequency === "weekly" && (
@@ -124,15 +135,32 @@ const EditRecurrentShiftModal = ({
                   <p>Select Days of the Week:</p>
                   <div className="flex gap-2">
                     {daysOfWeek.map((day) => (
-                      <Form.Input
-                        id={`day-${day}`}
-                        type="checkbox"
+                      <Controller
                         key={day}
-                        label={day}
-                        checked={days.includes(day)}
-                        onChange={() => handleDayToggle(day)}
+                        name="recurrence.days"
+                        control={control}
+                        render={({ field }) => (
+                          <Form.Input
+                            id={`day-${day}`}
+                            type="checkbox"
+                            key={day}
+                            label={day}
+                            checked={field.value.includes(day)}
+                            onChange={() => {
+                              const newDays = field.value.includes(day)
+                                ? field.value.filter((d) => d !== day)
+                                : [...field.value, day];
+                              field.onChange(newDays);
+                            }}
+                          />
+                        )}
                       />
                     ))}
+                    {errors.recurrence?.days && (
+                      <InfoBox mode="warning" severity="medium">
+                        {errors.recurrence.days.message}
+                      </InfoBox>
+                    )}
                   </div>
                 </div>
               )}
@@ -143,50 +171,75 @@ const EditRecurrentShiftModal = ({
                   <label>Select Days of the Month</label>
                   <div className="grid grid-cols-7 gap-2">
                     {Array.from({ length: 31 }, (_, i) => i + 1).map((date) => (
-                      <Form.Input
-                        id={`month-day-${date}`}
-                        type="checkbox"
-                        key={date}
-                        label={date.toString()}
-                        checked={monthDays.includes(date)}
-                        onChange={() => handleMonthDayToggle(date)}
+                      <Controller
+                        name="recurrence.monthDays"
+                        control={control}
+                        render={({ field }) => (
+                          <Form.Input
+                            id={`month-day-${date}`}
+                            type="checkbox"
+                            key={date}
+                            label={date.toString()}
+                            checked={field.value.includes(date)}
+                            onChange={() => {
+                              const newMonthDays = field.value.includes(date)
+                                ? field.value.filter((d) => d !== date)
+                                : [...field.value, date];
+                              field.onChange(newMonthDays);
+                            }}
+                          />
+                        )}
                       />
                     ))}
                   </div>
                 </div>
               )}
+              {errors.recurrence?.monthDays && (
+                <InfoBox mode="warning" severity="medium">
+                  {errors.recurrence.monthDays.message}
+                </InfoBox>
+              )}
 
               {/* Shift Timing */}
               <div className="space-y-2">
                 <p className="text-xl">Shift Timing</p>
-                {frequency === "weekly" && (
-                  <p>Day of the week {selectedShift}</p>
+                <p>When should shift start recurring?</p>
+                <Form.Input
+                  id={`start-time`}
+                  type="time"
+                  label="Start Time"
+                  {...register("startTime")}
+                />
+                {errors.startTime && (
+                  <InfoBox mode="warning" severity="medium">
+                    {errors.startTime.message}
+                  </InfoBox>
                 )}
-                {frequency === "monthly" && (
-                  <p>Day of the month {selectedShift}</p>
+                <Form.Input
+                  id={`end-time`}
+                  type="time"
+                  label="End Time"
+                  {...register("endTime")}
+                />
+                {errors.endTime && (
+                  <InfoBox mode="warning" severity="medium">
+                    {errors.endTime.message}
+                  </InfoBox>
                 )}
-
-                <div className="flex gap-4">
-                  <Form.Input
-                    id={`start-time`}
-                    type="time"
-                    label="Start Time"
-                    value={shift.startTime}
-                    onChange={(e) => dispatch(setStartTime(e.target.value))}
-                  />
-                  <Form.Input
-                    id={`end-time`}
-                    type="time"
-                    label="End Time"
-                    value={shift.endTime}
-                    onChange={(e) => dispatch(setEndTime(e.target.value))}
-                  />
-                </div>
               </div>
               <div className=" space-y-2">
                 <p>When should shift stop recurring? Set end date:</p>
-                <input
+                {/* <input
                   type="checkbox"
+                  onChange={() => {
+                    dispatch(setIsEndDateSet(!isEndDateSet));
+                  }}
+                /> */}
+                <Form.Input
+                  id="is-end-date-set"
+                  type="checkbox"
+                  className="flex-row"
+                  label="Set End Date"
                   onChange={() => {
                     dispatch(setIsEndDateSet(!isEndDateSet));
                   }}
@@ -196,11 +249,13 @@ const EditRecurrentShiftModal = ({
                     id="end-date"
                     type="date"
                     label="End Date"
-                    onChange={(e) => {
-                      dispatch(setEndDate(e.target.value));
-                    }}
-                    value={endDate || ""}
+                    {...register("recurrence.endDate")}
                   />
+                )}
+                {errors.recurrence?.endDate && (
+                  <InfoBox mode="warning" severity="medium">
+                    {errors.recurrence.endDate.message}
+                  </InfoBox>
                 )}
               </div>
 

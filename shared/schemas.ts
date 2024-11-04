@@ -96,7 +96,7 @@ const recurrenceSchema = z.object({
 const commentSchema = z.object({
   memberID: z.string(), // Change to z.string() as ObjectId is a string in TypeScript
   comment: z.string(),
-  date: z.date().default(() => new Date()),
+  date: z.string(),
 });
 
 // Define the member schema
@@ -113,7 +113,7 @@ export const shiftSchema = z.object({
   // For recurrent shifts, use the startTime and endTime from the recurrence schema
   startTime: z.string().default("08:00"),
   endTime: z.string().default("17:00"),
-  date: z.date().nullable(),
+  date: z.string().nullable(),
   recurrence: recurrenceSchema,
   status: z.enum(["pending", "approved", "rejected"]).default("pending"),
 });
@@ -129,8 +129,8 @@ const teamSchema = z.object({
 
   comments: z.array(z.string()).optional(), // Use string array for comment IDs
 
-  createdAt: z.date().default(() => new Date()),
-  updatedAt: z.date().default(() => new Date()),
+  createdAt: z.string().default(() => new Date().toISOString()),
+  updatedAt: z.string().default(() => new Date().toISOString()),
 });
 
 const notificationSchema = z.object({
@@ -140,7 +140,7 @@ const notificationSchema = z.object({
     title: z.string(),
     body: z.string(),
   }),
-  timestamp: z.date(),
+  timestamp: z.string(),
   status: z.enum(["unread", "read"]),
 });
 const invitationSchema = z.object({
@@ -148,7 +148,7 @@ const invitationSchema = z.object({
   invitedByUserId: z.string(),
   status: z.enum(["pending", "accepted", "rejected"]),
   teamId: z.string(),
-  timestamp: z.date(),
+  timestamp: z.string(),
 });
 export const createTeamSchema = z.object({
   teamName: z.string().nonempty(),

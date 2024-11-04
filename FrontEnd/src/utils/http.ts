@@ -25,7 +25,7 @@ export async function fetchTeams() {
     throw error;
   }
   const teams = await response.json();
-  await new Promise((resolve) => setTimeout(resolve, 4000));
+  /* await new Promise((resolve) => setTimeout(resolve, 1000)); */
 
   return teams;
 }

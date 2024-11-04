@@ -3,7 +3,7 @@ import "./user.js";
 import "./comment.js";
 
 const exceptionSchema = new mongoose.Schema({
-  date: Date,
+  date: String,
   newStartTime: String, // Optional: new start time for this date
   newEndTime: String, // Optional: new end time for this date
   skip: Boolean,
@@ -40,7 +40,7 @@ const shiftSchema = new mongoose.Schema({
   startTime: { type: String, required: true },
   endTime: { type: String, required: true },
   date: {
-    type: Date, // For single, non-recurring shifts
+    type: String, // For single, non-recurring shifts
     default: null,
   },
   recurrence: {

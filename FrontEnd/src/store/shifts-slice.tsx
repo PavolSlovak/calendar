@@ -27,7 +27,7 @@ const initialState: InitialState = {
     teamID: "",
     startTime: "08:00",
     endTime: "17:00",
-    date: new Date(),
+    date: new Date().toISOString(),
     status: "pending",
     recurrence: {
       frequency: "weekly",
@@ -69,10 +69,7 @@ export const shiftSlice = createSlice({
     setSelectedShift: (state, action) => {
       state.selectedShift = action.payload;
     },
-    setIsEndDateSet: (state, action) => {
-      state.shift.recurrence.endDate = new Date().toISOString().split("T")[0];
-      state.isEndDateSet = !state.isEndDateSet;
-    },
+
     setEndDate: (state, action) => {
       state.shift.recurrence.endDate = action.payload;
     },
@@ -100,6 +97,9 @@ export const shiftSlice = createSlice({
     addShift: (state, action) => {
       state.shifts = [...state.shifts, action.payload];
     },
+    setIsEndDateSet: (state, action) => {
+      state.isEndDateSet = action.payload;
+    },
   },
 });
 export const {
@@ -111,10 +111,10 @@ export const {
   setServerError,
   setSelectedShift,
   addShift,
-  setIsEndDateSet,
   setEndDate,
   setStartTime,
   setEndTime,
   setUserAndTeam,
   resetForm,
+  setIsEndDateSet,
 } = shiftSlice.actions;
