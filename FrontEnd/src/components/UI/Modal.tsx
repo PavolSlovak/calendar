@@ -65,7 +65,7 @@ const Modal = forwardRef<ModalHandle, ModalProps>(
 
     return createPortal(
       <>
-        {/* Backdrop */}2
+        {/* Backdrop */}
         <motion.div
           className="fixed flex justify-center items-center w-full h-full  bg-black bg-opacity-50 z-50 "
           onClick={handleBackdropClick}

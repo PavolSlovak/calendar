@@ -58,7 +58,7 @@ export default function Calendar2() {
   });
 
   useEffect(() => {
-    if (status === "success" && data) {
+    if (data) {
       dispatch(setTeams(data));
       dispatch(setActiveTeam(data[0]));
     }
@@ -75,44 +75,42 @@ export default function Calendar2() {
     );
   if (isError) shiftsSectionsContent = <ErrorBlock error={error} />;
 
-  if (data && status === "success") {
-    console.log("data", data);
-    shiftsSectionsContent = (
-      <div className="relative flex flex-col w-full">
-        <TeamPicker />
-        <AnimatePresence>
-          {isEditModalOpen && activeTeam && (
-            <EditRecurrentShiftModal
-              onDone={closeModal}
-              memberID={memberUIDToEdit}
-              teamID={activeTeam?._id}
+  shiftsSectionsContent = (
+    <div className="relative flex flex-col w-full">
+      <TeamPicker />
+      <AnimatePresence>
+        {isEditModalOpen && activeTeam && (
+          <EditRecurrentShiftModal
+            onDone={closeModal}
+            memberID={memberUIDToEdit}
+            teamID={activeTeam?._id}
+          />
+        )}
+      </AnimatePresence>
+      <CurrentShiftsOverview
+        onModalOpen={openModal}
+        onMemberSelect={setMemberUIDToEdit}
+      />
+      <div className="flex  items-center">
+        <button className="btn-submit" onClick={onHandleAddRecurrentShift}>
+          Add Recurrent shift
+        </button>
+      </div>
+      <div className="max-w-md px-4 mx-auto sm:px-7 md:max-w-4xl md:px-6">
+        <div className="md:grid md:grid-cols-2 md:divide-x md:divide-gray-200">
+          <div className="md:pr-14">
+            <CalendarHeader
+              firstDayCurrentMonth={firstDayCurrentMonth}
+              setCurrentMonth={setCurrentMonth}
             />
-          )}
-        </AnimatePresence>
-        <CurrentShiftsOverview
-          onModalOpen={openModal}
-          onMemberSelect={setMemberUIDToEdit}
-        />
-        <div className="flex  items-center">
-          <button className="btn-submit" onClick={onHandleAddRecurrentShift}>
-            Add Recurrent shift
-          </button>
-        </div>
-        <div className="max-w-md px-4 mx-auto sm:px-7 md:max-w-4xl md:px-6">
-          <div className="md:grid md:grid-cols-2 md:divide-x md:divide-gray-200">
-            <div className="md:pr-14">
-              <CalendarHeader
-                firstDayCurrentMonth={firstDayCurrentMonth}
-                setCurrentMonth={setCurrentMonth}
-              />
-              <CalendarBody firstDayCurrentMonth={firstDayCurrentMonth} />
-            </div>
-            <CommentList />
+            <CalendarBody firstDayCurrentMonth={firstDayCurrentMonth} />
           </div>
+          <CommentList />
         </div>
       </div>
-    );
-  }
+    </div>
+  );
+
   return (
     <div className="flex flex-col items-center ">{shiftsSectionsContent}</div>
   );
@@ -246,8 +244,6 @@ function CurrentShiftsOverview({
       console.log("membersData", membersData);
       dispatch(setActiveMembers(membersData));
     }
-    /* 
-    dispatch(setActiveMembers(membersWithColorStamp)); */
   }, [membersStatus, membersData, dispatch]);
 
   function handleEditRecurrence(uid: string) {
@@ -274,7 +270,6 @@ function CurrentShiftsOverview({
   if (membersData) {
     membersSectionContent = (
       <>
-        {console.log("activeMembers", activeMembers)}
         {activeMembers.length > 0 ? (
           <ul className="w-1/2">
             {activeMembers.map((m) => (
@@ -345,7 +340,7 @@ function TeamPicker() {
   };
 
   return (
-    <div className="relative flex-grow">
+    <div className="relative">
       <button
         onClick={() => setIsTeamsListOpen(!isTeamsListOpen)}
         className={`${
