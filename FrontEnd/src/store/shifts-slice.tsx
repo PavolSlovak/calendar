@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { Shift } from "@shared/schemas";
+import { Exception, Shift } from "@shared/schemas";
 
 export enum DaysOfWeek {
   sun = "sun",
@@ -18,6 +18,7 @@ type InitialState = {
   serverError: string | null;
   selectedShift: string | number | null;
   isEndDateSet: boolean;
+  exceptions: Exception[];
 };
 
 const initialState: InitialState = {
@@ -37,6 +38,7 @@ const initialState: InitialState = {
       exceptions: [],
     },
   },
+  exceptions: [],
 
   isSubmitting: false,
   serverError: null,
@@ -117,4 +119,5 @@ export const {
   setUserAndTeam,
   resetForm,
   setIsEndDateSet,
+  // Exceptions section
 } = shiftSlice.actions;

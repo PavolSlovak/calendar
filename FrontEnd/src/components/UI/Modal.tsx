@@ -65,8 +65,7 @@ const Modal = forwardRef<ModalHandle, ModalProps>(
 
     return createPortal(
       <>
-        {/* Backdrop */}
-
+        {/* Backdrop */}2
         <motion.div
           className="fixed flex justify-center items-center w-full h-full  bg-black bg-opacity-50 z-50 "
           onClick={handleBackdropClick}
@@ -77,7 +76,7 @@ const Modal = forwardRef<ModalHandle, ModalProps>(
         >
           <motion.dialog
             ref={dialog}
-            className="flex flex-col items-center rounded-lg shadow-lg w-full max-w-xl h-full sm:h-2/3  overflow-y-auto "
+            className="flex flex-col items-center rounded-lg shadow-lg w-full max-w-xl h-full sm:h-fit  overflow-y-auto "
             onClose={onClose}
             variants={modalVariants}
             initial="hidden"

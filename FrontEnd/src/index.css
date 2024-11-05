@@ -19,7 +19,7 @@
   }
 
   .btn-blue {
-    @apply flex items-center bg-blue-500  px-4 py-1 rounded-lg text-xs text-white hover:bg-blue-400;
+    @apply flex items-center bg-blue-500  px-4 py-1 rounded-lg text-xs text-white hover:bg-blue-400 w-fit;
   }
   .btn-delete {
     @apply bg-red-500 py-1 px-4 rounded  text-white hover:bg-red-400;

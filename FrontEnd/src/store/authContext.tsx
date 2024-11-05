@@ -17,6 +17,7 @@ import {
 import firebase from "firebase/compat/app";
 import { getMessagingDeviceToken } from "../firebase/messaging";
 import { addUser, sendNotif, updateUserFCM } from "../utils/http-firestore";
+import { th, tr } from "date-fns/locale";
 
 type AuthState = {
   currentUser: FirebaseAuthUser | null;
@@ -79,36 +80,68 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   async function signup(email: string, password: string, username: string) {
-    const userCredential = await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
-    const { user } = userCredential;
-    // Set the display name for the newly created user
-    await updateProfile(user, {
-      displayName: username,
-    });
-
-    const fcmToken = await getMessagingDeviceToken(user.uid);
-    if (fcmToken && username) {
-      // If sign-up is successful, save the FCM token along with the user's role to Firestore
-      try {
-        await addUser(fcmToken);
-      } catch (error) {
-        console.error("Error adding user to Firestore:", error);
-        throw new Error("Failed to save user information.");
-      }
-    } else {
-      throw new Error("FCM token not found");
-    }
-    // Trigger a notification to confirm that the device token is working.
     try {
-      await sendNotif(user.uid, "Success", "User signed up successfully");
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const { user } = userCredential;
+      // Set the display name for the newly created user
+      if (!user) throw new Error("User creation failed");
+      const fcmToken = await getMessagingDeviceToken(user.uid);
+      if (!fcmToken) throw new Error("Failed to retrieve FCM token");
+
+      await Promise.all([
+        handleAddUser(fcmToken),
+        updateUserDisplayName(username),
+        await handleSendNotif(
+          user.uid,
+          "Success",
+          "User signed up successfully"
+        ),
+      ]);
+      return userCredential;
     } catch (error) {
-      console.error("Error triggering notification:", error);
+      console.error("Error signing up:", error);
+      // Delete the Firebase user if the user creation fails
+      if (auth.currentUser) {
+        await auth.currentUser?.delete();
+      }
+      throw new Error("Signup failed, please try again.");
     }
-    return userCredential;
+  }
+  async function handleAddUser(fcmToken: string) {
+    try {
+      await addUser(fcmToken);
+      console.log("User added to Firestore");
+    } catch (error) {
+      console.error("Error adding user to Firestore:", error);
+      throw new Error("Failed to save user information.");
+    }
+  }
+  async function handleSendNotif(to: string, title: string, body: string) {
+    try {
+      await sendNotif(to, title, body);
+      console.log("Notification sent");
+    } catch (error) {
+      console.error("Error sending notification:", error);
+      throw new Error("Failed to send notification.");
+    }
+  }
+  async function updateUserDisplayName(displayName: string) {
+    try {
+      const user = auth.currentUser;
+      if (!user) return;
+      await updateProfile(user, {
+        displayName,
+      });
+      setCurrentUser((prev) => (prev ? { ...prev, displayName } : null)); // Update the user state since onAuthStateChanged only triggers when the user logs in or out
+      console.log("User display name updated: ", displayName);
+    } catch (error) {
+      console.error("Error updating user display name:", error);
+      throw new Error("Failed to update user display name.");
+    }
   }
 
   async function login(email: string, password: string) {

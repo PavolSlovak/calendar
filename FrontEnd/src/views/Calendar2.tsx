@@ -53,7 +53,7 @@ export default function Calendar2() {
     setIsEditModalOpen(false);
   }
   const { status, data, isPending, isError, error } = useQuery({
-    queryKey: ["teams", teams], // query key is an array with the query key and the query key object
+    queryKey: ["teams"], // query key is an array with the query key and the query key object
     queryFn: () => fetchTeams(),
   });
 
@@ -236,7 +236,7 @@ function CurrentShiftsOverview({
     isError: membersIsError,
     error: membersError,
   } = useQuery({
-    queryKey: ["activeTeamMembers", activeTeam],
+    queryKey: ["activeTeamMembers"],
     queryFn: () =>
       activeTeam?.members && activeTeam?.members.length > 0
         ? Promise.all(
@@ -379,6 +379,8 @@ function TeamPicker() {
       {isTeamsListOpen && (
         <div className="absolute left-0 z-10 w-full mt-2 bg-white border rounded-lg shadow-md">
           <ul className="py-1">
+            {teams.length === 0 && <p>No teams</p>}
+
             {teams.map((team) => (
               <li
                 key={team._id}

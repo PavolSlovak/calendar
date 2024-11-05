@@ -15,6 +15,7 @@ import { addRecurrentShift } from "../../utils/http";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import Button from "../UI/Button";
 
 interface EditRecurrentShiftModalProps {
   onDone: () => void;
@@ -63,6 +64,7 @@ const EditRecurrentShiftModal = ({
     control,
     formState: { errors },
     register,
+    reset,
   } = useForm<Shift>({
     resolver: zodResolver(shiftSchema),
     defaultValues: shift,
@@ -72,7 +74,7 @@ const EditRecurrentShiftModal = ({
     console.log("shift", shift);
     console.log("isEndDateSet", isEndDateSet);
     dispatch(setUserAndTeam({ memberID, teamID }));
-    dispatch(resetForm());
+    reset();
   }, []);
 
   async function handleSave(data: Shift) {
@@ -275,63 +277,45 @@ const EditRecurrentShiftModal = ({
               </div>
 
               {/* Exceptions */}
-              {/*       <div className="space-y-2">
-                <label>Exceptions</label>
-                <Button onClick={addException}>Add Exception</Button>
-                {exceptions.map((exception, index) => (
-                  <div key={index} className="flex gap-4 mt-2">
-                    <Form.Input
-                      id={`exception-date`}
-                      type="date"
-                      label="Date"
-                      value={format(new Date(exception.date), "yyyy-MM-dd")}
-                      {...register(`exceptions.${index}.date`)}
-                    />
-                    <Form.Input
-                      id={`exception-start-time`}
-                      type="time"
-                      label="Start Time"
-                      value={exception.newStartTime || startTime}
-                      {...register(`exceptions.${index}.newStartTime`)}
-                    />
-                    <Form.Input
-                      id={`exception-end-time`}
-                      type="time"
-                      label="End Time"
-                      value={exception.newEndTime || endTime}
-                      {...register(`exceptions.${index}.newEndTime`)}
-                    />
-                    <Form.Input
-                      id={`exception-skip`}
-                      label="Skip"
-                      type="checkbox"
-                      checked={exception.skip || false}
-                      {...register(`exceptions.${index}.skip`)}
-                    />
-                  </div>
-                ))}
-              </div> */}
-              <p>
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Est,
-                rem quisquam nisi aut et laborum provident facere, voluptatem
-                ipsum fugit rerum! Corporis, ipsa perspiciatis. Ea qui accusamus
-                dolores voluptatem quo? Ducimus, ad vel sunt magni id eum
-                distinctio cum itaque dicta minus porro quisquam quidem,
-                excepturi optio assumenda blanditiis, tenetur perferendis!
-                Quisquam sequi aspernatur neque laboriosam aperiam natus
-                laudantium veniam. Sunt alias unde accusantium reprehenderit
-                pariatur, hic veritatis laboriosam ab? Reprehenderit ea nihil,
-                doloribus, aspernatur facere error suscipit quo hic iure quidem
-                nam voluptatibus blanditiis, quisquam fugiat perspiciatis
-                tenetur. Mollitia? Nihil maiores voluptate magnam sequi laborum,
-                esse nisi corporis, expedita alias adipisci veritatis accusamus
-                soluta cumque sunt consectetur, officiis cupiditate suscipit.
-                Voluptate ipsum magnam maiores et necessitatibus nostrum
-                doloribus possimus! Dolor quae iusto voluptas quis qui incidunt,
-                culpa numquam ab impedit vitae officiis nisi distinctio in sit
-                non quo repellat est asperiores aperiam nemo officia magnam?
-                Explicabo dolor quibusdam quo?
-              </p>
+              {/*    <label>Exceptions</label>
+
+              <Form.Input
+                id="exception-is-set"
+                type="checkbox"
+                className="flex-row"
+                label="Set Exception"
+                onChange={() => {
+                  dispatch(setIsExceptionSet(!isExceptionSet));
+                }}
+              />
+              <Form.Input
+                id="exception-date"
+                type="date"
+                label="Date"
+                {...register("recurrence.exceptions.0.date")}
+              />
+              <Form.Input
+                id="exception-start-time"
+                type="time"
+                label="Start Time"
+                {...register("recurrence.exceptions.0.newStartTime")}
+              />
+              <Form.Input
+                id="exception-end-time"
+                type="time"
+                label="End Time"
+                {...register("recurrence.exceptions.0.newEndTime")}
+              />  
+              <Form.Input
+                id="exception-skip"
+                type="checkbox"
+                label="Skip"
+                {...register("recurrence.exceptions.0.skip")}
+              />
+              <Button onClick={addException}>Add Exception</Button>
+ */}
+
+              {/* <ShiftsTable shifts={shifts} /> */}
               <Form.Footer actionsClassName="flex  gap-2">
                 <button
                   type="submit"
