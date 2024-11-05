@@ -65,9 +65,7 @@ export const shiftSlice = createSlice({
     setIsSubmitting: (state, action) => {
       state.isSubmitting = action.payload;
     },
-    setServerError: (state, action) => {
-      state.serverError = action.payload;
-    },
+
     setSelectedShift: (state, action) => {
       state.selectedShift = action.payload;
     },
@@ -91,7 +89,6 @@ export const shiftSlice = createSlice({
       state.shift = initialState.shift;
       state.shifts = initialState.shifts;
       state.isSubmitting = initialState.isSubmitting;
-      state.serverError = initialState.serverError;
       state.selectedShift = initialState.selectedShift;
       state.isEndDateSet = initialState.isEndDateSet;
     },
@@ -110,7 +107,6 @@ export const {
   setExceptions,
   setFrequency,
   setIsSubmitting,
-  setServerError,
   setSelectedShift,
   addShift,
   setEndDate,

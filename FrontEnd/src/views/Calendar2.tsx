@@ -255,7 +255,7 @@ function CurrentShiftsOverview({
   let membersSectionContent;
 
   /* If is pending */
-  if (membersIsLoading)
+  if (membersIsLoading || !activeTeam)
     membersSectionContent = (
       <>
         <LoadingIndicator />

@@ -29,8 +29,9 @@ const EditRecurrentShiftModal = ({
 }: EditRecurrentShiftModalProps) => {
   const dispatch = useDispatch();
   const daysOfWeek = Object.values(DaysOfWeek);
-  const { shift, isSubmitting, serverError, selectedShift, isEndDateSet } =
-    useSelector((state: ReduxRootState) => state.shifts);
+  const { shift, isSubmitting, selectedShift, isEndDateSet } = useSelector(
+    (state: ReduxRootState) => state.shifts
+  );
 
   /*  const { data, isLoading, isError } = useMutation({
     mutationKey: ["addRecurrentShift"],
@@ -64,6 +65,7 @@ const EditRecurrentShiftModal = ({
     control,
     formState: { errors },
     register,
+    setError,
     reset,
   } = useForm<Shift>({
     resolver: zodResolver(shiftSchema),
@@ -79,18 +81,11 @@ const EditRecurrentShiftModal = ({
 
   async function handleSave(data: Shift) {
     try {
-      /* dispatch(setIsSubmitting(true));
-      dispatch(setServerError(null));
-      // add a new shift to the state
-      dispatch(addShift(data));
-      // send the data to the server
-      await addRecurrentShift(data);
-      dispatch(setIsSubmitting(false));
-      return onDone(); */
     } catch (error: any) {
-      /*  dispatch(setIsSubmitting(false));
-      setServerError(error?.message);
-      return console.error(error); */
+      setError("root", {
+        type: "manual",
+        message: error.message || "Server Error Occurred",
+      });
     }
     console.log(data);
   }
@@ -111,10 +106,9 @@ const EditRecurrentShiftModal = ({
     <>
       <Modal onClose={onDone}>
         <Modal.Header title="Edit Redurrent Shifts" handleClose={onDone} />
-
-        {serverError && (
-          <InfoBox mode="warning" severity="high">
-            {serverError}
+        {errors.root && (
+          <InfoBox mode="warning" severity="medium">
+            {errors.root.message}
           </InfoBox>
         )}
         <Modal.Body>

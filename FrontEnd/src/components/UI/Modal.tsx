@@ -76,7 +76,7 @@ const Modal = forwardRef<ModalHandle, ModalProps>(
         >
           <motion.dialog
             ref={dialog}
-            className="flex flex-col items-center rounded-lg shadow-lg w-full max-w-xl h-full sm:h-fit  overflow-y-auto "
+            className="flex flex-col items-center rounded-lg shadow-lg w-full max-w-xl max-h-screen sm:h-fit  overflow-y-auto "
             onClose={onClose}
             variants={modalVariants}
             initial="hidden"
