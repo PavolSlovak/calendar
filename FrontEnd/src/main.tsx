@@ -7,6 +7,8 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./utils/http.ts";
 
 import "./firebase/firebase.tsx";
+import { ErrorBoundary } from "react-error-boundary";
+import { ErrorPage } from "./views/ErrorPage.tsx";
 
 // Register service worker
 
@@ -22,11 +24,16 @@ if ("serviceWorker" in navigator) {
 }
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <QueryClientProvider client={queryClient}>
-    <Router>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
-    </Router>
-  </QueryClientProvider>
+  <ErrorBoundary
+    FallbackComponent={ErrorPage}
+    onError={() => console.log("An error occurred in the app")}
+  >
+    <QueryClientProvider client={queryClient}>
+      <Router>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </Router>
+    </QueryClientProvider>
+  </ErrorBoundary>
 );

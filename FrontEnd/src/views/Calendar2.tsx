@@ -12,14 +12,12 @@ import { CalendarHeader } from "../components/Calendar/CalendarHeader";
 import { CalendarBody, classNames } from "../components/Calendar/CalendarBody";
 import ErrorBlock from "../components/UI/ErrorBlock";
 import { Menu, Transition } from "@headlessui/react";
-import {
-  ArrowCircleRightIcon,
-  DotsVerticalIcon,
-} from "@heroicons/react/outline";
-import { fetchUserData, fetchUsersData } from "../utils/http-FS_users";
+import { DotsVerticalIcon } from "@heroicons/react/outline";
+import { fetchUsersData } from "../utils/http-FS_users";
 import { useAuth } from "../store/authContext";
 import { AnimatePresence, m } from "framer-motion";
 import EditRecurrentShiftModal from "../components/Calendar/EditRecurrentShiftModal";
+import { useErrorBoundary } from "react-error-boundary";
 
 export default function Calendar2() {
   let today = startOfToday();
@@ -73,7 +71,8 @@ export default function Calendar2() {
         <p>Loading shifts...</p>
       </>
     );
-  if (isError) shiftsSectionsContent = <ErrorBlock error={error} />;
+  const { showBoundary } = useErrorBoundary();
+  if (isError) shiftsSectionsContent = showBoundary(error);
 
   shiftsSectionsContent = (
     <div className="relative flex flex-col w-full">
@@ -220,6 +219,7 @@ function CurrentShiftsOverview({
     (state: ReduxRootState) => state.calendar
   );
   const { currentUser } = useAuth();
+  const { showBoundary } = useErrorBoundary();
   let selectedDayShifts: Shift[] =
     activeTeam?.shifts?.filter(
       (shift) => shift.date === selectedDay,
@@ -263,8 +263,7 @@ function CurrentShiftsOverview({
       </>
     );
   /* If there is an error */
-  if (membersIsError)
-    membersSectionContent = <ErrorBlock error={membersError} />;
+  if (membersIsError) showBoundary(membersError as Error);
 
   /* If data is fetched successfully:*/
   if (membersData) {

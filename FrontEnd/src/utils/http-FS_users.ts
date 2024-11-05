@@ -29,6 +29,7 @@ export async function fetchUserData(member: Member) {
 // Fetch Multiple Users Data
 export async function fetchUsersData(members: Member[] | undefined) {
   if (!members) return [];
+
   const userData = await Promise.all(members.map((m) => fetchUserData(m)));
 
   return userData;
