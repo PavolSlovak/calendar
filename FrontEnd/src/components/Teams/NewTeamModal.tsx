@@ -76,6 +76,7 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
       createTeam(data.teamName, invitedMembers),
     onSuccess: (data) => {
       console.log("Team created successfully", data);
+      queryClient.invalidateQueries({ queryKey: ["teams"] }); // Invalidate the teams query to refetch the data
       dispatch(addTeam(data));
       onDone();
     },

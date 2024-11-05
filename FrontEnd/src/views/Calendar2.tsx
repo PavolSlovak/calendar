@@ -16,9 +16,9 @@ import {
   ArrowCircleRightIcon,
   DotsVerticalIcon,
 } from "@heroicons/react/outline";
-import { fetchUserData } from "../utils/http-FS_users";
+import { fetchUserData, fetchUsersData } from "../utils/http-FS_users";
 import { useAuth } from "../store/authContext";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import EditRecurrentShiftModal from "../components/Calendar/EditRecurrentShiftModal";
 
 export default function Calendar2() {
@@ -52,9 +52,9 @@ export default function Calendar2() {
   function closeModal(): void {
     setIsEditModalOpen(false);
   }
-  const { status, data, isPending, isError, error } = useQuery({
+  const { status, data, isLoading, isError, error } = useQuery({
     queryKey: ["teams"], // query key is an array with the query key and the query key object
-    queryFn: () => fetchTeams(),
+    queryFn: async () => await fetchTeams(),
   });
 
   useEffect(() => {
@@ -62,11 +62,11 @@ export default function Calendar2() {
       dispatch(setTeams(data));
       dispatch(setActiveTeam(data[0]));
     }
-  }, [status, data]);
+  }, [status, data, dispatch]);
 
   let shiftsSectionsContent;
 
-  if (isPending)
+  if (isLoading)
     shiftsSectionsContent = (
       <>
         <LoadingIndicator />
@@ -232,44 +232,22 @@ function CurrentShiftsOverview({
   const {
     status: membersStatus,
     data: membersData,
-    isPending: membersIsPending,
+    isLoading: membersIsLoading,
     isError: membersIsError,
     error: membersError,
   } = useQuery({
-    queryKey: ["activeTeamMembers"],
-    queryFn: () =>
-      activeTeam?.members && activeTeam?.members.length > 0
-        ? Promise.all(
-            activeTeam?.members.map((member) =>
-              fetchUserData(member.firebaseID)
-            )
-          )
-        : [],
-  });
-  useEffect(() => {
-    console.log("Is pending", membersIsPending);
+    queryKey: ["activeTeamMembers", activeTeam?.members],
+    queryFn: async () => await fetchUsersData(activeTeam?.members),
+    enabled: !!activeTeam,
   });
   /* If team members are fetched successfully, update state in Redux  */
   useEffect(() => {
     if (membersStatus === "success" && membersData) {
-      const membersWithColorStamp = membersData.map((fsMember) => {
-        const colorStamp = activeTeam?.members.find(
-          (m) => m.firebaseID === fsMember.uid
-        )?.color;
-        return {
-          fcmToken: fsMember.fcmToken,
-          role: fsMember.role,
-          timeStamp: fsMember.timeStamp,
-
-          uid: fsMember.uid,
-          email: fsMember.email,
-          displayName: fsMember.username,
-          photoURL: fsMember.photoURL,
-          color: colorStamp || "",
-        };
-      });
-      dispatch(setActiveMembers(membersWithColorStamp));
+      console.log("membersData", membersData);
+      dispatch(setActiveMembers(membersData));
     }
+    /* 
+    dispatch(setActiveMembers(membersWithColorStamp)); */
   }, [membersStatus, membersData, dispatch]);
 
   function handleEditRecurrence(uid: string) {
@@ -281,7 +259,7 @@ function CurrentShiftsOverview({
   let membersSectionContent;
 
   /* If is pending */
-  if (membersIsPending)
+  if (membersIsLoading)
     membersSectionContent = (
       <>
         <LoadingIndicator />

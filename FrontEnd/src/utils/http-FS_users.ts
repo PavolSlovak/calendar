@@ -1,3 +1,4 @@
+import { Member } from "@shared/schemas";
 import { VITE_API_URL } from "./http";
 
 export const fetchUserByEmail = async (email: string) => {
@@ -18,12 +19,19 @@ export const fetchUserByEmail = async (email: string) => {
   return response.json();
 };
 
-export async function fetchUserData(uid: string) {
+export async function fetchUserData(member: Member) {
   const [authUserData, additionalUserData] = await Promise.all([
-    fetchUserByUID(uid),
-    fetchAdditionalUserData(uid),
+    fetchUserByUID(member.firebaseID),
+    fetchAdditionalUserData(member.firebaseID),
   ]);
-  return { ...authUserData, ...additionalUserData };
+  return { ...authUserData, ...additionalUserData, color: member.color };
+}
+// Fetch Multiple Users Data
+export async function fetchUsersData(members: Member[] | undefined) {
+  if (!members) return [];
+  const userData = await Promise.all(members.map((m) => fetchUserData(m)));
+
+  return userData;
 }
 export const fetchUserByUID = async (uid: string) => {
   const response = await fetch(VITE_API_URL + `users/get-user-by-uid/${uid}`, {
