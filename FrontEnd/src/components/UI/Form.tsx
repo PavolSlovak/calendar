@@ -43,10 +43,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     { label, id, className, labelClassName, inputClassname, ...inputProps },
     ref
   ) => {
+    const classLayout = className?.includes("flex-row")
+      ? "flex flex-row"
+      : "flex flex-col";
     return (
-      <div className={`flex flex-col py-2 w-full ${className}`}>
+      <div className={`${classLayout} py-2 w-full ${className}`}>
         {label && (
-          <label htmlFor={id} className={`pb-2 ${labelClassName}`}>
+          <label htmlFor={id} className={`pb-1 text-sm ${labelClassName}`}>
             {label}
           </label>
         )}
@@ -109,7 +112,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
     return (
       <div className={`flex flex-col py-2 w-full ${className}`}>
         {label && (
-          <label htmlFor={id} className={`pb-2 ${labelClassName}`}>
+          <label htmlFor={id} className={`pb-1 text-sm ${labelClassName}`}>
             {label}
           </label>
         )}

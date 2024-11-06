@@ -12,7 +12,7 @@ import {
 } from "../../store/shifts-slice";
 import InfoBox from "../UI/InfoBox";
 import { addRecurrentShift } from "../../utils/http";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Button from "../UI/Button";
@@ -101,6 +101,11 @@ const EditRecurrentShiftModal = ({
   useEffect(() => {
     console.log(isEndDateSet);
     console.log();
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "recurrence.exceptions",
   });
   return (
     <>
@@ -212,9 +217,9 @@ const EditRecurrentShiftModal = ({
               )}
 
               {/* Shift Timing */}
-              <div className="space-y-2">
-                <p className="text-xl">Shift Timing</p>
-                <p>When should shift start recurring?</p>
+              <p className="text-xl">Shift Timing</p>
+              <p>When should shift start recurring?</p>
+              <div className="flex gap-2">
                 <Form.Input
                   id={`start-time`}
                   type="time"
@@ -238,77 +243,51 @@ const EditRecurrentShiftModal = ({
                   </InfoBox>
                 )}
               </div>
-              <div className=" space-y-2">
-                <p>When should shift stop recurring? Set end date:</p>
-                {/* <input
-                  type="checkbox"
-                  onChange={() => {
-                    dispatch(setIsEndDateSet(!isEndDateSet));
-                  }}
-                /> */}
-                <Form.Input
-                  id="is-end-date-set"
-                  type="checkbox"
-                  className="flex-row"
-                  label="Set End Date"
-                  onChange={() => {
-                    dispatch(setIsEndDateSet(!isEndDateSet));
-                  }}
-                />
-                {isEndDateSet && (
-                  <Form.Input
-                    id="end-date"
-                    type="date"
-                    label="End Date"
-                    {...register("recurrence.endDate")}
-                  />
-                )}
-                {errors.recurrence?.endDate && (
-                  <InfoBox mode="warning" severity="medium">
-                    {errors.recurrence.endDate.message}
-                  </InfoBox>
-                )}
-              </div>
-
-              {/* Exceptions */}
-              {/*    <label>Exceptions</label>
-
               <Form.Input
-                id="exception-is-set"
+                id="is-end-date-set"
                 type="checkbox"
                 className="flex-row"
-                label="Set Exception"
+                labelClassName="pb-0 pr-2"
+                label="Set final date of recurrence"
+                defaultChecked={isEndDateSet}
                 onChange={() => {
-                  dispatch(setIsExceptionSet(!isExceptionSet));
+                  dispatch(setIsEndDateSet(!isEndDateSet));
                 }}
               />
-              <Form.Input
-                id="exception-date"
-                type="date"
-                label="Date"
-                {...register("recurrence.exceptions.0.date")}
-              />
-              <Form.Input
-                id="exception-start-time"
-                type="time"
-                label="Start Time"
-                {...register("recurrence.exceptions.0.newStartTime")}
-              />
-              <Form.Input
-                id="exception-end-time"
-                type="time"
-                label="End Time"
-                {...register("recurrence.exceptions.0.newEndTime")}
-              />  
-              <Form.Input
-                id="exception-skip"
-                type="checkbox"
-                label="Skip"
-                {...register("recurrence.exceptions.0.skip")}
-              />
-              <Button onClick={addException}>Add Exception</Button>
- */}
 
+              {isEndDateSet && (
+                <Form.Input
+                  id="end-date"
+                  type="date"
+                  label="End Date"
+                  {...register("recurrence.endDate")}
+                />
+              )}
+              {errors.recurrence?.endDate && (
+                <InfoBox mode="warning" severity="medium">
+                  {errors.recurrence.endDate.message}
+                </InfoBox>
+              )}
+
+              {/* Exceptions */}
+              {fields.map((field, index) => (
+                <div key={field.id} className="flex flex-col gap-2">
+                  <Form.Input
+                    id={`exception-date-${index}`}
+                    type="date"
+                    label="Exception Date"
+                    {...register(
+                      `recurrence.exceptions.${index}.date` as const
+                    )}
+                  />
+                  {index > 0 && (
+                    <Button onClick={() => remove(index)}>Remove</Button>
+                  )}
+                </div>
+              ))}
+              <Button onClick={() => append({ date: "", skip: false })}>
+                Add Exception
+              </Button>
               {/* <ShiftsTable shifts={shifts} /> */}
               <Form.Footer actionsClassName="flex  gap-2">
                 <button

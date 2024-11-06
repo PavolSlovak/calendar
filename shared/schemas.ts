@@ -74,7 +74,7 @@ const combinedSchema = z.object({
 
 // Define the exception schema
 const exceptionSchema = z.object({
-  date: z.date(),
+  date: z.string(),
   newStartTime: z.string().optional(),
   newEndTime: z.string().optional(),
   skip: z.boolean().optional(),
