@@ -18,6 +18,7 @@ import { useAuth } from "../store/authContext";
 import { AnimatePresence, m } from "framer-motion";
 import EditRecurrentShiftModal from "../components/Calendar/EditRecurrentShiftModal";
 import { useErrorBoundary } from "react-error-boundary";
+import InfoBox from "../components/UI/InfoBox";
 
 export default function Calendar2() {
   let today = startOfToday();
@@ -35,6 +36,8 @@ export default function Calendar2() {
   const teams: Team[] = useSelector(
     (state: ReduxRootState) => state.teams.teams
   );
+  const { showBoundary } = useErrorBoundary();
+
   const { setSelectedDay } = calendarSlice.actions;
   const { setActiveTeam } = calendarSlice.actions;
   const dispatch = useDispatch();
@@ -58,24 +61,31 @@ export default function Calendar2() {
   useEffect(() => {
     if (data) {
       dispatch(setTeams(data));
-      dispatch(setActiveTeam(data[0]));
+      data.length > 0
+        ? dispatch(setActiveTeam(data[0]))
+        : dispatch(setActiveTeam(null));
+      console.log("data", data);
     }
   }, [status, data, dispatch]);
 
-  let shiftsSectionsContent;
-
   if (isLoading)
-    shiftsSectionsContent = (
-      <>
+    return (
+      <div>
         <LoadingIndicator />
-        <p>Loading shifts...</p>
-      </>
+        <p>Loading teams...</p>
+      </div>
     );
-  const { showBoundary } = useErrorBoundary();
-  if (isError) shiftsSectionsContent = showBoundary(error);
+  if (isError) return showBoundary(error);
 
-  shiftsSectionsContent = (
-    <div className="relative flex flex-col w-full">
+  if (teams.length === 0) {
+    return (
+      <InfoBox mode="hint" severity="low">
+        No teams found. Please create a team first.
+      </InfoBox>
+    );
+  }
+  return (
+    <div className="relative flex flex-col w-full items-center">
       <TeamPicker />
       <AnimatePresence>
         {isEditModalOpen && activeTeam && (
@@ -90,11 +100,7 @@ export default function Calendar2() {
         onModalOpen={openModal}
         onMemberSelect={setMemberUIDToEdit}
       />
-      <div className="flex  items-center">
-        <button className="btn-submit" onClick={onHandleAddRecurrentShift}>
-          Add Recurrent shift
-        </button>
-      </div>
+
       <div className="max-w-md px-4 mx-auto sm:px-7 md:max-w-4xl md:px-6">
         <div className="md:grid md:grid-cols-2 md:divide-x md:divide-gray-200">
           <div className="md:pr-14">
@@ -108,10 +114,6 @@ export default function Calendar2() {
         </div>
       </div>
     </div>
-  );
-
-  return (
-    <div className="flex flex-col items-center ">{shiftsSectionsContent}</div>
   );
 }
 
@@ -234,7 +236,7 @@ function CurrentShiftsOverview({
     isError: membersIsError,
     error: membersError,
   } = useQuery({
-    queryKey: ["activeTeamMembers", activeTeam?.members],
+    queryKey: ["activeTeamMembers", activeTeam, activeTeam?.members],
     queryFn: async () => await fetchUsersData(activeTeam?.members),
     enabled: !!activeTeam,
   });
@@ -251,24 +253,23 @@ function CurrentShiftsOverview({
     onModalOpen();
   }
 
-  /* Set content */
-  let membersSectionContent;
-
   /* If is pending */
-  if (membersIsLoading || !activeTeam)
-    membersSectionContent = (
-      <>
+  if (membersIsLoading) {
+    return (
+      <div>
         <LoadingIndicator />
         <p>Loading members...</p>
-      </>
+      </div>
     );
+  }
+
   /* If there is an error */
   if (membersIsError) showBoundary(membersError as Error);
 
   /* If data is fetched successfully:*/
   if (membersData) {
-    membersSectionContent = (
-      <>
+    return (
+      <div className="flex flex-col items-center w-full">
         {activeMembers.length > 0 ? (
           <ul className="w-1/2">
             {activeMembers.map((m) => (
@@ -286,7 +287,7 @@ function CurrentShiftsOverview({
                     className="btn-submit"
                     onClick={() => handleEditRecurrence(m.uid)}
                   >
-                    Edit Recurrence
+                    Edit
                   </button>
                 )}
               </li>
@@ -315,16 +316,9 @@ function CurrentShiftsOverview({
             ))}
           </ol>
         )}
-      </>
+      </div>
     );
   }
-  return (
-    <div className="flex flex-col items-center">
-      <h1>{activeTeam?.teamName}</h1>
-      <h2>Team Members</h2>
-      {membersSectionContent}
-    </div>
-  );
 }
 function TeamPicker() {
   /* Redux variables and function */
@@ -339,17 +333,17 @@ function TeamPicker() {
   };
 
   return (
-    <div className="relative">
+    <div className="relative flex flex-col w-full ">
       <button
         onClick={() => setIsTeamsListOpen(!isTeamsListOpen)}
-        className={`${
+        className={` absolute left-0 ${
           isTeamsListOpen ? "bg-gray-200" : "bg-white"
         } p-2 border rounded-lg shadow-md focus:outline-none`}
       >
         Select Team
       </button>
       {isTeamsListOpen && (
-        <div className="absolute left-0 z-10 w-full mt-2 bg-white border rounded-lg shadow-md">
+        <div className="absolute top-10 left-0 z-10 w-full mt-2 bg-white border rounded-lg shadow-md">
           <ul className="py-1">
             {teams.length === 0 && <p>No teams</p>}
 

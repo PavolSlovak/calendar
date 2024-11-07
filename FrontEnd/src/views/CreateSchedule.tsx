@@ -15,6 +15,8 @@ export default function CreateSchedule() {
   useEffect(() => {
     if (teams.length > 0) {
       dispatch(setActiveTeam(teams[0]));
+    } else {
+      dispatch(setActiveTeam(null));
     }
   }, [teams]);
 

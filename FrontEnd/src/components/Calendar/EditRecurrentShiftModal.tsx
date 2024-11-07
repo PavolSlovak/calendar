@@ -125,6 +125,7 @@ const EditRecurrentShiftModal = ({
                 control={control}
                 render={({ field }) => (
                   <Form.Select
+                    key={field.name}
                     label="Frequency"
                     id="frequency"
                     options={[
@@ -281,13 +282,21 @@ const EditRecurrentShiftModal = ({
                     )}
                   />
                   {index > 0 && (
-                    <Button onClick={() => remove(index)}>Remove</Button>
+                    <button
+                      className="btn-submit"
+                      onClick={() => remove(index)}
+                    >
+                      Remove
+                    </button>
                   )}
                 </div>
               ))}
-              <Button onClick={() => append({ date: "", skip: false })}>
+              <button
+                className="btn-submit"
+                onClick={() => append({ date: "", skip: true })}
+              >
                 Add Exception
-              </Button>
+              </button>
               {/* <ShiftsTable shifts={shifts} /> */}
               <Form.Footer actionsClassName="flex  gap-2">
                 <button

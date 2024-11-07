@@ -1,10 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import {
-  FirebaseAuthUser,
-  Team,
-  UserAdditionalData,
-  UserCombined,
-} from "@shared/schemas";
+import { Team, UserCombined } from "@shared/schemas";
 import { startOfToday } from "date-fns";
 
 type InitialState = {
@@ -21,7 +16,7 @@ export const calendarSlice = createSlice({
   name: "schedule",
   initialState,
   reducers: {
-    setActiveTeam: (state, action: PayloadAction<Team>) => {
+    setActiveTeam: (state, action: PayloadAction<Team | null>) => {
       state.activeTeam = action.payload;
 
       console.log("activeTeam", state.activeTeam);
