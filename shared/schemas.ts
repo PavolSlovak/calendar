@@ -87,7 +87,6 @@ const recurrenceSchema = z.object({
     .array(z.enum(["sun", "mon", "tue", "wed", "thu", "fri", "sat"]))
     .default([]),
   monthDays: z.array(z.number()).default([]),
-
   endDate: z.string().nullable(),
   exceptions: z.array(exceptionSchema).default([]),
 });

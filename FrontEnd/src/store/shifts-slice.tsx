@@ -14,11 +14,8 @@ export enum DaysOfWeek {
 type InitialState = {
   shifts: Shift[];
   shift: Shift;
-  isSubmitting: boolean;
-  serverError: string | null;
-  selectedShift: string | number | null;
   isEndDateSet: boolean;
-  exceptions: Exception[];
+  isExceptionSet: boolean;
 };
 
 const initialState: InitialState = {
@@ -38,60 +35,20 @@ const initialState: InitialState = {
       exceptions: [],
     },
   },
-  exceptions: [],
 
-  isSubmitting: false,
-  serverError: null,
-  selectedShift: null,
   isEndDateSet: false,
+  isExceptionSet: false,
 };
 
 export const shiftSlice = createSlice({
   name: "shifts",
   initialState,
   reducers: {
-    setMonthDays: (state, action) => {
-      state.shift.recurrence.monthDays = action.payload;
-    },
-    setDays: (state, action) => {
-      state.shift.recurrence.days = action.payload;
-    },
-    setExceptions: (state, action) => {
-      state.shift.recurrence.exceptions = action.payload;
-    },
-    setFrequency: (state, action) => {
-      state.shift.recurrence.frequency = action.payload;
-    },
-    setIsSubmitting: (state, action) => {
-      state.isSubmitting = action.payload;
-    },
-
-    setSelectedShift: (state, action) => {
-      state.selectedShift = action.payload;
-    },
-
-    setEndDate: (state, action) => {
-      state.shift.recurrence.endDate = action.payload;
-    },
-    setStartTime: (state, action) => {
-      console.log("Start Time:", action.payload);
-      state.shift.startTime = action.payload;
-    },
-    setEndTime: (state, action) => {
-      console.log("End Time:", action.payload);
-      state.shift.endTime = action.payload;
-    },
     setUserAndTeam: (state, action) => {
       state.shift.memberID = action.payload.memberID;
       state.shift.teamID = action.payload.teamID;
     },
-    resetForm: (state) => {
-      state.shift = initialState.shift;
-      state.shifts = initialState.shifts;
-      state.isSubmitting = initialState.isSubmitting;
-      state.selectedShift = initialState.selectedShift;
-      state.isEndDateSet = initialState.isEndDateSet;
-    },
+
     // Add a new reducer to add a shift to the state
     addShift: (state, action) => {
       state.shifts = [...state.shifts, action.payload];
@@ -99,21 +56,15 @@ export const shiftSlice = createSlice({
     setIsEndDateSet: (state, action) => {
       state.isEndDateSet = action.payload;
     },
+    setIsExceptionSet: (state, action) => {
+      state.isExceptionSet = action.payload;
+    },
   },
 });
 export const {
-  setMonthDays,
-  setDays,
-  setExceptions,
-  setFrequency,
-  setIsSubmitting,
-  setSelectedShift,
   addShift,
-  setEndDate,
-  setStartTime,
-  setEndTime,
   setUserAndTeam,
-  resetForm,
   setIsEndDateSet,
+  setIsExceptionSet,
   // Exceptions section
 } = shiftSlice.actions;

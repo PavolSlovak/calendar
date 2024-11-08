@@ -4,17 +4,12 @@ import Modal from "../UI/Modal";
 import { Shift, shiftSchema } from "@shared/schemas";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState as ReduxRootState } from "../../store";
-import {
-  DaysOfWeek,
-  setIsEndDateSet,
-  shiftSlice,
-} from "../../store/shifts-slice";
+import { DaysOfWeek, shiftSlice } from "../../store/shifts-slice";
 import InfoBox from "../UI/InfoBox";
 import { addRecurrentShift, queryClient } from "../../utils/http";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import Button from "../UI/Button";
 
 interface EditRecurrentShiftModalProps {
   onDone: () => void;
@@ -28,7 +23,7 @@ const EditRecurrentShiftModal = ({
 }: EditRecurrentShiftModalProps) => {
   const dispatch = useDispatch();
   const daysOfWeek = Object.values(DaysOfWeek);
-  const { shift, isSubmitting, selectedShift, isEndDateSet } = useSelector(
+  const { shift, isEndDateSet, isExceptionSet } = useSelector(
     (state: ReduxRootState) => state.shifts
   );
   console.log("team id", teamID);
@@ -50,15 +45,8 @@ const EditRecurrentShiftModal = ({
     },
   });
 
-  const {
-    setDays,
-    setFrequency,
-    setMonthDays,
-    setUserAndTeam,
-    resetForm,
-    addShift,
-  } = shiftSlice.actions;
-  const { frequency, monthDays, days, endDate } = shift.recurrence;
+  const { setIsEndDateSet, setIsExceptionSet } = shiftSlice.actions;
+  const { frequency } = shift.recurrence;
 
   // Set up useForm with zod schema and resolver
   const {
@@ -72,12 +60,6 @@ const EditRecurrentShiftModal = ({
     resolver: zodResolver(shiftSchema),
     defaultValues: shift,
   });
-
-  useEffect(() => {
-    console.log("shift", shift);
-    dispatch(setUserAndTeam({ memberID, teamID }));
-    reset();
-  }, []);
 
   async function handleSave(data: Shift) {
     try {
@@ -96,22 +78,18 @@ const EditRecurrentShiftModal = ({
     console.log(data);
   }
 
-  function handleFrequencyToggle(frequency: string) {
+  /*   function handleFrequencyToggle(frequency: string) {
     dispatch(setMonthDays([])); // Clear monthDays
     dispatch(setDays([])); // Clear days
     dispatch(setFrequency(frequency));
-  }
-  useEffect(() => {
-    console.log(selectedShift);
-  }, [selectedShift]);
-  useEffect(() => {
-    console.log(isEndDateSet);
-    console.log();
-  });
+  } */
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: "recurrence.exceptions",
+  });
+  useEffect(() => {
+    console.log("isExceptionSet", isExceptionSet);
   });
   return (
     <>
@@ -141,7 +119,7 @@ const EditRecurrentShiftModal = ({
                     value={field.value}
                     onChange={(e: ChangeEvent<HTMLSelectElement>) => {
                       field.onChange(e.target.value);
-                      handleFrequencyToggle(e.target.value);
+                      /* handleFrequencyToggle(e.target.value); */
                     }}
                   />
                 )}
@@ -275,10 +253,40 @@ const EditRecurrentShiftModal = ({
                   {errors.recurrence.endDate.message}
                 </InfoBox>
               )}
-
               {/* Exceptions */}
+
               {fields.map((field, index) => (
-                <div key={field.id} className="flex flex-col gap-2">
+                <div
+                  key={field.id}
+                  className="flex flex-col gap-2 border border-slate-300 p-2 rounded-md"
+                >
+                  <Form.Input
+                    id={`exception-date-${index}`}
+                    type="date"
+                    label="Exception Date"
+                    {...register(
+                      `recurrence.exceptions.${index}.date` as const
+                    )}
+                  />
+                  {
+                    <button
+                      className="btn-submit"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        remove(index);
+                      }}
+                    >
+                      Remove
+                    </button>
+                  }
+                </div>
+              ))}
+
+              {/* {fields.map((field, index) => (
+                <div
+                  key={field.id}
+                  className="flex flex-col gap-2 border border-slate-300 p-2 rounded-md"
+                >
                   <Form.Input
                     id={`exception-date-${index}`}
                     type="date"
@@ -299,7 +307,7 @@ const EditRecurrentShiftModal = ({
                     </button>
                   )}
                 </div>
-              ))}
+              ))} */}
               <button
                 className="btn-submit"
                 onClick={(e) => {
