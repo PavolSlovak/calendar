@@ -1,6 +1,7 @@
 import { Team } from "../models/team.js";
 import { Request, Response } from "express";
 import { DecodedIdToken } from "firebase-admin/auth";
+import { Shift } from "../models/shift.js";
 
 type CRequest = Request & DecodedIdToken;
 
@@ -44,6 +45,36 @@ export const createTeamMongoDB = async (req: CRequest, res: Response) => {
     console.error("Error creating team:", error);
     res.status(500).send("Error creating team");
   }
+};
+export const createShiftMongoDB = async (req: CRequest, res: Response) => {
+  const { memberID, teamID, startTime, endTime, date, recurrence } = req.body;
+  console.log("Received shift body:", req.body);
+  // save the shift to the MongoDB
+  const shift = new Shift({
+    memberID,
+    teamID,
+    startTime,
+    endTime,
+    date,
+    recurrence,
+  });
+  await shift.save();
+  console.log("Shift created successfully:", shift);
+
+  // find the team by the teamId
+  console.log("teamId", teamID);
+  const team = await Team.findById(teamID);
+  if (!team) {
+    console.error("Team not found");
+    res.status(404).send("Team not found");
+    return;
+  }
+  // add shift id to the team shifts
+  team.shifts.push(shift._id);
+  await team.save();
+
+  console.log("Shift created successfully:", shift);
+  res.status(201).send(shift);
 };
 
 export const fetchTeamMongoDB = async (req: CRequest, res: Response) => {

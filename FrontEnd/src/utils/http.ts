@@ -1,3 +1,4 @@
+import { Shift } from "@shared/schemas";
 import { QueryClient } from "@tanstack/react-query";
 export const queryClient = new QueryClient();
 
@@ -52,10 +53,10 @@ export async function createTeam(name: string, invitations: string[]) {
 
   return response.json();
 }
-export async function addRecurrentShift(data: any) {
+export async function addRecurrentShift(data: Shift) {
   console.log("data", data);
-  /*   const token = localStorage.getItem("token");
-  const response = await fetch(VITE_API_URL + "teams/shift-edit", {
+  const token = localStorage.getItem("token");
+  const response = await fetch(VITE_API_URL + "teams/create-shift", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -71,5 +72,5 @@ export async function addRecurrentShift(data: any) {
     throw error;
   }
   console.log(`Shifts edited successfully: ${data}`);
-  return response.json(); */
+  return response.json();
 }

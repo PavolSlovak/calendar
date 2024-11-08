@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import "./user.js";
 import "./comment.js";
 
 const exceptionSchema = new mongoose.Schema({
@@ -32,11 +31,8 @@ const recurrenceSchema = new mongoose.Schema({
 });
 
 const shiftSchema = new mongoose.Schema({
-  memberID: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
+  memberID: { type: String, required: true },
+  teamID: { type: String, required: true },
   startTime: { type: String, required: true },
   endTime: { type: String, required: true },
   date: {
@@ -53,11 +49,5 @@ const shiftSchema = new mongoose.Schema({
     enum: ["pending", "approved", "rejected"],
     default: "pending",
   },
-  comments: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Comment",
-    },
-  ],
 });
 export const Shift = mongoose.model("Shift", shiftSchema);

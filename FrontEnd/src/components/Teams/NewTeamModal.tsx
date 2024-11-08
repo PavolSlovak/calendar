@@ -37,25 +37,20 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
       mutationKey: ["inviteMember"],
       mutationFn: (email: string) => fetchUserByEmail(email),
       onSuccess: (data) => {
-        if (data) {
-          if (invitedMembers.includes(data.email)) {
-            setError("inviteMember", {
-              type: "manual",
-              message: "User already invited",
-            });
-
-            return;
-          }
-          if (currentUser?.email === data.email) {
-            setError("inviteMember", {
-              type: "manual",
-              message: "You can't invite yourself",
-            });
-            return;
-          }
-          setInvitedMembers((prev) => [...prev, data.email]);
-          console.log(data);
+        if (invitedMembers.includes(data.email)) {
+          return setError("inviteMember", {
+            type: "manual",
+            message: "User already invited",
+          });
         }
+        if (currentUser?.email === data.email) {
+          return setError("inviteMember", {
+            type: "manual",
+            message: "You can't invite yourself",
+          });
+        }
+        setInvitedMembers((prev) => [...prev, data.email]);
+        console.log(data);
       },
       onError: (error) => {
         setError("inviteMember", {

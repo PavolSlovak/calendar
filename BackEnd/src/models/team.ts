@@ -13,6 +13,12 @@ const teamSchema = new mongoose.Schema({
   invitations: [{ type: String }],
   createdBy: { type: String, required: true },
   shifts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Shift" }],
+  comments: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Comment",
+    },
+  ],
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });

@@ -1,6 +1,6 @@
 import { Shift, Team } from "@shared/schemas";
 import { format, parse, parseISO, startOfToday } from "date-fns";
-import { Fragment, useEffect, useState } from "react";
+import { act, Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState as ReduxRootState } from "../store";
 import { calendarSlice, setActiveMembers } from "../store/calendar-slice";
@@ -271,28 +271,32 @@ function CurrentShiftsOverview({
     return (
       <div className="flex flex-col items-center w-full">
         {activeMembers.length > 0 ? (
-          <ul className="w-1/2">
-            {activeMembers.map((m) => (
-              <li
-                key={m.uid}
-                className="flex items-center justify-between text-sm w-full "
-              >
-                <span
-                  style={{ backgroundColor: m.color }}
-                  className={`w-3 h-3 rounded-full`}
-                />
-                <p>{m.displayName}</p>
-                {currentUser?.uid === activeTeam?.createdBy && (
-                  <button
-                    className="btn-submit"
-                    onClick={() => handleEditRecurrence(m.uid)}
-                  >
-                    Edit
-                  </button>
-                )}
-              </li>
-            ))}
-          </ul>
+          <>
+            <h1>{activeTeam?.teamName}</h1>
+            <h2 className="font-semibold text-gray-900">Team Members</h2>
+            <ul className="w-1/2">
+              {activeMembers.map((m) => (
+                <li
+                  key={m.uid}
+                  className="flex items-center justify-between text-sm w-full "
+                >
+                  <span
+                    style={{ backgroundColor: m.color }}
+                    className={`w-3 h-3 rounded-full`}
+                  />
+                  <p>{m.displayName}</p>
+                  {currentUser?.uid === activeTeam?.createdBy && (
+                    <button
+                      className="btn-submit"
+                      onClick={() => handleEditRecurrence(m.uid)}
+                    >
+                      Edit
+                    </button>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </>
         ) : (
           <p>No team members</p>
         )}

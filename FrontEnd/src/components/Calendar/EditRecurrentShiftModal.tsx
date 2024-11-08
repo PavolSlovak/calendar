@@ -7,14 +7,13 @@ import { RootState as ReduxRootState } from "../../store";
 import {
   DaysOfWeek,
   setIsEndDateSet,
-  setIsSubmitting,
   shiftSlice,
 } from "../../store/shifts-slice";
 import InfoBox from "../UI/InfoBox";
-import { addRecurrentShift } from "../../utils/http";
+import { addRecurrentShift, queryClient } from "../../utils/http";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import Button from "../UI/Button";
 
 interface EditRecurrentShiftModalProps {
@@ -32,22 +31,24 @@ const EditRecurrentShiftModal = ({
   const { shift, isSubmitting, selectedShift, isEndDateSet } = useSelector(
     (state: ReduxRootState) => state.shifts
   );
-
-  /*  const { data, isLoading, isError } = useMutation({
+  console.log("team id", teamID);
+  const { mutate, isPending } = useMutation({
     mutationKey: ["addRecurrentShift"],
     mutationFn: (data: Shift) => addRecurrentShift(data),
-    onMutate: () => {
-      dispatch(setIsSubmitting(true));
-    },
     onSuccess: () => {
-      dispatch(setIsSubmitting(false));
+      queryClient.invalidateQueries({
+        queryKey: ["shifts", teamID, memberID],
+      });
       onDone();
     },
-    onError: (error: any) => {
-      dispatch(setIsSubmitting(false));
-      dispatch(setServerError(error?.message));
+    onError: (error) => {
+      console.log(error);
+      setError("root", {
+        type: "manual",
+        message: error.message || "Server Error Occurred",
+      });
     },
-  }); */
+  });
 
   const {
     setDays,
@@ -74,13 +75,18 @@ const EditRecurrentShiftModal = ({
 
   useEffect(() => {
     console.log("shift", shift);
-    console.log("isEndDateSet", isEndDateSet);
     dispatch(setUserAndTeam({ memberID, teamID }));
     reset();
   }, []);
 
   async function handleSave(data: Shift) {
     try {
+      await mutate({
+        ...data,
+        memberID,
+        teamID,
+      });
+      console.log("Submitted", data);
     } catch (error: any) {
       setError("root", {
         type: "manual",
@@ -284,7 +290,10 @@ const EditRecurrentShiftModal = ({
                   {index > 0 && (
                     <button
                       className="btn-submit"
-                      onClick={() => remove(index)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        remove(index);
+                      }}
                     >
                       Remove
                     </button>
@@ -293,7 +302,10 @@ const EditRecurrentShiftModal = ({
               ))}
               <button
                 className="btn-submit"
-                onClick={() => append({ date: "", skip: true })}
+                onClick={(e) => {
+                  e.preventDefault();
+                  append({ date: "", skip: true });
+                }}
               >
                 Add Exception
               </button>
@@ -302,7 +314,7 @@ const EditRecurrentShiftModal = ({
                 <button
                   type="submit"
                   className="btn-submit"
-                  disabled={isSubmitting}
+                  disabled={isPending}
                 >
                   Save
                 </button>
