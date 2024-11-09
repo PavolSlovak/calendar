@@ -34,34 +34,25 @@ export default function Calendar2() {
     (state: ReduxRootState) => state.teams
   );
 
-  const { selectedDay, activeTeam } = useSelector(
+  /*   const { selectedDay, activeTeam } = useSelector(
     (state: ReduxRootState) => state.calendar
-  );
+  ); */
 
   const { showBoundary } = useErrorBoundary();
 
   const { setSelectedDay } = calendarSlice.actions;
   const { setActiveTeam } = calendarSlice.actions;
+  const { activeTeam } = useSelector((state: ReduxRootState) => state.calendar);
+
   const dispatch = useDispatch();
 
-  function onHandleAddRecurrentShift() {
-    console.log("onHandleAddRecurrentShift");
-  }
-
-  function openModal(): void {
-    setIsEditModalOpen(!isEditModalOpen);
-  }
-
-  function closeModal(): void {
-    setIsEditModalOpen(false);
-  }
   const { status, data, isLoading, isError, error } = useQuery({
     queryKey: ["teams"], // query key is an array with the query key and the query key object
     queryFn: async () => await fetchTeams(),
   });
 
   useEffect(() => {
-    if (data) {
+    if (data && status === "success") {
       dispatch(setTeams(data));
       data.length > 0
         ? dispatch(setActiveTeam(data[0]))
@@ -86,9 +77,7 @@ export default function Calendar2() {
       </InfoBox>
     );
   }
-  useEffect(() => {
-    console.log("isDeleteModalOpen", isDeleteModalOpen);
-  });
+
   return (
     <div className="relative flex flex-col w-full items-center">
       <button
@@ -98,11 +87,7 @@ export default function Calendar2() {
         Delete
       </button>
       <AnimatePresence>
-        {isDeleteModalOpen && activeTeam && (
-          <TeamDeleteModal
-            onDone={() => dispatch(setIsDeleteModalOpen(false))}
-          />
-        )}
+        {isDeleteModalOpen && <TeamDeleteModal />}
       </AnimatePresence>
 
       <AnimatePresence>
@@ -110,7 +95,7 @@ export default function Calendar2() {
           <EditRecurrentShiftModal
             onDone={() => setIsEditModalOpen(false)}
             memberID={memberUIDToEdit}
-            teamID={activeTeam?._id}
+            teamID={activeTeam._id}
           />
         )}
       </AnimatePresence>

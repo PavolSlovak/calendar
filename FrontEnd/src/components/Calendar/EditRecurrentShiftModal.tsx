@@ -27,20 +27,21 @@ interface EditRecurrentShiftModalProps {
 const EditRecurrentShiftModal = ({
   onDone,
   memberID,
-  teamID,
 }: EditRecurrentShiftModalProps) => {
   const dispatch = useDispatch();
   const daysOfWeek = Object.values(DaysOfWeek);
   const { shift, isEndDateSet, isExceptionSet, frequency } = useSelector(
     (state: ReduxRootState) => state.shifts
   );
-  console.log("team id", teamID);
+  const { activeTeam } = useSelector((state: ReduxRootState) => state.calendar);
+
+  console.log("team id", activeTeam?._id);
   const { mutate, isPending } = useMutation({
     mutationKey: ["addRecurrentShift"],
     mutationFn: (data: Shift) => addRecurrentShift(data),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["shifts", teamID, memberID],
+        queryKey: ["shifts", activeTeam?._id, memberID],
       });
       onDone();
     },
@@ -71,7 +72,7 @@ const EditRecurrentShiftModal = ({
       await mutate({
         ...data,
         memberID,
-        teamID,
+        teamID: activeTeam?._id || "", // Default team ID
       });
       console.log("Submitted", data);
     } catch (error: any) {

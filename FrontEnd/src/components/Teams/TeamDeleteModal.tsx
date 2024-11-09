@@ -3,20 +3,25 @@ import Modal from "../UI/Modal";
 import InfoBox from "../UI/InfoBox";
 import { deleteTeam, queryClient } from "../../utils/http";
 import { useMutation } from "@tanstack/react-query";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState as ReduxRootState } from "../../store";
+import { teamSlice } from "../../store/teams-slice";
 
-type NewTeamModalProps = {
-  onDone: () => void;
-};
-const TeamDeleteModal = ({ onDone }: NewTeamModalProps) => {
+const TeamDeleteModal = () => {
   const { activeTeam } = useSelector((state: ReduxRootState) => state.calendar);
+  const dispatch = useDispatch();
+  const { setIsDeleteModalOpen } = teamSlice.actions;
+
+  function onDone() {
+    dispatch(setIsDeleteModalOpen(false));
+  }
 
   const { mutate, isPending, isError, error } = useMutation({
     mutationKey: ["createTeam"],
     mutationFn: (teamID: string) => deleteTeam(teamID),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["teams"] }); // Invalidate the teams query to refetch the data
+      onDone();
     },
   });
 
