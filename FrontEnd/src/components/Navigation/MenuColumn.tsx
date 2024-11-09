@@ -22,7 +22,7 @@ const menuVariants = {
 function MenuColumn({ handleToggle, path }: MenuColumnProps) {
   return (
     <motion.div
-      className={`flex-col top-0 bg-white w-full z-10 `}
+      className={`absolute flex-col top-0 bg-white w-full z-50 h-full`}
       variants={menuVariants}
       initial="hidden"
       animate="visible"

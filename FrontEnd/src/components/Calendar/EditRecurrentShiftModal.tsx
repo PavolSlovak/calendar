@@ -4,7 +4,15 @@ import Modal from "../UI/Modal";
 import { Shift, shiftSchema } from "@shared/schemas";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState as ReduxRootState } from "../../store";
-import { DaysOfWeek, shiftSlice } from "../../store/shifts-slice";
+import {
+  DaysOfWeek,
+  resetShiftSlaceState,
+  setDays,
+  setFrequency,
+  setIsEndDateSet,
+  setMonthDays,
+  shiftSlice,
+} from "../../store/shifts-slice";
 import InfoBox from "../UI/InfoBox";
 import { addRecurrentShift, queryClient } from "../../utils/http";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
@@ -23,7 +31,7 @@ const EditRecurrentShiftModal = ({
 }: EditRecurrentShiftModalProps) => {
   const dispatch = useDispatch();
   const daysOfWeek = Object.values(DaysOfWeek);
-  const { shift, isEndDateSet, isExceptionSet } = useSelector(
+  const { shift, isEndDateSet, isExceptionSet, frequency } = useSelector(
     (state: ReduxRootState) => state.shifts
   );
   console.log("team id", teamID);
@@ -44,9 +52,6 @@ const EditRecurrentShiftModal = ({
       });
     },
   });
-
-  const { setIsEndDateSet, setIsExceptionSet } = shiftSlice.actions;
-  const { frequency } = shift.recurrence;
 
   // Set up useForm with zod schema and resolver
   const {
@@ -78,19 +83,20 @@ const EditRecurrentShiftModal = ({
     console.log(data);
   }
 
-  /*   function handleFrequencyToggle(frequency: string) {
+  function handleFrequencyToggle(frequency: string) {
     dispatch(setMonthDays([])); // Clear monthDays
     dispatch(setDays([])); // Clear days
     dispatch(setFrequency(frequency));
-  } */
+  }
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: "recurrence.exceptions",
   });
   useEffect(() => {
+    dispatch(resetShiftSlaceState());
     console.log("isExceptionSet", isExceptionSet);
-  });
+  }, []);
   return (
     <>
       <Modal onClose={onDone}>
@@ -119,7 +125,7 @@ const EditRecurrentShiftModal = ({
                     value={field.value}
                     onChange={(e: ChangeEvent<HTMLSelectElement>) => {
                       field.onChange(e.target.value);
-                      /* handleFrequencyToggle(e.target.value); */
+                      handleFrequencyToggle(e.target.value);
                     }}
                   />
                 )}
@@ -257,7 +263,7 @@ const EditRecurrentShiftModal = ({
 
               {fields.map((field, index) => (
                 <div
-                  key={field.id}
+                  key={field.id || index}
                   className="flex flex-col gap-2 border border-slate-300 p-2 rounded-md"
                 >
                   <Form.Input
@@ -266,6 +272,41 @@ const EditRecurrentShiftModal = ({
                     label="Exception Date"
                     {...register(
                       `recurrence.exceptions.${index}.date` as const
+                    )}
+                  />
+
+                  <div className="flex gap-2">
+                    <Form.Input
+                      id={`start-time`}
+                      type="time"
+                      label="Start Time"
+                      {...register("startTime")}
+                    />
+                    {errors.startTime && (
+                      <InfoBox mode="warning" severity="medium">
+                        {errors.startTime.message}
+                      </InfoBox>
+                    )}
+                    <Form.Input
+                      id={`end-time`}
+                      type="time"
+                      label="End Time"
+                      {...register("endTime")}
+                    />
+                    {errors.endTime && (
+                      <InfoBox mode="warning" severity="medium">
+                        {errors.endTime.message}
+                      </InfoBox>
+                    )}
+                  </div>
+                  <Form.Input
+                    id={`exception-skip-${index}`}
+                    type="checkbox"
+                    className="flex-row"
+                    labelClassName="pb-0 pr-2"
+                    label="Skip"
+                    {...register(
+                      `recurrence.exceptions.${index}.skip` as const
                     )}
                   />
                   {

@@ -11,27 +11,17 @@ import NewTeamModal from "./Teams/NewTeamModal";
 
 function Root() {
   const [isCreateTeamOpen, setIsCreateTeamOpen] = useState<boolean>(false);
+  const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] =
+    useState<boolean>(false);
   const [openMobileMenu, setOpenMobileMenu] = useState<boolean>(false);
 
-  const { isMobile, closeMobileOnResize } = useScreenController({
-    openMobileMenu,
-    setOpenMobileMenu,
-  });
-  isMobile(); // Custom hook to check if the screen is mobile
-  closeMobileOnResize(); // Custom hook to close the mobile menu on sm screen
+  // Custom hook to check if the screen is mobile and close the mobile menu on resize
+  useScreenController({ openMobileMenu, setOpenMobileMenu });
 
-  function handleMobileMenu(): void {
-    setOpenMobileMenu(!openMobileMenu);
-  }
-  function openModal(): void {
-    setIsCreateTeamOpen(true);
-  }
-
-  function closeModal(): void {
-    setIsCreateTeamOpen(false);
-  }
   const [currentPath, setCurrentPath] = useState<string | undefined>();
-
+  useEffect(() => {
+    console.log("Open mobile menu", openMobileMenu);
+  });
   const location = useLocation();
   useEffect(() => {
     setCurrentPath(location.pathname);
@@ -41,15 +31,29 @@ function Root() {
     <div id="page-container" className="flex flex-col min-h-screen">
       <Provider store={store}>
         <Header
-          handleToggle={handleMobileMenu}
-          openModal={openModal}
+          toggleMenu={() => setOpenMobileMenu(!openMobileMenu)}
+          openModal={() => setIsCreateTeamOpen(true)}
           path={currentPath}
         />
 
         <AnimatePresence>
-          {/*{isCreateTeamOpen && <CreateTeam onDone={closeModal} />} */}
-          {isCreateTeamOpen && <NewTeamModal onDone={closeModal} />}
+          {openMobileMenu && (
+            <MenuColumn
+              handleToggle={() => setOpenMobileMenu(!openMobileMenu)}
+              path={currentPath}
+            />
+          )}
         </AnimatePresence>
+        <AnimatePresence>
+          {isCreateTeamOpen && (
+            <NewTeamModal onDone={() => setIsCreateTeamOpen(false)} />
+          )}
+        </AnimatePresence>
+        <AnimatePresence>
+          {/*           {isConfirmDeleteOpen && <ConfirmTeamDelete onDone={closeModal} />}
+           */}{" "}
+        </AnimatePresence>
+
         <main className="flex-grow">
           <Outlet />
         </main>

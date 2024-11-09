@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { Exception, Shift } from "@shared/schemas";
+import { set } from "date-fns";
 
 export enum DaysOfWeek {
   sun = "sun",
@@ -16,6 +17,9 @@ type InitialState = {
   shift: Shift;
   isEndDateSet: boolean;
   isExceptionSet: boolean;
+  monthDays: number[];
+  days: DaysOfWeek[];
+  frequency: string;
 };
 
 const initialState: InitialState = {
@@ -38,6 +42,9 @@ const initialState: InitialState = {
 
   isEndDateSet: false,
   isExceptionSet: false,
+  monthDays: [],
+  days: [],
+  frequency: "weekly",
 };
 
 export const shiftSlice = createSlice({
@@ -59,6 +66,23 @@ export const shiftSlice = createSlice({
     setIsExceptionSet: (state, action) => {
       state.isExceptionSet = action.payload;
     },
+    setMonthDays: (state, action) => {
+      state.monthDays = action.payload;
+    },
+    setDays: (state, action) => {
+      state.days = action.payload;
+    },
+    setFrequency: (state, action) => {
+      state.frequency = action.payload;
+    },
+    resetShiftSlaceState: (state) => {
+      state.shift = initialState.shift;
+      state.isEndDateSet = initialState.isEndDateSet;
+      state.isExceptionSet = initialState.isExceptionSet;
+      state.monthDays = initialState.monthDays;
+      state.days = initialState.days;
+      state.frequency = initialState.frequency;
+    },
   },
 });
 export const {
@@ -66,5 +90,9 @@ export const {
   setUserAndTeam,
   setIsEndDateSet,
   setIsExceptionSet,
+  setMonthDays,
+  setDays,
+  setFrequency,
+  resetShiftSlaceState,
   // Exceptions section
 } = shiftSlice.actions;

@@ -11,11 +11,11 @@ import LoadingIndicator from "../UI/LoadingIndicator";
 import { Invitation, Notification } from "@shared/schemas";
 
 type HeaderProps = {
-  handleToggle: () => void;
+  toggleMenu: () => void;
   openModal: () => void;
   path: string | undefined;
 };
-function Header({ handleToggle, openModal, path }: HeaderProps) {
+function Header({ toggleMenu, openModal, path }: HeaderProps) {
   useNavbarSticky(); // Custom hook to add sticky behavior to the header
   const { currentUser } = useAuth();
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
@@ -86,7 +86,7 @@ function Header({ handleToggle, openModal, path }: HeaderProps) {
       </div>
       <nav className="flex flex-grow h-full justify-center items-center">
         <svg
-          onClick={handleToggle}
+          onClick={toggleMenu}
           className=" flex sm:hidden h-10 w-6 hover:bg-slate-300 cursor-pointer"
           fill="none"
           viewBox="0 0 24 24"

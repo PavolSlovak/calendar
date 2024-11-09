@@ -84,8 +84,17 @@ export default function Calendar2() {
       </InfoBox>
     );
   }
+  function handleDeleteTeam() {
+    console.log("handleDeleteTeam");
+  }
   return (
     <div className="relative flex flex-col w-full items-center">
+      <button
+        onClick={() => handleDeleteTeam()}
+        className="absolute btn-delete right-0"
+      >
+        Delete
+      </button>
       <TeamPicker />
       <AnimatePresence>
         {isEditModalOpen && activeTeam && (
