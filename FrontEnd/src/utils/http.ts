@@ -74,3 +74,23 @@ export async function addRecurrentShift(data: Shift) {
   console.log(`Shifts edited successfully: ${data}`);
   return response.json();
 }
+
+export async function deleteTeam(teamID: string | undefined) {
+  const token = localStorage.getItem("token");
+  const response = await fetch(VITE_API_URL + "teams/:teamId", {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const error = new Error("An error occurred while deleting the team");
+    (error as FetchError).code = response.status;
+    (error as FetchError).info = await response.text();
+    throw error;
+  }
+  console.log(`Team deleted successfully: ${teamID}`);
+  return response.json();
+}

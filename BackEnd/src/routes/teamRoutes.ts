@@ -3,6 +3,7 @@ import { authenticateToken } from "../middlewares/authenticateToken.js";
 import {
   createShiftMongoDB,
   createTeamMongoDB,
+  deleteTeamMongoDB,
   fetchTeamMongoDB,
   fetchTeamsMongoDB,
 } from "../controllers/teamController.js";
@@ -15,6 +16,7 @@ router.get("/", authenticateToken, fetchTeamsMongoDB);
 
 router.get("/:teamId", authenticateToken, fetchTeamMongoDB);
 
+router.delete("/:teamId", authenticateToken, deleteTeamMongoDB);
 // Shifts
 router.post("/create-shift", authenticateToken, createShiftMongoDB);
 

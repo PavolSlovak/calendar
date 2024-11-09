@@ -6,7 +6,7 @@ import { RootState as ReduxRootState } from "../store";
 import { calendarSlice, setActiveMembers } from "../store/calendar-slice";
 import { useQuery } from "@tanstack/react-query";
 import { fetchTeams } from "../utils/http";
-import { setTeams } from "../store/teams-slice";
+import { setIsDeleteModalOpen, setTeams } from "../store/teams-slice";
 import LoadingIndicator from "../components/UI/LoadingIndicator";
 import { CalendarHeader } from "../components/Calendar/CalendarHeader";
 import { CalendarBody, classNames } from "../components/Calendar/CalendarBody";
@@ -19,6 +19,7 @@ import { AnimatePresence, m } from "framer-motion";
 import EditRecurrentShiftModal from "../components/Calendar/EditRecurrentShiftModal";
 import { useErrorBoundary } from "react-error-boundary";
 import InfoBox from "../components/UI/InfoBox";
+import TeamDeleteModal from "../components/Teams/TeamDeleteModal";
 
 export default function Calendar2() {
   let today = startOfToday();
@@ -29,13 +30,14 @@ export default function Calendar2() {
   let [memberUIDToEdit, setMemberUIDToEdit] = useState<string>("");
   let firstDayCurrentMonth = parse(currentMonth, "MMM-yyyy", new Date());
 
+  const { teams, isDeleteModalOpen } = useSelector(
+    (state: ReduxRootState) => state.teams
+  );
+
   const { selectedDay, activeTeam } = useSelector(
     (state: ReduxRootState) => state.calendar
   );
 
-  const teams: Team[] = useSelector(
-    (state: ReduxRootState) => state.teams.teams
-  );
   const { showBoundary } = useErrorBoundary();
 
   const { setSelectedDay } = calendarSlice.actions;
@@ -84,29 +86,37 @@ export default function Calendar2() {
       </InfoBox>
     );
   }
-  function handleDeleteTeam() {
-    console.log("handleDeleteTeam");
-  }
+  useEffect(() => {
+    console.log("isDeleteModalOpen", isDeleteModalOpen);
+  });
   return (
     <div className="relative flex flex-col w-full items-center">
       <button
-        onClick={() => handleDeleteTeam()}
+        onClick={() => dispatch(setIsDeleteModalOpen(!isDeleteModalOpen))}
         className="absolute btn-delete right-0"
       >
         Delete
       </button>
-      <TeamPicker />
+      <AnimatePresence>
+        {isDeleteModalOpen && activeTeam && (
+          <TeamDeleteModal
+            onDone={() => dispatch(setIsDeleteModalOpen(false))}
+          />
+        )}
+      </AnimatePresence>
+
       <AnimatePresence>
         {isEditModalOpen && activeTeam && (
           <EditRecurrentShiftModal
-            onDone={closeModal}
+            onDone={() => setIsEditModalOpen(false)}
             memberID={memberUIDToEdit}
             teamID={activeTeam?._id}
           />
         )}
       </AnimatePresence>
+      <TeamPicker />
       <CurrentShiftsOverview
-        onModalOpen={openModal}
+        onModalOpen={() => setIsEditModalOpen(!isEditModalOpen)}
         onMemberSelect={setMemberUIDToEdit}
       />
 

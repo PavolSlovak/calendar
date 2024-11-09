@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { Exception, Shift } from "@shared/schemas";
-import { set } from "date-fns";
 
 export enum DaysOfWeek {
   sun = "sun",

@@ -3,18 +3,14 @@ import { Shift, Team } from "@shared/schemas";
 
 type InitialState = {
   teams: Team[];
+  isDeleteModalOpen: boolean;
 };
 
 const initialState: InitialState = {
   teams: [],
+  isDeleteModalOpen: false,
 };
-type UpdateScheduleProps = {
-  teamId: String;
-  memberId: String;
-  day: String;
-  startTime: String;
-  endTime: String;
-};
+
 export const teamSlice = createSlice({
   name: "teams",
   initialState,
@@ -23,33 +19,13 @@ export const teamSlice = createSlice({
       state.teams = action.payload;
     },
 
-    updateTeam: (state, action: PayloadAction<Team>) => {
-      const team = state.teams.find((team) => team._id === action.payload._id);
-      if (!team) return;
-    },
-
     addTeam: (state, action: PayloadAction<Team>) => {
       state.teams.push(action.payload);
     },
 
-    updateSchedule: (state, action: PayloadAction<UpdateScheduleProps>) => {
-      const team = state.teams.find(
-        (team) => team._id === action.payload.teamId
-      );
-      if (!team) return;
-
-      // TODO: Implement update schedule
-    },
-    addToSchedule: (state, action: PayloadAction<UpdateScheduleProps>) => {
-      const team = state.teams.find(
-        (team) => team._id === action.payload.teamId
-      );
-      if (!team) return;
-
-      // TODO: Implement add to schedule
-      console.log("Add to schedule", action.payload);
+    setIsDeleteModalOpen: (state, action: PayloadAction<boolean>) => {
+      state.isDeleteModalOpen = action.payload;
     },
   },
 });
-export const { setTeams, addTeam, addToSchedule, updateSchedule } =
-  teamSlice.actions;
+export const { setTeams, addTeam, setIsDeleteModalOpen } = teamSlice.actions;

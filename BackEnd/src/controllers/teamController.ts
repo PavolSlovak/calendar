@@ -110,6 +110,19 @@ export const fetchTeamsMongoDB = async (req: CRequest, res: Response) => {
     res.status(500).send("Error fetching teams");
   }
 };
+export const deleteTeamMongoDB = async (req: CRequest, res: Response) => {
+  const teamId = req.params.teamId;
+  const team = await Team.findByIdAndDelete(teamId);
+
+  if (!team) {
+    console.error("Team not found");
+    res.status(404).send("Team not found");
+    return;
+  }
+
+  console.log("Team deleted successfully:", team);
+  res.status(200).send(team);
+};
 // Gets triggered when a user accepts an invitation
 export const addMemberMongoDB = async (teamId: string, userId: string) => {
   const team = await Team.findById(teamId);

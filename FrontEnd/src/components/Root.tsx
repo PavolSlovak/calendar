@@ -8,6 +8,8 @@ import { Outlet, useLocation } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "../store";
 import NewTeamModal from "./Teams/NewTeamModal";
+import TeamDeleteModal from "./Teams/TeamDeleteModal";
+import { is } from "date-fns/locale";
 
 function Root() {
   const [isCreateTeamOpen, setIsCreateTeamOpen] = useState<boolean>(false);
@@ -20,7 +22,7 @@ function Root() {
 
   const [currentPath, setCurrentPath] = useState<string | undefined>();
   useEffect(() => {
-    console.log("Open mobile menu", openMobileMenu);
+    console.log("Open delete modal", isConfirmDeleteOpen);
   });
   const location = useLocation();
   useEffect(() => {
@@ -48,10 +50,6 @@ function Root() {
           {isCreateTeamOpen && (
             <NewTeamModal onDone={() => setIsCreateTeamOpen(false)} />
           )}
-        </AnimatePresence>
-        <AnimatePresence>
-          {/*           {isConfirmDeleteOpen && <ConfirmTeamDelete onDone={closeModal} />}
-           */}{" "}
         </AnimatePresence>
 
         <main className="flex-grow">
