@@ -1,6 +1,9 @@
 import React, { ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-
+const tableVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1 },
+};
 // Main Table Component
 const Table = ({ children }: { children: ReactNode }) => (
   <table className=" min-w-full ">{children}</table>
@@ -24,9 +27,10 @@ Table.Body = ({ children }: { children: ReactNode }) => (
 // Animated Row Component with AnimatePresence
 Table.Row = ({ children, key }: { children: ReactNode; key: string }) => (
   <motion.tr
-    initial={{ opacity: 0, y: 10 }}
-    animate={{ opacity: 1, y: 0 }}
-    exit={{ opacity: 0, y: -10 }}
+    initial="hidden"
+    animate="visible"
+    exit="hidden"
+    variants={tableVariants}
     transition={{ duration: 0.3 }}
     key={key}
   >

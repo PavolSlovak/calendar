@@ -13,6 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { XCircleIcon } from "@heroicons/react/outline";
 import { setIsUpdateModalOpen } from "../../store/teams-slice";
 import Table from "../UI/Table1";
+import { AnimatePresence } from "framer-motion";
 
 type TeamUpdateModalProps = {
   teamID: string;
@@ -106,19 +107,21 @@ function TeamUpdateModal({ teamID }: TeamUpdateModalProps) {
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                  {newMembers.map((member, index) => (
-                    <Table.Row key={index.toString()}>
-                      <Table.Cell>{member.email}</Table.Cell>
-                      <Table.Cell>
-                        <button
-                          onClick={() => handleDelete(member.uid)}
-                          className="btn-secondary"
-                        >
-                          <XCircleIcon className="h-6 w-6 bg-red-500 text-white rounded-full" />
-                        </button>
-                      </Table.Cell>
-                    </Table.Row>
-                  ))}
+                  <AnimatePresence>
+                    {newMembers.map((member, index) => (
+                      <Table.Row key={index.toString()}>
+                        <Table.Cell>{member.email}</Table.Cell>
+                        <Table.Cell>
+                          <button
+                            onClick={() => handleDelete(member.uid)}
+                            className="btn-secondary"
+                          >
+                            <XCircleIcon className="h-6 w-6 bg-red-500 text-white rounded-full" />
+                          </button>
+                        </Table.Cell>
+                      </Table.Row>
+                    ))}
+                  </AnimatePresence>
                 </Table.Body>
               </Table>
 
