@@ -9,9 +9,9 @@ import { createTeam, queryClient } from "../../utils/http";
 import { createTeamSchema, TCreateTeam } from "@shared/schemas";
 import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "../../store/authContext";
-import { InvitationsTable } from "../UI/InvitationsTable";
 import { useDispatch } from "react-redux";
 import { addTeam } from "../../store/teams-slice";
+import { XCircleIcon } from "@heroicons/react/outline";
 
 type NewTeamModalProps = {
   onDone: () => void;
@@ -89,7 +89,9 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
   useEffect(() => {
     console.log(email);
   }, [email]);
-
+  function handleDelete(email: string) {
+    setInvitedMembers((prev) => prev.filter((member) => member !== email));
+  }
   return (
     <>
       <Modal onClose={onDone}>
@@ -133,18 +135,39 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
                   {errors.inviteMember.message}
                 </InfoBox>
               )}
-              <div className="flex justify-end"></div>
-              <InvitationsTable
-                invitations={invitedMembers}
-                handleDelete={(email) =>
-                  setInvitedMembers((prev) =>
-                    prev.filter((member) => member !== email)
-                  )
-                }
-              />
+
+              {/*  <Table
+                headerCols={["Members", "Actions"]}
+                membersEmailArray={invitedMembers}
+                onDelete={handleDelete}
+              /> */}
+              <table>
+                <thead>
+                  <tr>
+                    <th>Members</th>
+                    <th>Delete</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {invitedMembers.map((email, index) => (
+                    <tr key={index}>
+                      <td>{email}</td>
+                      <td>
+                        <button
+                          onClick={() => handleDelete(email)}
+                          className="btn-secondary"
+                        >
+                          <XCircleIcon className="h-5 w-5 bg-red-600 text-white" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
               <Form.Footer actionsClassName="flex  gap-2">
                 <button
-                  className="btn-invite disabled:opacity-50"
+                  className="btn-success disabled:opacity-50"
                   onClick={onInvite}
                   disabled={inviteIsLoading || !email}
                 >

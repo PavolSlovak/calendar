@@ -1,4 +1,4 @@
-import { Shift } from "@shared/schemas";
+import { Shift, TeamUpdate } from "@shared/schemas";
 import { QueryClient } from "@tanstack/react-query";
 export const queryClient = new QueryClient();
 
@@ -75,9 +75,9 @@ export async function addRecurrentShift(data: Shift) {
   return response.json();
 }
 
-export async function deleteTeam(teamID: string | undefined) {
+export async function deleteTeam(teamId: string | undefined) {
   const token = localStorage.getItem("token");
-  const response = await fetch(VITE_API_URL + "teams/:teamId", {
+  const response = await fetch(VITE_API_URL + `teams/${teamId}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -91,6 +91,27 @@ export async function deleteTeam(teamID: string | undefined) {
     (error as FetchError).info = await response.text();
     throw error;
   }
-  console.log(`Team deleted successfully: ${teamID}`);
+  console.log(`Team deleted successfully: ${teamId}`);
+  return response.json();
+}
+export async function updateTeam(data: TeamUpdate) {
+  const { teamId, teamName, members } = data;
+  const token = localStorage.getItem("token");
+  const response = await fetch(VITE_API_URL + `teams/${teamId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ teamName, members }),
+  });
+
+  if (!response.ok) {
+    const error = new Error("An error occurred while updating the team");
+    (error as FetchError).code = response.status;
+    (error as FetchError).info = await response.text();
+    throw error;
+  }
+  console.log(`Team updated successfully: ${teamId}`);
   return response.json();
 }

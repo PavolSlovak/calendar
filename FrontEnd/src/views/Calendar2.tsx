@@ -1,25 +1,25 @@
 import { Shift, Team } from "@shared/schemas";
 import { format, parse, parseISO, startOfToday } from "date-fns";
-import { act, Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState as ReduxRootState } from "../store";
 import { calendarSlice, setActiveMembers } from "../store/calendar-slice";
 import { useQuery } from "@tanstack/react-query";
 import { fetchTeams } from "../utils/http";
-import { setIsDeleteModalOpen, setTeams } from "../store/teams-slice";
 import LoadingIndicator from "../components/UI/LoadingIndicator";
 import { CalendarHeader } from "../components/Calendar/CalendarHeader";
 import { CalendarBody, classNames } from "../components/Calendar/CalendarBody";
-import ErrorBlock from "../components/UI/ErrorBlock";
 import { Menu, Transition } from "@headlessui/react";
 import { DotsVerticalIcon } from "@heroicons/react/outline";
 import { fetchUsersData } from "../utils/http-FS_users";
 import { useAuth } from "../store/authContext";
-import { AnimatePresence, m } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import EditRecurrentShiftModal from "../components/Calendar/EditRecurrentShiftModal";
 import { useErrorBoundary } from "react-error-boundary";
 import InfoBox from "../components/UI/InfoBox";
 import TeamDeleteModal from "../components/Teams/TeamDeleteModal";
+import { teamSlice } from "../store/teams-slice";
+import TeamUpdateModal from "../components/Teams/TeamUpdateModal";
 
 export default function Calendar2() {
   let today = startOfToday();
@@ -30,7 +30,9 @@ export default function Calendar2() {
   let [memberUIDToEdit, setMemberUIDToEdit] = useState<string>("");
   let firstDayCurrentMonth = parse(currentMonth, "MMM-yyyy", new Date());
 
-  const { teams, isDeleteModalOpen } = useSelector(
+  const { setIsDeleteModalOpen, setIsUpdateModalOpen, setTeams } =
+    teamSlice.actions;
+  const { teams, isDeleteModalOpen, isUpdateModalOpen } = useSelector(
     (state: ReduxRootState) => state.teams
   );
 
@@ -61,14 +63,8 @@ export default function Calendar2() {
     }
   }, [status, data, dispatch]);
 
-  if (isLoading)
-    return (
-      <div>
-        <LoadingIndicator />
-        <p>Loading teams...</p>
-      </div>
-    );
-  if (isError) return showBoundary(error);
+  if (isLoading) return <LoadingIndicator label="Loading teams..." />;
+  if (isError) showBoundary(error);
 
   if (teams.length === 0) {
     return (
@@ -80,14 +76,27 @@ export default function Calendar2() {
 
   return (
     <div className="relative flex flex-col w-full items-center">
-      <button
-        onClick={() => dispatch(setIsDeleteModalOpen(!isDeleteModalOpen))}
-        className="absolute btn-delete right-0"
-      >
-        Delete
-      </button>
+      <div className="absolute right-0">
+        <button
+          onClick={() => dispatch(setIsDeleteModalOpen(!isDeleteModalOpen))}
+          className="btn-delete"
+        >
+          Delete
+        </button>
+        <button
+          onClick={() => dispatch(setIsUpdateModalOpen(!isUpdateModalOpen))}
+          className="btn-success"
+        >
+          Update
+        </button>
+      </div>
       <AnimatePresence>
         {isDeleteModalOpen && <TeamDeleteModal />}
+      </AnimatePresence>
+      <AnimatePresence>
+        {isUpdateModalOpen && activeTeam && (
+          <TeamUpdateModal teamID={activeTeam?._id} />
+        )}
       </AnimatePresence>
 
       <AnimatePresence>
@@ -260,10 +269,9 @@ function CurrentShiftsOverview({
   /* If is pending */
   if (membersIsLoading) {
     return (
-      <div>
-        <LoadingIndicator />
-        <p>Loading members...</p>
-      </div>
+      <>
+        <LoadingIndicator label="Loading members ..." />
+      </>
     );
   }
 
@@ -330,7 +338,9 @@ function CurrentShiftsOverview({
 }
 function TeamPicker() {
   /* Redux variables and function */
-  const { teams } = useSelector((state: ReduxRootState) => state.teams);
+  const { teams, isUpdateModalOpen } = useSelector(
+    (state: ReduxRootState) => state.teams
+  );
   const { setActiveTeam } = calendarSlice.actions;
   const dispatch = useDispatch();
   const [isTeamsListOpen, setIsTeamsListOpen] = useState<boolean>(false);

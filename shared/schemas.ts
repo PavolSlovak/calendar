@@ -131,6 +131,11 @@ const teamSchema = z.object({
   createdAt: z.string().default(() => new Date().toISOString()),
   updatedAt: z.string().default(() => new Date().toISOString()),
 });
+export const teamUpdateSchema = z.object({
+  teamId: z.string(),
+  teamName: z.string().min(1).max(100).optional(),
+  members: z.array(z.string()).optional().default([]),
+});
 
 const notificationSchema = z.object({
   id: z.string(),
@@ -153,6 +158,10 @@ export const createTeamSchema = z.object({
   teamName: z.string().nonempty(),
   inviteMember: z.string().email().nullable().or(z.literal("")), // Accepts null or an empty string
 });
+export const updateTeamSchema = z.object({
+  teamName: z.string().nonempty(),
+  member: z.string().email().nullable().or(z.literal("")), // Accepts null or an empty string
+});
 
 export type UserAdditionalData = z.infer<typeof userAdditionalDataSchema>;
 export type FirebaseAuthUser = z.infer<typeof firebaseAuthUserSchema>;
@@ -164,6 +173,7 @@ export type Comment = z.infer<typeof commentSchema>;
 export type Member = z.infer<typeof memberSchema>;
 export type Shift = z.infer<typeof shiftSchema>;
 export type Team = z.infer<typeof teamSchema>;
+export type TeamUpdate = z.infer<typeof teamUpdateSchema>;
 
 export type Notification = z.infer<typeof notificationSchema>;
 export type Invitation = z.infer<typeof invitationSchema>;

@@ -6,6 +6,7 @@ import {
   deleteTeamMongoDB,
   fetchTeamMongoDB,
   fetchTeamsMongoDB,
+  updateTeamMongoDB,
 } from "../controllers/teamController.js";
 
 const router = express.Router();
@@ -17,6 +18,8 @@ router.get("/", authenticateToken, fetchTeamsMongoDB);
 router.get("/:teamId", authenticateToken, fetchTeamMongoDB);
 
 router.delete("/:teamId", authenticateToken, deleteTeamMongoDB);
+
+router.put("/:teamId", authenticateToken, updateTeamMongoDB);
 // Shifts
 router.post("/create-shift", authenticateToken, createShiftMongoDB);
 

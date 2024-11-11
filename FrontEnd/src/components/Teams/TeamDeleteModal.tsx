@@ -9,6 +9,7 @@ import { teamSlice } from "../../store/teams-slice";
 
 const TeamDeleteModal = () => {
   const { activeTeam } = useSelector((state: ReduxRootState) => state.calendar);
+  const { teams } = useSelector((state: ReduxRootState) => state.teams);
   const dispatch = useDispatch();
   const { setIsDeleteModalOpen } = teamSlice.actions;
 
@@ -17,14 +18,21 @@ const TeamDeleteModal = () => {
   }
 
   const { mutate, isPending, isError, error } = useMutation({
-    mutationKey: ["createTeam"],
+    mutationKey: ["deleteTeam"],
     mutationFn: (teamID: string) => deleteTeam(teamID),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["teams"] }); // Invalidate the teams query to refetch the data
+      console.log("Team deleted successfully");
+
       onDone();
     },
   });
-
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (activeTeam?._id) {
+      mutate(activeTeam?._id);
+    }
+  }
   return (
     <>
       <Modal onClose={onDone}>
@@ -32,7 +40,7 @@ const TeamDeleteModal = () => {
 
         <Modal.Body>
           {activeTeam?._id && (
-            <Form onSubmit={() => mutate(activeTeam?._id)}>
+            <Form onSubmit={handleSubmit}>
               <Form.Group>
                 {isError && (
                   <InfoBox mode="warning" severity="high">

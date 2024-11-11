@@ -4,11 +4,13 @@ import { Shift, Team } from "@shared/schemas";
 type InitialState = {
   teams: Team[];
   isDeleteModalOpen: boolean;
+  isUpdateModalOpen: boolean;
 };
 
 const initialState: InitialState = {
   teams: [],
   isDeleteModalOpen: false,
+  isUpdateModalOpen: false,
 };
 
 export const teamSlice = createSlice({
@@ -26,6 +28,10 @@ export const teamSlice = createSlice({
     setIsDeleteModalOpen: (state, action: PayloadAction<boolean>) => {
       state.isDeleteModalOpen = action.payload;
     },
+    setIsUpdateModalOpen: (state, action: PayloadAction<boolean>) => {
+      state.isUpdateModalOpen = action.payload;
+    },
   },
 });
-export const { setTeams, addTeam, setIsDeleteModalOpen } = teamSlice.actions;
+export const { setTeams, addTeam, setIsDeleteModalOpen, setIsUpdateModalOpen } =
+  teamSlice.actions;

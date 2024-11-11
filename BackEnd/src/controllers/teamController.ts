@@ -47,50 +47,59 @@ export const createTeamMongoDB = async (req: CRequest, res: Response) => {
   }
 };
 export const createShiftMongoDB = async (req: CRequest, res: Response) => {
-  const { memberID, teamID, startTime, endTime, date, recurrence } = req.body;
-  console.log("Received shift body:", req.body);
-  // save the shift to the MongoDB
-  const shift = new Shift({
-    memberID,
-    teamID,
-    startTime,
-    endTime,
-    date,
-    recurrence,
-  });
-  await shift.save();
-  console.log("Shift created successfully:", shift);
+  try {
+    const { memberID, teamID, startTime, endTime, date, recurrence } = req.body;
+    console.log("Received shift body:", req.body);
+    // save the shift to the MongoDB
+    const shift = new Shift({
+      memberID,
+      teamID,
+      startTime,
+      endTime,
+      date,
+      recurrence,
+    });
+    await shift.save();
+    console.log("Shift created successfully:", shift);
 
-  // find the team by the teamId
-  console.log("teamId", teamID);
-  const team = await Team.findById(teamID);
-  if (!team) {
-    console.error("Team not found");
-    res.status(404).send("Team not found");
-    return;
+    // find the team by the teamId
+    console.log("teamId", teamID);
+    const team = await Team.findById(teamID);
+    if (!team) {
+      console.error("Team not found");
+      res.status(404).send("Team not found");
+    }
+    // add shift id to the team shifts
+    team.shifts.push(shift._id);
+    await team.save();
+
+    console.log("Shift created successfully:", shift);
+    res.status(201).send(shift);
+  } catch (error) {
+    console.error("Error creating shift:", error);
+    res.status(500).send("Error creating shift!");
   }
-  // add shift id to the team shifts
-  team.shifts.push(shift._id);
-  await team.save();
-
-  console.log("Shift created successfully:", shift);
-  res.status(201).send(shift);
 };
 
 export const fetchTeamMongoDB = async (req: CRequest, res: Response) => {
-  const teamId = req.params.teamId;
-  const teamData = await Team.findById(teamId).populate(
-    "createdBy.memberID members.memberID shifts.memberID"
-  );
+  try {
+    const teamId = req.params.teamId;
+    const teamData = await Team.findById(teamId).populate(
+      "createdBy.memberID members.memberID shifts.memberID"
+    );
 
-  if (!teamData) {
-    console.log("No team found");
-    res.status(404).send("No team found");
-    return;
+    if (!teamData) {
+      console.log("No team found");
+      res.status(404).send("No team found");
+      return;
+    }
+
+    console.log("Team fetched successfully:", teamData);
+    res.status(200).send(teamData);
+  } catch (error) {
+    console.error("Error fetching team:", error);
+    res.status(500).send("Error fetching team");
   }
-
-  console.log("Team fetched successfully:", teamData);
-  res.status(200).send(teamData);
 };
 export const fetchTeamsMongoDB = async (req: CRequest, res: Response) => {
   try {
@@ -111,7 +120,7 @@ export const fetchTeamsMongoDB = async (req: CRequest, res: Response) => {
   }
 };
 export const deleteTeamMongoDB = async (req: CRequest, res: Response) => {
-  const teamId = req.params.teamId;
+  const { teamId } = req.params;
   const team = await Team.findByIdAndDelete(teamId);
 
   if (!team) {
@@ -123,6 +132,20 @@ export const deleteTeamMongoDB = async (req: CRequest, res: Response) => {
   console.log("Team deleted successfully:", team);
   res.status(200).send(team);
 };
+export const updateTeamMongoDB = async (req: CRequest, res: Response) => {
+  try {
+    const { teamId } = req.params;
+    const { name, members } = req.body;
+    const team = await Team.findByIdAndUpdate(teamId, {
+      teamName: name,
+      members: members,
+    });
+  } catch (error) {
+    console.error("Error updating team:", error);
+    res.status(500).send("Error updating team");
+  }
+};
+
 // Gets triggered when a user accepts an invitation
 export const addMemberMongoDB = async (teamId: string, userId: string) => {
   const team = await Team.findById(teamId);
