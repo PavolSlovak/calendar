@@ -9,10 +9,10 @@ import { RootState as ReduxRootState } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
 import { FormEvent, useEffect, useState } from "react";
 import { User } from "firebase/auth";
-import { Table } from "../UI/table";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { XCircleIcon } from "@heroicons/react/outline";
 import { setIsUpdateModalOpen } from "../../store/teams-slice";
+import Table from "../UI/Table1";
 
 type TeamUpdateModalProps = {
   teamID: string;
@@ -75,7 +75,7 @@ function TeamUpdateModal({ teamID }: TeamUpdateModalProps) {
             <Form.Group>
               <Form.Input type="text" label="Team name" id="teamName" />
 
-              <table>
+              {/*  <table>
                 <thead>
                   <tr>
                     <th>Members</th>
@@ -97,7 +97,30 @@ function TeamUpdateModal({ teamID }: TeamUpdateModalProps) {
                     </tr>
                   ))}
                 </tbody>
-              </table>
+              </table> */}
+              <Table>
+                <Table.Header>
+                  <Table.Row key="header">
+                    <Table.HeaderCell>Members</Table.HeaderCell>
+                    <Table.HeaderCell>Delete</Table.HeaderCell>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                  {newMembers.map((member, index) => (
+                    <Table.Row key={index.toString()}>
+                      <Table.Cell>{member.email}</Table.Cell>
+                      <Table.Cell>
+                        <button
+                          onClick={() => handleDelete(member.uid)}
+                          className="btn-secondary"
+                        >
+                          <XCircleIcon className="h-6 w-6 bg-red-500 text-white rounded-full" />
+                        </button>
+                      </Table.Cell>
+                    </Table.Row>
+                  ))}
+                </Table.Body>
+              </Table>
 
               <Form.Footer actionsClassName="flex gap-2">
                 <button
