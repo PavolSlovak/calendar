@@ -1,6 +1,20 @@
 import { Member } from "@shared/schemas";
 import { VITE_API_URL } from "./http";
 
+export const deleteUser = async (uid: string) => {
+  const response = await fetch(VITE_API_URL + `users/delete-user/${uid}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message);
+  }
+  return response.json();
+};
 export const fetchUserByEmail = async (email: string) => {
   const response = await fetch(
     VITE_API_URL + `users/get-user-by-email/${email}`,
@@ -46,8 +60,8 @@ export const fetchUserByUID = async (uid: string) => {
     const errorData = await response.json();
     throw new Error(errorData.message);
   }
-  await new Promise((resolve) => setTimeout(resolve, 3000));
-
+  /* await new Promise((resolve) => setTimeout(resolve, 3000));
+   */
   return response.json();
 };
 export const fetchAdditionalUserData = async (uid: string) => {

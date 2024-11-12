@@ -18,8 +18,9 @@ const firebaseConfig = {
 try {
   firebase.initializeApp(firebaseConfig);
   console.log("Firebase initialized with config:", firebaseConfig);
-} catch (err) {
-  console.log("Error: ", err);
+} catch (error) {
+  const message = getErrorMessage(error);
+  console.log("Error: ", message);
 }
 
 // Initialize Firebase Messaging

@@ -18,6 +18,8 @@ import firebase from "firebase/compat/app";
 import { getMessagingDeviceToken } from "../firebase/messaging";
 import { addUser, sendNotif, updateUserFCM } from "../utils/http-firestore";
 import { th, tr } from "date-fns/locale";
+import { getErrorMessage } from "./hooks/getErrorMessage";
+import { deleteUser } from "../utils/http-FS_users";
 
 type AuthState = {
   currentUser: FirebaseAuthUser | null;
@@ -103,10 +105,11 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       ]);
       return userCredential;
     } catch (error) {
-      console.error("Error signing up:", error);
+      const message = getErrorMessage(error);
+      console.error("Error signing up:", message);
       // Delete the Firebase user if the user creation fails
       if (auth.currentUser) {
-        await auth.currentUser?.delete();
+        await handleDeleteUser(auth.currentUser.uid);
       }
       throw new Error("Signup failed, please try again.");
     }
@@ -118,6 +121,16 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error("Error adding user to Firestore:", error);
       throw new Error("Failed to save user information.");
+    }
+  }
+  async function handleDeleteUser(uid: string) {
+    try {
+      await deleteUser(uid);
+      console.log("User deleted");
+    } catch (error) {
+      const message = getErrorMessage(error);
+      console.error("Error deleting user:", message);
+      throw new Error(`Failed to delete user: ${message}`);
     }
   }
   async function handleSendNotif(to: string, title: string, body: string) {

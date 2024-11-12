@@ -1,5 +1,6 @@
 import { getToken, MessagePayload, onMessage } from "firebase/messaging";
 import { auth, messaging } from "./firebase";
+import { getErrorMessage } from "../store/hooks/getErrorMessage";
 
 const VAPID_KEY = import.meta.env.VITE_FIREBASE_VAPID_KEY;
 
@@ -49,7 +50,8 @@ async function refreshToken(uid: string) {
       return getMessagingDeviceToken(uid); // Retry after refresh
     }
   } catch (error) {
-    console.error("Error refreshing token", error);
+    const message = getErrorMessage(error);
+    console.error("Error refreshing token", message);
   }
 }
 export async function initializeNotificationListener() {

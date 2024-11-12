@@ -29,6 +29,23 @@ export const FSUpdateUserFCMToken = async (req: CRequest, res: Response) => {
   console.log(`FCM token updated for user ${uid}`);
   res.status(200).send({ message: "FCM token updated" });
 };
+
+export const FSDeleteUser = async (req: CRequest, res: Response) => {
+  try {
+    const { uid } = req.params;
+    await admin.auth().deleteUser(uid);
+    await admin.firestore().collection(USERS_COLLECTION).doc(uid).delete();
+    console.log(`User ${uid} deleted`);
+    res.status(200).send({ message: "User deleted" });
+  } catch (error) {
+    console.error("Error deleting user", error.errorInfo.message);
+
+    res.status(500).send({
+      success: false,
+      message: error.errorInfo.message,
+    });
+  }
+};
 export const FSGetUserByEmail = async (req: CRequest, res: Response) => {
   try {
     const { email } = req.params;

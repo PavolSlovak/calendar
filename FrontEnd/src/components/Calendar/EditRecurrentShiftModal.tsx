@@ -18,6 +18,7 @@ import { addRecurrentShift, queryClient } from "../../utils/http";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
+import { getErrorMessage } from "../../store/hooks/getErrorMessage";
 
 interface EditRecurrentShiftModalProps {
   onDone: () => void;
@@ -75,11 +76,9 @@ const EditRecurrentShiftModal = ({
         teamID: activeTeam?._id || "", // Default team ID
       });
       console.log("Submitted", data);
-    } catch (error: any) {
-      setError("root", {
-        type: "manual",
-        message: error.message || "Server Error Occurred",
-      });
+    } catch (error: unknown) {
+      const message = getErrorMessage(error);
+      setError("root", { type: "manual", message: message });
     }
     console.log(data);
   }

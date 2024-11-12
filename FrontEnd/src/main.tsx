@@ -2,13 +2,14 @@ import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 import { BrowserRouter as Router } from "react-router-dom";
-import AuthProvider from "./store/authContext.tsx";
+import AuthProvider, { useAuth } from "./store/authContext.tsx";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./utils/http.ts";
 
 import "./firebase/firebase.tsx";
 import { ErrorBoundary } from "react-error-boundary";
 import { ErrorPage } from "./views/ErrorPage.tsx";
+import { getErrorMessage } from "./store/hooks/getErrorMessage.tsx";
 
 // Register service worker
 
@@ -18,8 +19,12 @@ if ("serviceWorker" in navigator) {
     .then((registration) => {
       console.log("Service Worker registered with scope:", registration.scope);
     })
-    .catch((error) => {
-      console.error("Service Worker registration failed:", error);
+    .catch((error: unknown) => {
+      const message = getErrorMessage(error);
+      alert(
+        "Failed to enable offline features. Some functionality may be limited."
+      );
+      console.error("Service Worker registration failed:", message);
     });
 }
 

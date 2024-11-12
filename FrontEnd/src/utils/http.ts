@@ -1,4 +1,4 @@
-import { Shift, TeamUpdate } from "@shared/schemas";
+import { FirebaseAuthUser, Shift, TeamUpdate } from "@shared/schemas";
 import { QueryClient } from "@tanstack/react-query";
 export const queryClient = new QueryClient();
 
@@ -29,7 +29,7 @@ export async function fetchTeams() {
   /* await new Promise((resolve) => setTimeout(resolve, 1000)); */
   return teams;
 }
-export async function createTeam(name: string, invitations: string[]) {
+export async function createTeam(name: string, invitedUsersUIDArray: string[]) {
   const token = localStorage.getItem("token");
   const response = await fetch(VITE_API_URL + "teams/create", {
     method: "POST",
@@ -37,7 +37,7 @@ export async function createTeam(name: string, invitations: string[]) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ name, invitations }),
+    body: JSON.stringify({ name, invitedUsersUIDArray }),
   });
 
   if (!response.ok) {
@@ -47,7 +47,7 @@ export async function createTeam(name: string, invitations: string[]) {
     throw error;
   }
   console.log(
-    `Team created successfully: ${name} with invitations:${invitations}`
+    `Team created successfully: ${name} with invitations:${invitedUsersUIDArray}`
   );
   /* await storeInvitation(teamId, userId); */
 

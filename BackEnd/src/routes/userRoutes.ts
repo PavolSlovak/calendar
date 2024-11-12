@@ -2,6 +2,7 @@ import express from "express";
 
 import {
   FSCreateUser,
+  FSDeleteUser,
   FSGetUserByEmail,
   FSUpdateUserFCMToken,
   GetFSAdditionalUserData,
@@ -13,6 +14,8 @@ const router = express.Router();
 router.post("/create-user", authenticateToken, FSCreateUser);
 
 router.post("/update-user-fcm", authenticateToken, FSUpdateUserFCMToken);
+
+router.delete("/delete-user/:uid", authenticateToken, FSDeleteUser);
 
 router.get("/get-user-by-email/:email", authenticateToken, FSGetUserByEmail);
 

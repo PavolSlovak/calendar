@@ -6,20 +6,25 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { fetchUserByEmail } from "../../utils/http-FS_users";
 import { createTeam, queryClient } from "../../utils/http";
-import { createTeamSchema, TCreateTeam } from "@shared/schemas";
+import {
+  createTeamSchema,
+  FirebaseAuthUser,
+  TCreateTeam,
+} from "@shared/schemas";
 import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "../../store/authContext";
 import { useDispatch } from "react-redux";
 import { addTeam } from "../../store/teams-slice";
 import { XCircleIcon } from "@heroicons/react/outline";
 import Table from "../UI/Table1";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
+import { storeInvitation } from "../../utils/http-firestore";
 
 type NewTeamModalProps = {
   onDone: () => void;
 };
 const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
-  const [invitedMembers, setInvitedMembers] = useState<string[]>([]);
+  const [invitedMembers, setInvitedMembers] = useState<FirebaseAuthUser[]>([]);
   const {
     register,
     handleSubmit,
@@ -38,7 +43,7 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
     useMutation({
       mutationKey: ["inviteMember"],
       mutationFn: (email: string) => fetchUserByEmail(email),
-      onSuccess: (data) => {
+      onSuccess: async (data) => {
         if (invitedMembers.includes(data.email)) {
           return setError("inviteMember", {
             type: "manual",
@@ -50,8 +55,12 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
             type: "manual",
             message: "You can't invite yourself",
           });
+
+          // send invitation to the invited user
         }
-        setInvitedMembers((prev) => [...prev, data.email]);
+
+        setInvitedMembers((prev) => [...prev, data]);
+
         console.log(data);
       },
       onError: (error) => {
@@ -70,7 +79,10 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
   } = useMutation({
     mutationKey: ["createTeam"],
     mutationFn: (data: TCreateTeam) =>
-      createTeam(data.teamName, invitedMembers),
+      createTeam(
+        data.teamName,
+        invitedMembers.map((member) => member.uid)
+      ),
     onSuccess: (data) => {
       console.log("Team created successfully", data);
       queryClient.invalidateQueries({ queryKey: ["teams"] }); // Invalidate the teams query to refetch the data
@@ -79,8 +91,11 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
     },
   });
 
-  function onSubmit(data: TCreateTeam) {
+  async function onSubmit(data: TCreateTeam) {
     createTeamMutation(data);
+    console.log(invitedMembers);
+    /*    await new Promise(invitedMembers.map((member) => storeInvitation(member)));
+     */
   }
   function onInvite(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
@@ -91,9 +106,9 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
   useEffect(() => {
     console.log(email);
   }, [email]);
-  function handleDelete(e: React.MouseEvent<HTMLButtonElement>, email: string) {
+  function handleDelete(e: React.MouseEvent<HTMLButtonElement>, uid: string) {
     e.preventDefault();
-    setInvitedMembers((prev) => prev.filter((member) => member !== email));
+    setInvitedMembers((prev) => prev.filter((member) => member.uid !== uid));
   }
   return (
     <>
@@ -149,12 +164,12 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
                 <Table.Body>
                   <AnimatePresence>
                     {invitedMembers.length > 0 ? (
-                      invitedMembers.map((memberEmail) => (
-                        <Table.Row key={memberEmail}>
-                          <Table.Cell>{memberEmail}</Table.Cell>
+                      invitedMembers.map((member) => (
+                        <Table.Row key={member.uid}>
+                          <Table.Cell>{member.displayName}</Table.Cell>
                           <Table.Cell>
                             <button
-                              onClick={(e) => handleDelete(e, memberEmail)}
+                              onClick={(e) => handleDelete(e, member.uid)}
                               className="text-red-500"
                             >
                               <XCircleIcon className="h-5" />
