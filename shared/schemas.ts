@@ -134,7 +134,7 @@ const teamSchema = z.object({
 export const teamUpdateSchema = z.object({
   teamId: z.string(),
   teamName: z.string().min(1).max(100).optional(),
-  members: z.array(z.string()).optional().default([]),
+  members: z.array(memberSchema).default([]),
 });
 
 const notificationSchema = z.object({

@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { ComponentPropsWithoutRef, ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 const tableVariants = {
   hidden: { opacity: 0 },
@@ -25,22 +25,30 @@ Table.Body = ({ children }: { children: ReactNode }) => (
 );
 
 // Animated Row Component with AnimatePresence
-Table.Row = ({ children, key }: { children: ReactNode; key: string }) => (
+Table.Row = ({
+  children,
+  ...rest // Capture all other props like key
+}: { children: ReactNode } & ComponentPropsWithoutRef<"tr">) => (
   <motion.tr
     initial="hidden"
     animate="visible"
     exit="hidden"
     variants={tableVariants}
     transition={{ duration: 0.3 }}
-    key={key}
+    {...(rest as any)}
   >
     {children}
   </motion.tr>
 );
 
 // Animated Cell Component with hover effect
-Table.Cell = ({ children }: { children: ReactNode }) => (
-  <motion.td className="px-4 py-2 border text-center">{children}</motion.td>
+Table.Cell = ({
+  children,
+  ...rest // Capture all other props like colSpan
+}: { children: ReactNode } & ComponentPropsWithoutRef<"td">) => (
+  <motion.td className="px-4 py-2 border text-center" {...(rest as any)}>
+    {children}
+  </motion.td>
 );
 
 export default Table;

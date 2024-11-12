@@ -182,6 +182,7 @@ const EditRecurrentShiftModal = ({
                       <Controller
                         name="recurrence.monthDays"
                         control={control}
+                        key={date}
                         render={({ field }) => (
                           <Form.Input
                             id={`month-day-${date}`}

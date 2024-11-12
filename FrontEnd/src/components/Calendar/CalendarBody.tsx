@@ -38,9 +38,9 @@ export function CalendarBody({ firstDayCurrentMonth }: CalendarBodyProps) {
   const dispatch = useDispatch();
 
   const { setSelectedDay } = calendarSlice.actions;
-  useEffect(() => {
+  /*  useEffect(() => {
     console.log(selectedDay);
-  });
+  }); */
   return (
     <div className="grid grid-cols-7 mt-2 text-sm">
       {days.map((day, dayIdx) => {

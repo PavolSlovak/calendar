@@ -30,11 +30,8 @@ export default function Calendar2() {
   let [memberUIDToEdit, setMemberUIDToEdit] = useState<string>("");
   let firstDayCurrentMonth = parse(currentMonth, "MMM-yyyy", new Date());
 
-  const { setIsDeleteModalOpen, setIsUpdateModalOpen, setTeams } =
-    teamSlice.actions;
-  const { teams, isDeleteModalOpen, isUpdateModalOpen } = useSelector(
-    (state: ReduxRootState) => state.teams
-  );
+  const { setTeams } = teamSlice.actions;
+  const { teams } = useSelector((state: ReduxRootState) => state.teams);
 
   /*   const { selectedDay, activeTeam } = useSelector(
     (state: ReduxRootState) => state.calendar
@@ -59,7 +56,7 @@ export default function Calendar2() {
       data.length > 0
         ? dispatch(setActiveTeam(data[0]))
         : dispatch(setActiveTeam(null));
-      console.log("data", data);
+      console.log("TeamsData", data);
     }
   }, [status, data, dispatch]);
 
@@ -76,29 +73,6 @@ export default function Calendar2() {
 
   return (
     <div className="relative flex flex-col w-full items-center">
-      <div className="absolute right-0">
-        <button
-          onClick={() => dispatch(setIsDeleteModalOpen(!isDeleteModalOpen))}
-          className="btn-delete"
-        >
-          Delete
-        </button>
-        <button
-          onClick={() => dispatch(setIsUpdateModalOpen(!isUpdateModalOpen))}
-          className="btn-success"
-        >
-          Update
-        </button>
-      </div>
-      <AnimatePresence>
-        {isDeleteModalOpen && <TeamDeleteModal />}
-      </AnimatePresence>
-      <AnimatePresence>
-        {isUpdateModalOpen && activeTeam && (
-          <TeamUpdateModal teamID={activeTeam?._id} />
-        )}
-      </AnimatePresence>
-
       <AnimatePresence>
         {isEditModalOpen && activeTeam && (
           <EditRecurrentShiftModal
@@ -225,6 +199,10 @@ function CurrentShiftsOverview({
   onModalOpen,
   onMemberSelect,
 }: CurrentShiftsOverviewProps) {
+  const { setIsDeleteModalOpen, setIsUpdateModalOpen } = teamSlice.actions;
+  const { isDeleteModalOpen, isUpdateModalOpen } = useSelector(
+    (state: ReduxRootState) => state.teams
+  );
   let today = format(startOfToday(), "MMM dd, yyyy");
   const { activeTeam, selectedDay } = useSelector(
     (state: ReduxRootState) => state.calendar
@@ -282,6 +260,28 @@ function CurrentShiftsOverview({
   if (membersData) {
     return (
       <div className="flex flex-col items-center w-full">
+        <div className="absolute flex justify-between right-0 w-40">
+          <button
+            onClick={() => dispatch(setIsDeleteModalOpen(!isDeleteModalOpen))}
+            className="btn-delete "
+          >
+            Delete
+          </button>
+          <button
+            onClick={() => dispatch(setIsUpdateModalOpen(!isUpdateModalOpen))}
+            className="btn-success"
+          >
+            Update
+          </button>
+        </div>
+        <AnimatePresence>
+          {isDeleteModalOpen && <TeamDeleteModal />}
+        </AnimatePresence>
+        <AnimatePresence>
+          {isUpdateModalOpen && activeTeam && (
+            <TeamUpdateModal teamID={activeTeam?._id} />
+          )}
+        </AnimatePresence>
         {activeMembers.length > 0 ? (
           <>
             <h1>{activeTeam?.teamName}</h1>
@@ -338,9 +338,7 @@ function CurrentShiftsOverview({
 }
 function TeamPicker() {
   /* Redux variables and function */
-  const { teams, isUpdateModalOpen } = useSelector(
-    (state: ReduxRootState) => state.teams
-  );
+  const { teams } = useSelector((state: ReduxRootState) => state.teams);
   const { setActiveTeam } = calendarSlice.actions;
   const dispatch = useDispatch();
   const [isTeamsListOpen, setIsTeamsListOpen] = useState<boolean>(false);

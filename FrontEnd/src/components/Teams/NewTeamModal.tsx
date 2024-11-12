@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ButtonHTMLAttributes, useEffect, useState } from "react";
 import { Form } from "../UI/Form";
 import Modal from "../UI/Modal";
 import InfoBox from "../UI/InfoBox";
@@ -12,6 +12,8 @@ import { useAuth } from "../../store/authContext";
 import { useDispatch } from "react-redux";
 import { addTeam } from "../../store/teams-slice";
 import { XCircleIcon } from "@heroicons/react/outline";
+import Table from "../UI/Table1";
+import { AnimatePresence } from "framer-motion";
 
 type NewTeamModalProps = {
   onDone: () => void;
@@ -89,7 +91,8 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
   useEffect(() => {
     console.log(email);
   }, [email]);
-  function handleDelete(email: string) {
+  function handleDelete(e: React.MouseEvent<HTMLButtonElement>, email: string) {
+    e.preventDefault();
     setInvitedMembers((prev) => prev.filter((member) => member !== email));
   }
   return (
@@ -136,35 +139,37 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
                 </InfoBox>
               )}
 
-              {/*  <Table
-                headerCols={["Members", "Actions"]}
-                membersEmailArray={invitedMembers}
-                onDelete={handleDelete}
-              /> */}
-              <table>
-                <thead>
-                  <tr>
-                    <th>Members</th>
-                    <th>Delete</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {invitedMembers.map((email, index) => (
-                    <tr key={index}>
-                      <td>{email}</td>
-                      <td>
-                        <button
-                          onClick={() => handleDelete(email)}
-                          className="btn-secondary"
-                        >
-                          <XCircleIcon className="h-5 w-5 bg-red-600 text-white" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-
+              <Table>
+                <Table.Header>
+                  <Table.Row key="header">
+                    <Table.HeaderCell>Members</Table.HeaderCell>
+                    <Table.HeaderCell>Delete</Table.HeaderCell>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                  <AnimatePresence>
+                    {invitedMembers.length > 0 ? (
+                      invitedMembers.map((memberEmail) => (
+                        <Table.Row key={memberEmail}>
+                          <Table.Cell>{memberEmail}</Table.Cell>
+                          <Table.Cell>
+                            <button
+                              onClick={(e) => handleDelete(e, memberEmail)}
+                              className="text-red-500"
+                            >
+                              <XCircleIcon className="h-5" />
+                            </button>
+                          </Table.Cell>
+                        </Table.Row>
+                      ))
+                    ) : (
+                      <Table.Row key="no-members">
+                        <Table.Cell colSpan={2}>No members</Table.Cell>
+                      </Table.Row>
+                    )}
+                  </AnimatePresence>
+                </Table.Body>
+              </Table>
               <Form.Footer actionsClassName="flex  gap-2">
                 <button
                   className="btn-success disabled:opacity-50"

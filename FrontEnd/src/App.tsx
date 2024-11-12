@@ -11,6 +11,7 @@ import { initializeNotificationListener } from "./firebase/messaging";
 import { listenForInvitationAcceptance } from "./firebase/firestore";
 import { useAuth } from "./store/authContext";
 import Calendar2 from "./views/Calendar2";
+import { ErrorPage } from "./views/ErrorPage";
 
 function App() {
   const { currentUser } = useAuth();
@@ -24,6 +25,11 @@ function App() {
       listenForInvitationAcceptance(currentUser?.uid); // Listen for invitation acceptance
     }
   }, []);
+  function NotFound() {
+    throw new Error("Not Found");
+    return null;
+  }
+
   return (
     <Routes>
       <Route path="/" element={<PrivateRoute element={<Root />} />}>
@@ -34,7 +40,7 @@ function App() {
         <Route path="update-profile" element={<UpdateProfile />} />
       </Route>
       <Route path="/auth" element={<Auth />} />
-      <Route path="*" element={<h1>404</h1>} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

@@ -48,7 +48,7 @@ function Header({ toggleMenu, openModal, path }: HeaderProps) {
   useEffect(() => {
     if (notStatus === "success" && notData) {
       setNotifications(notData);
-      console.log(notData);
+      console.log("Notifications", notData);
     }
   }, [notStatus, notData]);
 
@@ -135,7 +135,7 @@ function Header({ toggleMenu, openModal, path }: HeaderProps) {
             >
               <h1>Notifications</h1>
               {notIsPending ? (
-                <LoadingIndicator />
+                <LoadingIndicator label="Invitations loading..." />
               ) : (
                 <ul>
                   {notifications.map((dat: Notification) => (
@@ -152,7 +152,7 @@ function Header({ toggleMenu, openModal, path }: HeaderProps) {
             >
               <h1>Invitations</h1>
               {invIsPending ? (
-                <LoadingIndicator />
+                <LoadingIndicator label="Invitations loading..." />
               ) : (
                 <ul>
                   {invitations.map((dat: Invitation) => (

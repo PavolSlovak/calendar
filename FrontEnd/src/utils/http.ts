@@ -96,6 +96,7 @@ export async function deleteTeam(teamId: string | undefined) {
 }
 export async function updateTeam(data: TeamUpdate) {
   const { teamId, teamName, members } = data;
+
   const token = localStorage.getItem("token");
   const response = await fetch(VITE_API_URL + `teams/${teamId}`, {
     method: "PUT",

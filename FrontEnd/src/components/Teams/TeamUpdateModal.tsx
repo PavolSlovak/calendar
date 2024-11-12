@@ -3,13 +3,10 @@ import { useMutation } from "@tanstack/react-query";
 import { queryClient, updateTeam } from "../../utils/http";
 import InfoBox from "../UI/InfoBox";
 import { Form } from "../UI/Form";
-import { Controller, useForm } from "react-hook-form";
 import { TeamUpdate, teamUpdateSchema, UserCombined } from "@shared/schemas";
 import { RootState as ReduxRootState } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
-import { FormEvent, useEffect, useState } from "react";
-import { User } from "firebase/auth";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { XCircleIcon } from "@heroicons/react/outline";
 import { setIsUpdateModalOpen } from "../../store/teams-slice";
 import Table from "../UI/Table1";
@@ -20,6 +17,7 @@ type TeamUpdateModalProps = {
 };
 
 function TeamUpdateModal({ teamID }: TeamUpdateModalProps) {
+  const teamNameRef = useRef<HTMLInputElement>(null);
   const { activeTeam, activeMembers } = useSelector(
     (state: ReduxRootState) => state.calendar
   );
@@ -37,32 +35,36 @@ function TeamUpdateModal({ teamID }: TeamUpdateModalProps) {
     mutationFn: (data: TeamUpdate) => updateTeam(data), // useMutation uses async functions under the hood
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["teams"] }); // Invalidate the teams query to refetch the data
-      console.log("Team updated successfully");
+
       onDone();
     },
   });
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const teamName = e.currentTarget.teamName.value;
-    /*    teamId: z.string(),
-       teamName: z.string().min(1).max(100).optional(),
-         members: z.array(z.string()).optional().default([]), */
-    mutate({
-      teamId: teamID,
-      teamName: teamName,
-      members: newMembers.map((member) => member.uid),
-    });
+    if (activeTeam) {
+      mutate({
+        teamId: teamID,
+        teamName: teamNameRef.current?.value,
+        members: activeTeam?.members.filter((member) =>
+          newMembers.find((newMember) => newMember.uid === member.firebaseID)
+        ),
+      });
+    }
   }
 
-  const handleDelete = (uid: string) => {
+  const handleDelete = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    uid: string
+  ) => {
+    e.preventDefault();
     setNewMembers((prev) => prev.filter((member) => member.uid !== uid));
   };
   return (
     <>
       <Modal onClose={onDone}>
         <Modal.Header title="Update team" handleClose={onDone} />
-        <p className="text-center">Update the team name</p>
+        <p>Update the team, delete members or invite new ones.</p>
         <Modal.Body>
           {isError && (
             <>
@@ -72,33 +74,18 @@ function TeamUpdateModal({ teamID }: TeamUpdateModalProps) {
               </InfoBox>
             </>
           )}
+          {/* Form section */}
           <Form onSubmit={handleSubmit}>
             <Form.Group>
-              <Form.Input type="text" label="Team name" id="teamName" />
+              <Form.Input
+                ref={teamNameRef}
+                type="text"
+                label="Team name"
+                id="teamName"
+                defaultValue={activeTeam?.teamName}
+              />
 
-              {/*  <table>
-                <thead>
-                  <tr>
-                    <th>Members</th>
-                    <th>Delete</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {newMembers.map((member, index) => (
-                    <tr key={index}>
-                      <td>{member.email}</td>
-                      <td>
-                        <button
-                          onClick={() => handleDelete(member.uid)}
-                          className="btn-secondary"
-                        >
-                          <XCircleIcon className="h-5 w-5 bg-red-600 text-white" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table> */}
+              {/* Table section */}
               <Table>
                 <Table.Header>
                   <Table.Row key="header">
@@ -108,27 +95,32 @@ function TeamUpdateModal({ teamID }: TeamUpdateModalProps) {
                 </Table.Header>
                 <Table.Body>
                   <AnimatePresence>
-                    {newMembers.map((member, index) => (
-                      <Table.Row key={index.toString()}>
-                        <Table.Cell>{member.email}</Table.Cell>
-                        <Table.Cell>
-                          <button
-                            onClick={() => handleDelete(member.uid)}
-                            className="btn-secondary"
-                          >
-                            <XCircleIcon className="h-6 w-6 bg-red-500 text-white rounded-full" />
-                          </button>
-                        </Table.Cell>
+                    {newMembers.length > 0 ? (
+                      newMembers.map((member) => (
+                        <Table.Row key={member.uid}>
+                          <Table.Cell>{member.displayName}</Table.Cell>
+                          <Table.Cell>
+                            <button
+                              onClick={(e) => handleDelete(e, member.uid)}
+                              className="text-red-500"
+                            >
+                              <XCircleIcon className="h-5" />
+                            </button>
+                          </Table.Cell>
+                        </Table.Row>
+                      ))
+                    ) : (
+                      <Table.Row key="no-members">
+                        <Table.Cell colSpan={2}>No members</Table.Cell>
                       </Table.Row>
-                    ))}
+                    )}
                   </AnimatePresence>
                 </Table.Body>
               </Table>
-
               <Form.Footer actionsClassName="flex gap-2">
                 <button
                   type="submit"
-                  className="btn-primary"
+                  className="btn-submit"
                   disabled={isPending}
                 >
                   Update team

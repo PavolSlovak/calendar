@@ -135,11 +135,19 @@ export const deleteTeamMongoDB = async (req: CRequest, res: Response) => {
 export const updateTeamMongoDB = async (req: CRequest, res: Response) => {
   try {
     const { teamId } = req.params;
-    const { name, members } = req.body;
-    const team = await Team.findByIdAndUpdate(teamId, {
-      teamName: name,
-      members: members,
-    });
+    const { teamName, members } = req.body;
+
+    console.log(" Req body:", req.body);
+    const updatedTeam = await Team.findByIdAndUpdate(
+      teamId,
+      {
+        teamName: teamName,
+        members: members,
+      },
+      { new: true, runValidators: true }
+    );
+    console.log("Updated team:", updatedTeam);
+    res.status(200).send(updatedTeam);
   } catch (error) {
     console.error("Error updating team:", error);
     res.status(500).send("Error updating team");
