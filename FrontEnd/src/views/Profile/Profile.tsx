@@ -3,6 +3,9 @@ import { useAuth } from "../../store/authContext";
 import Card from "../../components/UI/Card";
 import InfoBox from "../../components/UI/InfoBox";
 import { Link, useNavigate } from "react-router-dom";
+import { deleteUser } from "../../utils/http-FS_users";
+import { auth } from "../../firebase/firebase";
+import { getErrorMessage } from "../../store/hooks/getErrorMessage";
 
 function Profile() {
   const { currentUser, logout } = useAuth();
@@ -19,6 +22,18 @@ function Profile() {
       setError("Failed to log out");
     }
   }
+  async function handleDelete(uid: string) {
+    setError(null);
+    try {
+      await deleteUser(uid);
+      navigate("/auth?login");
+      console.log("User deleted");
+    } catch (error) {
+      const message = getErrorMessage;
+      console.error("Delete error:", message);
+      setError(`Failed to delete user: ${message}`);
+    }
+  }
   return (
     <Card>
       <h1>Profile</h1>
@@ -32,7 +47,19 @@ function Profile() {
       <Link to="/update-profile" className="btn-blue">
         Update Profile
       </Link>
-      <button onClick={handleLogout}>Log Out</button>
+      <button
+        className="btn-delete"
+        onClick={() => {
+          if (currentUser) {
+            handleDelete(currentUser.uid);
+          }
+        }}
+      >
+        Delete
+      </button>
+      <button className="btn-submit" onClick={handleLogout}>
+        Log Out
+      </button>
     </Card>
   );
 }

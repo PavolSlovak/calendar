@@ -17,7 +17,7 @@ import {
 import firebase from "firebase/compat/app";
 import { getMessagingDeviceToken } from "../firebase/messaging";
 import { addUser, sendNotif, updateUserFCM } from "../utils/http-firestore";
-import { th, tr } from "date-fns/locale";
+
 import { getErrorMessage } from "./hooks/getErrorMessage";
 import { deleteUser } from "../utils/http-FS_users";
 
