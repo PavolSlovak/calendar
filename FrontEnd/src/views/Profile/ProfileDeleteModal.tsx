@@ -1,44 +1,47 @@
-import { Form } from "../UI/Form";
-import Modal from "../UI/Modal";
-import InfoBox from "../UI/InfoBox";
-import { deleteTeam, queryClient } from "../../utils/http";
+import { useNavigate } from "react-router-dom";
+import { deleteUser } from "../../utils/http-FS_users";
 import { useMutation } from "@tanstack/react-query";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState as ReduxRootState } from "../../store";
-import { teamSlice } from "../../store/teams-slice";
+import Modal from "../../components/UI/Modal";
+import { Form } from "../../components/UI/Form";
+import InfoBox from "../../components/UI/InfoBox";
+import LoadingIndicator from "../../components/UI/LoadingIndicator";
 
-const TeamDeleteModal = () => {
-  const { activeTeam } = useSelector((state: ReduxRootState) => state.calendar);
-  const dispatch = useDispatch();
-  const { setIsDeleteModalOpen } = teamSlice.actions;
+type ProfileDeleteModalProps = {
+  setModalOpen: (isOpen: boolean) => void;
+  userUIDtoDelete: string;
+};
 
+export const ProfileDeleteModal = ({
+  setModalOpen,
+  userUIDtoDelete,
+}: ProfileDeleteModalProps) => {
+  const navigate = useNavigate();
   function onDone() {
-    dispatch(setIsDeleteModalOpen(false));
+    setModalOpen(false);
   }
 
   const { mutate, isPending, isError, error } = useMutation({
-    mutationKey: ["deleteTeam"],
-    mutationFn: (teamID: string) => deleteTeam(teamID),
+    mutationKey: ["deleteUser"],
+    mutationFn: (uid: string) => deleteUser(uid),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["teams"] }); // Invalidate the teams query to refetch the data
-      console.log("Team deleted successfully");
-
-      onDone();
+      navigate("/auth?login");
+      console.log("User deleted successfully");
     },
   });
+
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (activeTeam?._id) {
-      mutate(activeTeam?._id);
+    if (userUIDtoDelete) {
+      mutate(userUIDtoDelete);
     }
   }
   return (
     <>
       <Modal onClose={onDone}>
         <Modal.Header title="Are you sure you sure? " handleClose={onDone} />
-
+        {isPending && <LoadingIndicator label="Deleting profile ..." />}
         <Modal.Body>
-          {activeTeam?._id && (
+          {userUIDtoDelete && (
             <Form onSubmit={handleSubmit}>
               <Form.Group>
                 {isError && (
@@ -52,7 +55,7 @@ const TeamDeleteModal = () => {
                     className="btn-delete"
                     disabled={isPending}
                   >
-                    Delete team
+                    Delete profile
                   </button>
                 </Form.Footer>
               </Form.Group>
@@ -63,4 +66,3 @@ const TeamDeleteModal = () => {
     </>
   );
 };
-export default TeamDeleteModal;

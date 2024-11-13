@@ -6,61 +6,61 @@ import { Link, useNavigate } from "react-router-dom";
 import { deleteUser } from "../../utils/http-FS_users";
 import { auth } from "../../firebase/firebase";
 import { getErrorMessage } from "../../store/hooks/getErrorMessage";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { ProfileDeleteModal } from "./ProfileDeleteModal";
 
 function Profile() {
   const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
 
   const [error, setError] = useState<string | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
   async function handleLogout() {
     setError(null);
+
     try {
       await logout();
       navigate("/auth?login");
     } catch (error) {
-      console.error("Logout error:", error);
-      setError("Failed to log out");
-    }
-  }
-  async function handleDelete(uid: string) {
-    setError(null);
-    try {
-      await deleteUser(uid);
-      navigate("/auth?login");
-      console.log("User deleted");
-    } catch (error) {
-      const message = getErrorMessage;
-      console.error("Delete error:", message);
-      setError(`Failed to delete user: ${message}`);
+      const message = getErrorMessage(error);
+      console.error("Logout error:", message);
+      setError(`Failed to log out: ${message}`);
     }
   }
   return (
-    <Card>
-      <h1>Profile</h1>
-      {error && (
-        <InfoBox mode="warning" severity="medium">
-          {error}
-        </InfoBox>
+    <>
+      <Card>
+        <h1>Profile</h1>
+        {error && (
+          <InfoBox mode="warning" severity="medium">
+            {error}
+          </InfoBox>
+        )}
+        <p>Username: {currentUser?.displayName}</p>
+        <p>Email: {currentUser?.email}</p>
+        <Link to="/update-profile" className="btn-blue">
+          Update Profile
+        </Link>
+        <button
+          className="btn-delete"
+          onClick={() => {
+            setIsDeleteModalOpen(true);
+          }}
+        >
+          Delete
+        </button>
+        <button className="btn-submit" onClick={handleLogout}>
+          Log Out
+        </button>
+      </Card>
+      {isDeleteModalOpen && currentUser && (
+        <ProfileDeleteModal
+          setModalOpen={setIsDeleteModalOpen}
+          userUIDtoDelete={currentUser.uid}
+        />
       )}
-      <p>Username: {currentUser?.displayName}</p>
-      <p>Email: {currentUser?.email}</p>
-      <Link to="/update-profile" className="btn-blue">
-        Update Profile
-      </Link>
-      <button
-        className="btn-delete"
-        onClick={() => {
-          if (currentUser) {
-            handleDelete(currentUser.uid);
-          }
-        }}
-      >
-        Delete
-      </button>
-      <button className="btn-submit" onClick={handleLogout}>
-        Log Out
-      </button>
-    </Card>
+    </>
   );
 }
 
