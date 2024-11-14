@@ -16,14 +16,14 @@ function DropdownMenu({
   ID,
 }: DropdownMenuProps) {
   return (
-    <div id={ID} onClick={handleClick} className="linkclasses">
-      <div>{trigger}</div>
+    <div className="flex">
+      <div onClick={handleClick} id={ID} className="linkclasses">
+        {trigger}
+      </div>
 
       {isOpen && (
-        <div className="absolute top-20 right-0 w-1/2 sm:w-1/3 bg-white shadow-lg">
-          <ul>
-            <li>{children}</li>
-          </ul>
+        <div className="dropdown-menu absolute top-20 right-0 w-1/2 sm:w-1/3 bg-white shadow-lg">
+          {children}
         </div>
       )}
     </div>

@@ -33,6 +33,25 @@ function Header({ toggleMenu, openModal, path }: HeaderProps) {
   const { showBoundary } = useErrorBoundary();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [invitations, setInvitations] = useState<Invitation[]>([]);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      const dropdowns = document.querySelectorAll(".dropdown-menu");
+      dropdowns.forEach((dropdown) => {
+        if (!dropdown.contains(event.target as Node)) {
+          setProfileDropdownOpen(false);
+          setNotificationDropdownOpen(false);
+          setInvitationDropdownOpen(false);
+        }
+      });
+    }
+
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
   const {
     status: notStatus,
     data: notData,
@@ -76,6 +95,8 @@ function Header({ toggleMenu, openModal, path }: HeaderProps) {
   }, [invStatus, invData]);
 
   function handleOpenDropdown(event: React.MouseEvent<HTMLDivElement>) {
+    event.stopPropagation();
+    console.log("Dropdown clicked:", event.currentTarget.id);
     console.log(event.currentTarget.id);
     switch (event.currentTarget.id) {
       case "profile":
@@ -103,7 +124,7 @@ function Header({ toggleMenu, openModal, path }: HeaderProps) {
       <nav className="flex flex-grow h-full justify-center items-center">
         <svg
           onClick={toggleMenu}
-          className=" flex sm:hidden h-10 w-6 hover:bg-slate-300 cursor-pointer"
+          className=" flex sm:hidden h-10 w-6 hover:bg-gray-100 cursor-pointer "
           fill="none"
           viewBox="0 0 24 24"
           strokeWidth="1.5"
