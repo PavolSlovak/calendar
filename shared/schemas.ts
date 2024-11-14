@@ -57,7 +57,7 @@ export type TFirebaseConfig = {
 export const userAdditionalDataSchema = z.object({
   fcmToken: z.string(),
   role: z.enum(["admin", "user"]),
-  timeStamp: z.date(),
+  timeStamp: z.string(),
 });
 const firebaseAuthUserSchema = z.object({
   uid: z.string(),

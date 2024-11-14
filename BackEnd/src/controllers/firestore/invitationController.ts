@@ -13,7 +13,7 @@ export const FSStoreInvitation = async (req: CRequest, res: Response) => {
   try {
     const { uid } = req.user;
     const { teamId, invitedUserId } = req.body;
-    const timestamp = admin.firestore.FieldValue.serverTimestamp();
+    const timestamp = new Date().toISOString();
     const documentSnapshot = await admin
       .firestore()
       .collection(USERS_COLLECTION)

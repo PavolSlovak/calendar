@@ -16,7 +16,12 @@ import {
 } from "firebase/auth";
 import firebase from "firebase/compat/app";
 import { getMessagingDeviceToken } from "../firebase/messaging";
-import { addUser, sendNotif, updateUserFCM } from "../utils/http-firestore";
+import {
+  addUser,
+  sendNotif,
+  storeNotification,
+  updateUserFCM,
+} from "../utils/http-firestore";
 
 import { getErrorMessage } from "./hooks/getErrorMessage";
 import { deleteUser } from "../utils/http-FS_users";
@@ -135,7 +140,8 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   }
   async function handleSendNotif(to: string, title: string, body: string) {
     try {
-      await sendNotif(to, title, body);
+      await storeNotification(to, title, body); // Store the notification in Firestore
+      await sendNotif(to, title, body); // Send the notification to the user
       console.log("Notification sent");
     } catch (error) {
       console.error("Error sending notification:", error);

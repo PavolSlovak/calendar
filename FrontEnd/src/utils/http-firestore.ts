@@ -51,7 +51,7 @@ export async function sendNotif(to: string, title: string, body: string) {
       `Error occured while sending notification.Response not ok. ${response.text}`
     );
   }
-  await storeNotification(to, title, body);
+
   return response.json();
 }
 export async function storeNotification(
