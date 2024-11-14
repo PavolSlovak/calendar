@@ -10,7 +10,7 @@ import { authenticateToken } from "../middlewares/authenticateToken.js";
 
 const router = express.Router();
 
-router.post("/send-notification", sendNotif);
+router.post("/send-notification", authenticateToken, sendNotif);
 
 router.post("/store-notification", authenticateToken, FSStoreNotification);
 

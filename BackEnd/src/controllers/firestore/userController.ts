@@ -8,8 +8,7 @@ type CRequest = Request & DecodedIdToken;
 export const FSCreateUser = async (req: CRequest, res: Response) => {
   const { uid } = req.user;
   const { fcmToken } = req.body;
-  const timestamp = admin.firestore.FieldValue.serverTimestamp();
-
+  const timestamp = new Date().toISOString();
   await admin.firestore().collection(USERS_COLLECTION).doc(uid).set({
     fcmToken: fcmToken,
     role: "user",
@@ -21,7 +20,7 @@ export const FSCreateUser = async (req: CRequest, res: Response) => {
 export const FSUpdateUserFCMToken = async (req: CRequest, res: Response) => {
   const { uid } = req.user;
   const { fcmToken } = req.body;
-  const timestamp = admin.firestore.FieldValue.serverTimestamp();
+  const timestamp = new Date().toISOString();
   await admin.firestore().collection(USERS_COLLECTION).doc(uid).update({
     fcmToken: fcmToken,
     timeStamp: timestamp,

@@ -34,19 +34,21 @@ export async function updateUserFCM(fcmToken: string) {
   return response.json();
 }
 export async function sendNotif(to: string, title: string, body: string) {
+  const token = localStorage.getItem("token");
   const response = await fetch(
     VITE_API_URL + "notifications/send-notification",
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({ to, title, body }),
     }
   );
   if (!response.ok) {
     throw new Error(
-      "Error occured while sending notification.Response not ok."
+      `Error occured while sending notification.Response not ok. ${response.text}`
     );
   }
   await storeNotification(to, title, body);

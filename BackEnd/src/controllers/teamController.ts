@@ -104,7 +104,6 @@ export const fetchTeamMongoDB = async (req: CRequest, res: Response) => {
 export const fetchTeamsMongoDB = async (req: CRequest, res: Response) => {
   try {
     const userData = req.user;
-    console.log("userData", userData);
     const teams = await Team.find({ "members.firebaseID": userData.uid });
 
     if (!teams) {
@@ -112,7 +111,6 @@ export const fetchTeamsMongoDB = async (req: CRequest, res: Response) => {
       return res.status(404).send("No teams found");
     }
 
-    console.log("Teams fetched successfully:", teams);
     res.status(200).send(teams);
   } catch (error) {
     console.error("Error fetching teams:", error);

@@ -79,6 +79,8 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
       queryClient.invalidateQueries({ queryKey: ["teams"] });
       // update the state with the new team
       dispatch(addTeam(data));
+      // If no members were invited, return
+      if (invitedMembers.length === 0) return;
       // Send invitations to the invited users
       sendInvitationsMutation({
         teamData: data,

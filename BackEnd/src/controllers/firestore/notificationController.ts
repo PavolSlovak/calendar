@@ -14,6 +14,8 @@ export const sendNotif = async (req: Request, res: Response) => {
     // to is uid of the user to send the notification to
     const { to, title, body } = req.body;
     console.log("Sending notification to user", to);
+    console.log("title", title);
+    console.log("body", body);
     const documentSnapshot = await admin
       .firestore()
       .collection(USERS_COLLECTION)
@@ -49,7 +51,7 @@ export const FSStoreNotification = async (req: CRequest, res: Response) => {
     const { to, title, body } = req.body;
 
     console.log("Storing notification for user", to);
-    const timestamp = admin.firestore.FieldValue.serverTimestamp();
+    const timestamp = new Date().toISOString();
     const documentSnapshot = await admin
       .firestore()
       .collection(USERS_COLLECTION)

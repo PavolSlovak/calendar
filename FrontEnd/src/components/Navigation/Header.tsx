@@ -211,9 +211,9 @@ function Invitation({ invitation }: { invitation: Invitation }) {
       <div className="flex-auto">
         <p className="text-gray-900">{invitation.invitedByUserId}</p>
         <p className="mt-0.5">
-          {/*  <time dateTime={invitation.timestamp}>
+          <time dateTime={invitation.timestamp}>
             {format(invitationDate, "h:mm a")}
-          </time> */}
+          </time>
         </p>
       </div>
       <Menu
