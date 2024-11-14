@@ -31,6 +31,7 @@ export async function fetchTeams() {
 }
 export async function createTeam(name: string, invitedUsersUIDArray: string[]) {
   const token = localStorage.getItem("token");
+  console.log("invitedUsersUIDArray", invitedUsersUIDArray);
   const response = await fetch(VITE_API_URL + "teams/create", {
     method: "POST",
     headers: {
@@ -46,9 +47,7 @@ export async function createTeam(name: string, invitedUsersUIDArray: string[]) {
     (error as FetchError).info = await response.text();
     throw error;
   }
-  console.log(
-    `Team created successfully: ${name} with invitations:${invitedUsersUIDArray}`
-  );
+  console.log(`Team created successfully: ${name}`);
   /* await storeInvitation(teamId, userId); */
 
   return response.json();

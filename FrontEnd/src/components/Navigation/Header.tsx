@@ -1,14 +1,22 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useAuth } from "../../store/authContext";
 import useNavbarSticky from "../../store/hooks/useNavbarSticky";
 import NavbarLink from "../UI/NavLink";
 import DropdownMenu from "./DropdownMenu";
-import { BellIcon, UsersIcon } from "@heroicons/react/outline";
+import {
+  BellIcon,
+  DotsVerticalIcon,
+  UsersIcon,
+} from "@heroicons/react/outline";
 import { Link } from "react-router-dom";
 import { getInvitations, getNotifications } from "../../utils/http-firestore";
 import { useQuery } from "@tanstack/react-query";
 import LoadingIndicator from "../UI/LoadingIndicator";
-import { Invitation, Notification } from "@shared/schemas";
+import type { Invitation, Notification } from "@shared/schemas";
+import { useErrorBoundary } from "react-error-boundary";
+import { format, fromUnixTime, parseISO } from "date-fns";
+import { Menu, Transition } from "@headlessui/react";
+import { classNames } from "../Calendar/CalendarBody";
 
 type HeaderProps = {
   toggleMenu: () => void;
@@ -22,7 +30,7 @@ function Header({ toggleMenu, openModal, path }: HeaderProps) {
   const [notificationDropdownOpen, setNotificationDropdownOpen] =
     useState(false);
   const [invitationDropdownOpen, setInvitationDropdownOpen] = useState(false);
-
+  const { showBoundary } = useErrorBoundary();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [invitations, setInvitations] = useState<Invitation[]>([]);
   const {
@@ -34,6 +42,7 @@ function Header({ toggleMenu, openModal, path }: HeaderProps) {
   } = useQuery({
     queryKey: ["notifications"], // query key is an array with the query key and the query key object
     queryFn: () => getNotifications(),
+    enabled: !!currentUser?.uid,
   });
   const {
     status: invStatus,
@@ -44,11 +53,15 @@ function Header({ toggleMenu, openModal, path }: HeaderProps) {
   } = useQuery({
     queryKey: ["invitations"], // query key is an array with the query key and the query key object
     queryFn: () => getInvitations(),
+    enabled: !!currentUser?.uid,
   });
   useEffect(() => {
     if (notStatus === "success" && notData) {
       setNotifications(notData);
       console.log("Notifications", notData);
+    } else if (notIsError) {
+      console.log("Error", notError);
+      showBoundary(notError);
     }
   }, [notStatus, notData]);
 
@@ -56,6 +69,9 @@ function Header({ toggleMenu, openModal, path }: HeaderProps) {
     if (invStatus === "success" && invData) {
       setInvitations(invData);
       console.log("Invitations", invData);
+    } else if (invIsError) {
+      console.log("Error", invError);
+      showBoundary(invError);
     }
   }, [invStatus, invData]);
 
@@ -154,14 +170,9 @@ function Header({ toggleMenu, openModal, path }: HeaderProps) {
               {invIsPending ? (
                 <LoadingIndicator label="Invitations loading..." />
               ) : (
-                <ul>
-                  {invitations.map((dat: Invitation) => (
-                    <li key={dat.id}>
-                      User {dat.invitedByUserId} invited you to the team{" "}
-                      {dat.invitedByUserId}{" "}
-                    </li>
-                  ))}
-                </ul>
+                invitations.map((dat: Invitation) => (
+                  <Invitation key={dat.id} invitation={dat} />
+                ))
               )}
             </DropdownMenu>
             <DropdownMenu
@@ -186,3 +197,77 @@ function Header({ toggleMenu, openModal, path }: HeaderProps) {
 }
 
 export default Header;
+
+function Invitation({ invitation }: { invitation: Invitation }) {
+  const invitationDate = parseISO(invitation.timestamp);
+  console.log("Invitation", invitationDate);
+  return (
+    <li className="flex items-center px-4 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100">
+      {/* <img
+        src={invitation.}
+        alt=""
+        className="flex-none w-10 h-10 rounded-full"
+      /> */}
+      <div className="flex-auto">
+        <p className="text-gray-900">{invitation.invitedByUserId}</p>
+        <p className="mt-0.5">
+          {/*  <time dateTime={invitation.timestamp}>
+            {format(invitationDate, "h:mm a")}
+          </time> */}
+        </p>
+      </div>
+      <Menu
+        as="div"
+        className="relative opacity-0 focus-within:opacity-100 group-hover:opacity-100"
+      >
+        <div>
+          <Menu.Button className="-m-2 flex items-center rounded-full p-1.5 text-gray-500 hover:text-gray-600">
+            <span className="sr-only">Open options</span>
+            <DotsVerticalIcon className="w-6 h-6" aria-hidden="true" />
+          </Menu.Button>
+        </div>
+
+        <Transition
+          as={Fragment}
+          enter="transition ease-out duration-100"
+          enterFrom="transform opacity-0 scale-95"
+          enterTo="transform opacity-100 scale-100"
+          leave="transition ease-in duration-75"
+          leaveFrom="transform opacity-100 scale-100"
+          leaveTo="transform opacity-0 scale-95"
+        >
+          <Menu.Items className="absolute right-0 z-10 mt-2 origin-top-right bg-white rounded-md shadow-lg w-36 ring-1 ring-black ring-opacity-5 focus:outline-none">
+            <div className="py-1">
+              <Menu.Item>
+                {({ active }) => (
+                  <a
+                    href="#"
+                    className={classNames(
+                      active ? "bg-gray-100 text-gray-900" : "text-gray-700",
+                      "block px-4 py-2 text-sm"
+                    )}
+                  >
+                    Edit
+                  </a>
+                )}
+              </Menu.Item>
+              <Menu.Item>
+                {({ active }) => (
+                  <a
+                    href="#"
+                    className={classNames(
+                      active ? "bg-gray-100 text-gray-900" : "text-gray-700",
+                      "block px-4 py-2 text-sm"
+                    )}
+                  >
+                    Cancel
+                  </a>
+                )}
+              </Menu.Item>
+            </div>
+          </Menu.Items>
+        </Transition>
+      </Menu>
+    </li>
+  );
+}

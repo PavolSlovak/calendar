@@ -8,6 +8,7 @@ import { auth } from "../../firebase/firebase";
 import { getErrorMessage } from "../../store/hooks/getErrorMessage";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ProfileDeleteModal } from "./ProfileDeleteModal";
+import { set } from "date-fns";
 
 function Profile() {
   const { currentUser, logout } = useAuth();
@@ -28,6 +29,9 @@ function Profile() {
       setError(`Failed to log out: ${message}`);
     }
   }
+  function handleDeleteProfile() {
+    setIsDeleteModalOpen(true);
+  }
   return (
     <>
       <Card>
@@ -39,20 +43,19 @@ function Profile() {
         )}
         <p>Username: {currentUser?.displayName}</p>
         <p>Email: {currentUser?.email}</p>
-        <Link to="/update-profile" className="btn-blue">
-          Update Profile
-        </Link>
-        <button
-          className="btn-delete"
-          onClick={() => {
-            setIsDeleteModalOpen(true);
-          }}
-        >
-          Delete
-        </button>
-        <button className="btn-submit" onClick={handleLogout}>
-          Log Out
-        </button>
+
+        <div className=" flex flex-col w-full items-center gap-2">
+          <Link to="/update-profile" className="btn-blue">
+            Update Profile
+          </Link>
+
+          <button className="btn-submit" onClick={handleLogout}>
+            Log Out
+          </button>
+          <button className="btn-delete" onClick={handleDeleteProfile}>
+            Delete
+          </button>
+        </div>
       </Card>
       {isDeleteModalOpen && currentUser && (
         <ProfileDeleteModal
