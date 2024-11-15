@@ -16,7 +16,8 @@ export const generateColor = () => {
 
 export const createTeamMongoDB = async (req: CRequest, res: Response) => {
   try {
-    const { name, invitations } = req.body;
+    const { name, invitedUsersUIDArray } = req.body;
+
     const { uid } = req.user;
     console.log("Received team body:", req.body, uid);
     const team = new Team({
@@ -28,7 +29,7 @@ export const createTeamMongoDB = async (req: CRequest, res: Response) => {
         },
       ],
       createdBy: uid,
-      invitations: invitations,
+      invitations: invitedUsersUIDArray,
     });
     const alreadyExists = await Team.findOne({ teamName: name });
 

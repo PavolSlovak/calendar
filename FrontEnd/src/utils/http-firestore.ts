@@ -146,6 +146,7 @@ export async function storeInvitation(teamId: string, invitedUserId: string) {
   if (!response.ok) {
     throw new Error("Error occured while storing invitation.Response not ok.");
   }
+  return response.json();
 }
 export async function getInvitations() {
   const response = await fetch(VITE_API_URL + "invitations/get-invitations", {

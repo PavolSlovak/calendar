@@ -20,6 +20,7 @@ import { XCircleIcon } from "@heroicons/react/outline";
 import Table from "../UI/Table1";
 import { AnimatePresence } from "framer-motion";
 import { sendNotif, storeInvitation } from "../../utils/http-firestore";
+import { set } from "date-fns";
 
 type NewTeamModalProps = {
   onDone: () => void;
@@ -32,6 +33,7 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
     formState: { errors },
     watch,
     setError,
+    clearErrors,
   } = useForm<TCreateTeam>({
     resolver: zodResolver(createTeamSchema),
   });
@@ -40,26 +42,34 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
   const { currentUser } = useAuth();
   const dispatch = useDispatch();
 
-  const { mutate: fetchUser, isPending: fetchUserIsLoading } = useMutation({
-    mutationKey: ["fetchUser"],
-    mutationFn: (email: string) => fetchUserByEmail(email),
-    onSuccess: async (data) => {
-      if (invitedMembers.includes(data.email)) {
-        return setError("inviteMember", {
+  const { mutate: fetchUserMutation, isPending: fetchUserIsLoading } =
+    useMutation({
+      mutationKey: ["fetchUser"],
+      mutationFn: (email: string) => fetchUserByEmail(email),
+      onSuccess: async (data) => {
+        if (invitedMembers.includes(data.email)) {
+          return setError("inviteMember", {
+            type: "manual",
+            message: "User already invited",
+          });
+        }
+        if (currentUser?.email === data.email) {
+          return setError("inviteMember", {
+            type: "manual",
+            message: "You can't invite yourself",
+          });
+        }
+        // Add the user to the invited members list state
+        setInvitedMembers((prev) => [...prev, data]);
+        clearErrors("inviteMember");
+      },
+      onError: (error) => {
+        setError("inviteMember", {
           type: "manual",
-          message: "User already invited",
+          message: error.message,
         });
-      }
-      if (currentUser?.email === data.email) {
-        return setError("inviteMember", {
-          type: "manual",
-          message: "You can't invite yourself",
-        });
-      }
-      // Add the user to the invited members list state
-      setInvitedMembers((prev) => [...prev, data]);
-    },
-  });
+      },
+    });
 
   const {
     mutate: createTeamMutation,
@@ -68,12 +78,18 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
     error: createTeamError,
   } = useMutation({
     mutationKey: ["createTeam"],
-    mutationFn: (data: TCreateTeam) =>
-      createTeam(
-        data.teamName,
-        invitedMembers.map((member) => member.uid)
-      ),
+    mutationFn: ({
+      teamName,
+      invitedMembersUIDArray,
+    }: {
+      teamName: string;
+      invitedMembersUIDArray: string[];
+    }) => createTeam(teamName, invitedMembersUIDArray),
+    // TODO, upload invitations to firestore and upload team with invitation id's response array
     onSuccess: (data) => {
+      invitedMembers.map((member) => {
+        console.log("member", member);
+      });
       console.log("Team created successfully", data);
       // Invalidate the teams query to refetch the data
       queryClient.invalidateQueries({ queryKey: ["teams"] });
@@ -86,6 +102,7 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
         teamData: data,
         invitedUsersUIDArray: invitedMembers.map((member) => member.uid),
       });
+
       // close the modal
       onDone();
     },
@@ -103,30 +120,40 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
     error: sendInvitationsError,
   } = useMutation({
     mutationKey: ["sendInvitations"],
-    mutationFn: ({ teamData, invitedUsersUIDArray }: TSendInvitation) =>
-      Promise.all(
-        invitedUsersUIDArray.map((uid) => {
-          storeInvitation(teamData._id, uid); // Store the invitation in Firestore
-          sendNotif(
-            uid,
-            `Invitation to ${teamData.teamName}`,
-            `You have been invited to join a team`
-          ); // Notify the user
+    mutationFn: ({ teamData, invitedUsersUIDArray }: TSendInvitation) => {
+      const response = Promise.all(
+        invitedUsersUIDArray.map(async (uid) => {
+          const [sendNotifResponse, storeInvitationResponse] =
+            await Promise.all([
+              sendNotif(
+                uid,
+                "You have been invited to a team",
+                `You have been invited to join the team ${teamData.teamName}`
+              ),
+              /* storeInvitation(teamId: string, invitedUserId: string) { */
+              storeInvitation(teamData._id, uid),
+            ]);
+          return { sendNotifResponse, storeInvitationResponse }; // Return the responses
         })
-      ),
-    onSuccess: () => {
-      console.log("Invitations sent successfully");
+      );
+      return response;
+    },
+    onSuccess: async (response) => {
+      console.log("Invitations sent successfully", response);
     },
   });
 
   async function onSubmit(data: TCreateTeam) {
-    createTeamMutation(data);
+    createTeamMutation({
+      teamName: data.teamName,
+      invitedMembersUIDArray: invitedMembers.map((member) => member.uid),
+    });
     console.log(invitedMembers);
   }
   function onInvite(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     if (email) {
-      fetchUser(email);
+      fetchUserMutation(email);
     }
   }
 
@@ -190,8 +217,8 @@ const NewTeamModal = ({ onDone }: NewTeamModalProps) => {
                 <Table.Body>
                   <AnimatePresence>
                     {invitedMembers.length > 0 ? (
-                      invitedMembers.map((member) => (
-                        <Table.Row key={member.uid}>
+                      invitedMembers.map((member, index) => (
+                        <Table.Row key={index}>
                           <Table.Cell>{member.email}</Table.Cell>
                           <Table.Cell>
                             <button

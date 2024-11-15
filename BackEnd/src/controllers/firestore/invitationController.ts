@@ -26,8 +26,13 @@ export const FSStoreInvitation = async (req: CRequest, res: Response) => {
         timestamp: timestamp,
       });
     console.log("Notification stored with ID: ", documentSnapshot.id);
+    console.log("Invited user ID: ", invitedUserId);
 
-    res.status(200).send({ success: true, id: documentSnapshot.id });
+    res.status(200).send({
+      success: true,
+      id: documentSnapshot.id,
+      invitedUID: invitedUserId,
+    });
   } catch (error) {
     console.error("Error storing notification:", error.message);
     res.status(500).send("Error storing notification");
